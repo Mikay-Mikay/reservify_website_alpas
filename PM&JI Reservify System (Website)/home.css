@@ -19,7 +19,7 @@ nav {
     padding: 5px 20px;
     display: flex;
     align-items: center;
-    position: relative; /* Ensure relative positioning for .toggle */
+    position: relative;
 }
 
 nav a {
@@ -27,7 +27,8 @@ nav a {
 }
 
 nav a:hover {
-    color: #ef4b3f;
+    color: white;
+    transition: color 0.3s;
 }
 
 .logo {
@@ -43,12 +44,12 @@ nav a:hover {
 .logo-text {
     display: flex;
     flex-direction: column;
-    font-size: 18px; /* Adjust size as needed */
-    line-height: 1.2; /* Adjust line height to control spacing */
+    font-size: 18px;
+    line-height: 1.2;
 }
 
 .logo a:hover {
-    color: #ef4b3f;
+    color: white;
 }
 
 .logo img {
@@ -62,6 +63,7 @@ nav a:hover {
     list-style: none;
     margin: 0;
     padding: 0;
+    margin-right: 10px;
 }
 
 .menu li {
@@ -69,6 +71,36 @@ nav a:hover {
     font-size: 16px;
 }
 
+/* User Logo Styles */
+.user-logo img {
+    width: 55px; /* Adjust size as needed */
+    height: 55px;
+    margin-left: 10px; /* Space between the logo and "Log Out" */
+}
+
+.menu li.user-logo {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    
+}
+
+.menu li.user-logo img {
+    vertical-align: middle;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.menu li.user-logo img:hover {
+    filter: brightness(0) invert(1); /* This will change the image to white */
+}
+
+/* Toggle button styles */
 .toggle {
     font-size: 30px;
     display: none;
