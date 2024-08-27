@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+a, a:hover {
+    text-decoration: none;
+}
+
+/* Navigation Bar Styling */
+nav {
+    background: #fac08d;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+nav .logo {
+    flex: 1;
+}
+
+nav .logo a {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+}
+
+nav .logo-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-left: 10px;
+}
+
+nav .logo img {
+    width: 80px;
+    margin-right: 10px;
+}
+
+nav .menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav .menu li {
+    padding: 15px 10px;
+    font-size: 16px;
+}
+
+nav .menu li a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s;
+}
+
+nav .menu li a:hover {
+    color: white;
+}
+
+/* User Logo Styles */
+.user-logo img {
+    width: 55px; /* Adjust size as needed */
+    height: 55px;
+    margin-left: 10px; /* Space between the logo and "Log Out" */
+}
+
+.menu li.user-logo {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu li.user-logo img {
+    vertical-align: middle;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.menu li.user-logo img:hover {
+    filter: brightness(0) invert(1); /* This will change the image to white */
+}
+
+/* Toggle button styles */
+nav .toggle {
+    font-size: 30px;
+    display: none;
+}
+
+/* Responsive Navigation */
+@media screen and (max-width: 600px) {
+    nav .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #fac08d;
+        width: 100%;
+    }
+
+    nav .menu.active {
+        display: flex;
+    }
+
+    nav .toggle {
+        display: block;
+    }
+}
+
+/* Chat Form Styling */
+.chat-container {
+    background-color: #fac08d;
+    padding: 20px;
+    border-radius: 0%;
+    max-width: 1650px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.chat-container h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.chat-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.chat-container p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.chat-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chat-container input, .chat-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.chat-container button {
+    padding: 10px 20px;
+    background-color: #f4a36c;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.chat-container button:hover {
+    background-color: #555;
+}
+
+.chat-container .disclaimer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+}
