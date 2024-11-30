@@ -22,10 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Check if user exists
         if ($user) {
-            // Email found, proceed with password reset or next step
-            // Redirect to the password reset page or send reset email
-            header("Location: reset-password.php?email=" . urlencode($Email));
-            exit();
+            // Email found, redirect to newpassword.php
+            header("Location: newpassword.php?email=" . urlencode($Email));
+            exit();  // Make sure to stop the script after the redirection
         } else {
             // Email not found, show error message
             $error_message = "Email not found.";
