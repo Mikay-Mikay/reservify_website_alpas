@@ -7,47 +7,49 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     background-color: #f4a36c;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 120vh;
+    min-height: 100vh;
     position: relative;
+    padding: 10px; /* Prevent body overflow */
 }
 
 .back-button {
     position: absolute;
-    top: 95px;
-    left: 110px; /* Move to the left */
+    top: 10px;
+    left: 10px;
     cursor: pointer;
 }
 
 .back-button img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 .container {
     background-color: #f9e1bc;
-    width: 90%;
-    height: 108vh;
+    width: 100%;
+    max-width: 800px; /* Limit max width for larger screens */
+    height: auto; /* Allow container to adjust its height */
     border: 10px solid #f5b285;
-    padding: 30px;
+    padding: 20px;
     border-radius: 20px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    text-align:  center;
+    text-align: center;
     color: black;
-    font-size: 35px; /* Increase font size for better visibility */
-    margin: 0; /* Remove any default margin */
-    padding-bottom: 10px; /* Add some space below the heading */
+    font-size: 2rem; /* Relative font size for better responsiveness */
+    margin: 0;
+    padding-bottom: 10px;
 }
 
 .content {
-    font-size: 14px;
+    font-size: 1rem; /* Relative font size */
     line-height: 1.8;
     color: black;
     text-align: center;
@@ -63,4 +65,67 @@ h1 {
     text-align: center;
     margin-top: 30px;
     font-style: italic;
+}
+
+/* Mobile and tablet responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 5px; /* Reduce padding on smaller screens */
+    }
+
+    .back-button {
+        top: 20px;
+        left: 15px;
+    }
+
+    .container {
+        width: 95%; /* Ensure the container takes up most of the width */
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Smaller font size on smaller screens */
+    }
+
+    .content {
+        font-size: 0.9rem; /* Slightly smaller font size for smaller screens */
+    }
+
+    .section-title {
+        font-size: 1.2rem; /* Slightly smaller section title */
+    }
+
+    .contact-info {
+        font-size: 0.9rem; /* Slightly smaller contact info */
+    }
+}
+
+@media (max-width: 480px) {
+    .back-button {
+        top: 10px;
+        left: 10px;
+        width: 30px; /* Make the back button smaller on mobile */
+        height: 30px;
+    }
+
+    .container {
+        width: 100%; /* Make the container full-width on small screens */
+        padding: 10px; /* Even smaller padding */
+    }
+
+    h1 {
+        font-size: 1.3rem; /* Even smaller font size */
+    }
+
+    .content {
+        font-size: 0.8rem; /* Make text a bit smaller for very small screens */
+    }
+
+    .section-title {
+        font-size: 1rem; /* Adjust section title */
+    }
+
+    .contact-info {
+        font-size: 0.8rem; /* Adjust contact info */
+    }
 }
