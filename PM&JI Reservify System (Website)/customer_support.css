@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+a, a:hover {
+    text-decoration: none;
+}
+
+/* Navigation Bar Styling */
+nav {
+    background: #fac08d;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+nav .logo {
+    flex: 1;
+}
+
+nav .logo a {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+}
+
+nav .logo-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-left: 10px;
+}
+
+nav .logo img {
+    width: 80px;
+    margin-right: 10px;
+}
+
+nav .menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav .menu li {
+    padding: 15px 10px;
+    font-size: 16px;
+}
+
+nav .menu li a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s;
+}
+
+nav .menu li a:hover {
+    color: white;
+}
+
+/* User Logo Styles */
+.user-logo img {
+    width: 55px;
+    height: 55px;
+    margin-left: 10px;
+}
+
+.menu li.user-logo {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu li.user-logo img {
+    vertical-align: middle;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.menu li.user-logo img:hover {
+    filter: brightness(0) invert(1);
+}
+
+/* Toggle button styles */
+nav .toggle {
+    font-size: 30px;
+    display: none;
+}
+
+/* Responsive Navigation */
+@media screen and (max-width: 600px) {
+    nav .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #fac08d;
+        width: 100%;
+    }
+
+    nav .menu.active {
+        display: flex;
+    }
+
+    nav .toggle {
+        display: block;
+    }
+}
+
+/* Connect with Us Section */
+.connect-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+.connect-container h1 {
+    font-size: 35px;
+    font-weight: 600;
+    margin-left: 625px;
+    margin-top: 15px;
+}
+
+.back-button {
+    position: absolute;
+    top: 95px;
+    left: 70px; /* Move to the left */
+    cursor: pointer;
+    width: 65px;
+    height: 70px;
+}
+
+/* Chat Form Styling */
+.chat-container {
+    background-color: #fac08d;
+    padding: 30px;
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.chat-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.chat-container p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: black;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.chat-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chat-container input, .chat-container select {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.form-group {
+    display: flex;
+    gap: 10px;
+    width: 90%;
+}
+
+.chat-container button {
+    padding: 10px 30px;
+    background-color: #f4a36c;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s;
+}
+
+.chat-container button:hover {
+    background-color: #e2935b;
+}
+
+.chat-container .disclaimer {
+    margin-top: 30px;
+    font-size: 14px;
+    color: black;
+    line-height: 1.5;
+    text-align: justify;
+}
