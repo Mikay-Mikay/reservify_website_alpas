@@ -1,0 +1,366 @@
+/* Importing Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #f4a36c !important;
+}
+
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.container .title {
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+}
+
+.container .title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 30px;
+  border-radius: 5px;
+  background: #f4a36c;
+}
+
+.content form .user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+
+form .user-details .input-box {
+  margin-bottom: 15px;
+  width: calc(50% - 10px); /* Adjusts for spacing between inputs */
+}
+
+form .user-details .input-box span.details {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.user-details .input-box input {
+  height: 45px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.user-details .input-box input:focus,
+.user-details .input-box input:valid {
+  border-color: #ccc;
+}
+
+/* Styles for dropdown (select) with custom arrow */
+.user-details .input-box select {
+  height: 45px; /* Match the height of the input box */
+  width: 100%; /* Full width */
+  outline: none; /* Remove the default focus outline */
+  font-size: 16px; /* Match the font size of the input box */
+  border-radius: 5px; /* Rounded corners like the input box */
+  padding-left: 15px; /* Padding for text alignment */
+  padding-right: 40px; /* Space for the dropdown arrow */
+  border: 1px solid #ccc; /* Match the input box border */
+  border-bottom-width: 2px; /* Slightly thicker bottom border */
+  transition: all 0.3s ease; /* Smooth transition for hover/focus effects */
+  background: #fff url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239b59b6"%3E%3Cpath d="M7 10l5 5 5-5z"%3E%3C/path%3E%3C/svg%3E') no-repeat right 10px center;
+  background-size: 16px; /* Size of the dropdown arrow */
+  appearance: none; /* Remove the default dropdown arrow (optional) */
+  cursor: pointer;
+}
+
+.user-details .input-box select:focus {
+  border-color: #ccc; /* Match the input focus color */
+}
+
+form .gender-details .gender-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+form .category {
+  display: flex;
+  width: 100%;
+  margin: 14px 0;
+  justify-content: space-between;
+}
+
+form .category label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+form .category label .dot {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background: #d9d9d9;
+  border: 5px solid transparent;
+  transition: all 0.3s ease;
+}
+
+#dot-1:checked~.category label .one,
+#dot-2:checked~.category label .two,
+#dot-3:checked~.category label .three {
+  background: #f4a36c;
+  border-color: #d9d9d9;
+}
+
+form input[type="radio"] {
+  display: none;
+}
+
+form .button {
+  height: 45px;
+  margin: 35px 0;
+}
+
+form .button input {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f4a36c;
+}
+
+form .button input:hover {
+  background: #f19054;
+}
+.checkbox-container {
+  display: flex; /* Enables flexbox */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically (if needed) */
+  text-align: center; /* Centers the text inside the container */
+  margin: 0 auto; /* Removes margin and centers the container */
+}
+.input-box {
+  position: relative;
+  width: 300px; /* Adjust based on your design */
+}
+
+.input-box input {
+  width: 100%;
+  padding-right: 40px; /* Reserve space for the eye icon */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 63%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px; /* Adjust size */
+}
+
+.toggle-password i {
+  color: #888;
+}
+
+.toggle-password i:hover {
+  color: #000;
+}
+
+/* Responsive design for small devices */
+@media(max-width: 584px) {
+  .container {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  form .user-details .input-box {
+    width: 100%;
+  }
+
+  .content form .user-details {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .user-details::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .user-details::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+
+  .gender-title {
+    font-size: 18px;
+  }
+
+  form .category {
+    flex-direction: column;
+  }
+}
+
+/* Additional adjustments for very small devices */
+@media(max-width: 459px) {
+  .container .title {
+    font-size: 22px;
+  }
+
+  form .user-details .input-box input,
+  form .user-details .input-box select {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  form .button input {
+    font-size: 16px;
+  }
+}
+.checkbox-container {
+  display: flex;
+  align-items: baseline; /* Aligns the checkbox with the first line of text */
+}
+
+.checkbox-container input {
+  margin-right: 8px; /* Adds space between checkbox and the text */
+}
+
+.checkbox-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.checkbox-container a:hover {
+  text-decoration: underline;
+}
+/* Laptop screen styling (from 1024px to 1366px) */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  /* Adjust container size */
+  .container {
+    max-width: 80%; /* Limit container width */
+    padding: 20px; /* Adjust padding */
+    height: auto; /* Allow container to adjust height */
+    max-height: 700px; /* Limit max height */
+    margin: 0 auto; /* Center the container */
+  }
+
+  /* Adjust form input height */
+  form .user-details .input-box input,
+  form .user-details .input-box select {
+    height: 40px; /* Shorter input fields */
+    font-size: 16px; /* Adjust font size */
+    margin-bottom: 12px; /* Space between fields */
+  }
+
+  /* Adjust button height */
+  form .button input {
+    height: 40px; /* Shorten button height */
+    font-size: 16px; /* Adjust font size */
+    padding: 0 15px; /* Adjust padding for button */
+  }
+
+  /* Adjust spacing between form sections */
+  .content form .user-details {
+    margin-bottom: 20px; /* Reduced space between sections */
+  }
+
+  /* Adjust checkbox container */
+  .checkbox-container {
+    font-size: 16px; /* Adjust font size */
+    margin-top: 10px; /* Reduce space above the checkbox */
+  }
+
+  /* Adjust gender title */
+  .gender-title {
+    font-size: 18px; /* Smaller font size for gender title */
+
+  }
+
+  /* Adjust title size */
+  .container .title {
+    font-size: 24px; /* Adjust font size for title */
+    margin-bottom: 12px; /* Reduce space below title */
+  }
+
+  /* Adjust form category (radio buttons) */
+  form .category {
+    margin-top: 10px; /* Reduced space between categories */
+    flex-direction: row; /* Keep categories in row */
+  }
+
+  /* Reduce padding for form */
+  form .user-details {
+    padding: 10px 0; /* Reduced padding */
+  }
+
+  /* Adjust button margin */
+  form .button {
+    margin-top: 15px; /* Reduce margin above button */
+  }
+
+  /* Remove scroll from form */
+  .content form .user-details {
+    max-height: none; /* Allow the section to expand fully */
+    overflow: visible; /* Make sure the section is visible */
+  }
+
+  /* Ensure the entire page becomes scrollable */
+  body, html {
+    overflow-y: auto; /* Allow vertical scrolling for the entire page */
+    height: 100%; /* Ensure full height of the body */
+    margin: 0; /* Remove default margin */
+  }
+
+  /* Make the whole page scrollable */
+  .container {
+    max-height: none; /* Allow container to expand naturally */
+  }
+
+  /* Ensure content area is scrollable if the page overflows */
+  .content {
+    overflow-y: auto;
+  }
+
+  /* Optional: Limit form height if needed */
+  form {
+    display: block;
+    max-height: 80vh; /* Limit form height */
+    overflow-y: auto; /* Scroll if content exceeds form height */
+    padding-right: 10px; /* Ensure no extra space for the scrollbar */
+  }
+
+  /* Make checkbox container behave better */
+  .checkbox-container {
+    margin-top: 20px; /* Space for checkbox area */
+  }
+}
