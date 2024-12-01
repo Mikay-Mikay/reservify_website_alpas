@@ -25,7 +25,9 @@
             <li><a href="portfolio.php">Portfolio</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
             <li><a href="Sign up.php">Log In</a></li>
-            <i class="fa fa-user"></i>  
+           <li class="user-logo">
+                <img src="images/user_logo.png" alt="User Logo">
+            </li> 
         </ul>
     </nav>
 
