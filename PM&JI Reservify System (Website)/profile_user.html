@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="profile_user.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <a href="#">
+                <img src="images/reservify_logo.png" alt="PM&JI logo">
+                <span class="logo-text">PM&JI<br>Reservify</span>
+            </a>
+        </div>
+        <div class="toggle">
+            <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
+        </div>
+        <ul class="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Log Out</a></li>
+            <li class="user-logo">
+                <img src="images/user_logo.png" alt="User Logo">
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Profile Header Outside the Container -->
+    <div class="profile-header">
+        <h1>Profile</h1>
+    </div>
+
+    <!-- Profile Section Container -->
+    <div class="profile-container">
+        <form action="save_profile.php" method="POST">
+            <div class="profile-info">
+                <div class="profile-row">
+                    <label for="dob"><img src="images/dob.png" alt="Date of Birth Icon"> Date of Birth:</label>
+                    <input type="text" id="dob" name="dob" value="01/01/98" placeholder="MM/DD/YY">
+                </div>
+                <div class="profile-row">
+                    <label for="country"><img src="images/country_region.png" alt="Country/Region Icon"> Country/Region:</label>
+                    <input type="text" id="country" name="country" value="Philippines">
+                </div>
+                <div class="profile-row">
+                    <label for="display_name"><img src="images/profile_user_icon.png" alt="Display Name Icon"> Display Name:</label>
+                    <input type="text" id="display_name" name="display_name" value="DelaCruz Juan">
+                </div>
+                <div class="profile-row">
+                    <label for="gender"><img src="images/gender.png" alt="Gender Icon"> Gender:</label>
+                    <input type="text" id="gender" name="gender" value="Male">
+                </div>
+                <div class="profile-row">
+                    <label for="tel"><img src="images/tel.png" alt="Phone Icon"> Tel#:</label>
+                    <input type="text" id="tel" name="tel" value="09123456789">
+                </div>
+                <div class="profile-row">
+                    <label for="email"><img src="images/email.png" alt="Email Icon"> Email:</label>
+                    <input type="email" id="email" name="email" value="JuanDelaCruz@gmail.com">
+                </div>
+            </div>
+            <div class="profile-footer">
+                <button type="button" class="btn-edit-password">Edit Password</button>
+                <button type="button" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-save">Save</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
