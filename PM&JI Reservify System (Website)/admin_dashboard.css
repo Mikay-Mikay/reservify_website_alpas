@@ -1,0 +1,126 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+}
+
+.admin-dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #56aeff;
+    width: 20%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between the logo and text */
+}
+
+.logo img {
+    max-width: 30%; /* Adjust the size of the logo */
+    margin: 0;
+}
+
+.logo p {
+    font-size: 18px; /* Adjust font size as needed */
+    font-weight: bold;
+    color: #ffffff; /* Text color matches the sidebar */
+    margin: 0;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.sidebar nav ul li img {
+    max-height: 40px;
+    margin-right: 10px;
+}
+
+.sidebar .click-here {
+    max-height: 25px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+header img {
+    max-height: 40px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.dashboard-item {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Reduces spacing between the icon and text */
+    font-size: 18px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.dashboard-item img {
+    max-height: 20px; /* Adjusts the icon size */
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: #56aeff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    max-height: 50px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.card h2 {
+    font-size: 24px;
+    margin: 10px 0 0;
+}
