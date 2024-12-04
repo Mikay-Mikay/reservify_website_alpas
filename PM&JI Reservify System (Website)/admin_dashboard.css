@@ -19,18 +19,18 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px; /* Adds spacing between the logo and text */
+    gap: 10px;
 }
 
 .logo img {
-    max-width: 30%; /* Adjust the size of the logo */
+    max-width: 30%;
     margin: 0;
 }
 
 .logo p {
-    font-size: 18px; /* Adjust font size as needed */
+    font-size: 18px;
     font-weight: bold;
-    color: #ffffff; /* Text color matches the sidebar */
+    color: #ffffff;
     margin: 0;
 }
 
@@ -45,17 +45,36 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    margin-top: 20px;
     font-size: 18px;
     cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
 .sidebar nav ul li img {
-    max-height: 40px;
-    margin-right: 10px;
+    max-height: 35px;
+    margin-left: 5px;
+    transition: transform 0.3s ease; /* Smooth icon scaling */
 }
 
-.sidebar .click-here {
-    max-height: 25px;
+/* Hover Effect */
+.sidebar nav ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 5px; /* Smooth corners for hover effect */
+    transform: scale(1.03); /* Slight zoom effect on hover */
+}
+
+.sidebar nav ul li:hover img {
+    transform: scale(1.1); /* Slight zoom effect for icons */
+}
+
+/* Divider styling */
+.divider {
+    border: 0;
+    border-top: 2px solid white;
+    margin: 10px 0;
 }
 
 .content {
@@ -82,20 +101,6 @@ header img {
     cursor: pointer;
 }
 
-.dashboard-item {
-    display: flex;
-    align-items: center;
-    gap: 5px; /* Reduces spacing between the icon and text */
-    font-size: 18px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    color: #ffffff;
-}
-
-.dashboard-item img {
-    max-height: 20px; /* Adjusts the icon size */
-}
-
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -104,23 +109,25 @@ header img {
 
 .card {
     background-color: #56aeff;
-    padding: 20px;
+    padding: 40px;
+    padding-bottom: 60px;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card img {
-    max-height: 50px;
+    max-height: 90px;
     margin-bottom: 10px;
+    margin-top: 30px;
 }
 
 .card p {
-    font-size: 14px;
-    margin: 5px 0;
+    font-size: 20px;
+    margin: 1px 0;
 }
 
 .card h2 {
-    font-size: 24px;
-    margin: 10px 0 0;
+    font-size: 60px;
+    margin: 20px 0 0;
 }
