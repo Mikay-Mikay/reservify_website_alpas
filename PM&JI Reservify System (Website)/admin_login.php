@@ -1,5 +1,5 @@
 <?php
-require 'database.php'; // Include the database connection file
+require 'databasee.php'; // Include the database connection file
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $admin_id = $_POST['admin_id'];
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button type="submit" class="login-button">Login</button>
         </form>
-        <a href="#" class="forgot-password">Forgot Password?</a>
+        <a href="admin_forgotpass.html" class="forgot-password">Forgot Password?</a>
     </div>
 
     <!-- JavaScript for password toggle -->
