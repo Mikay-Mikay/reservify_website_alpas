@@ -1,13 +1,14 @@
 <?php
 $error_message = ""; // Initialize the error message variable
 
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require_once "database.php";
 
     // Retrieve form data
-    $Email = $_POST['Email'];
-    $Password = $_POST['newPassword']; // Use the correct field name for newPassword
-    $Confirm_Password = $_POST['confirmPassword'];
+    $Email = $_POST['Email']; // Get the email from the form
+    $Password = $_POST['newPassword']; // New password
+    $Confirm_Password = $_POST['confirmPassword']; // Confirm password
 
     // Check if the new passwords match
     if ($Password !== $Confirm_Password) {
@@ -16,25 +17,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Hash the new password
         $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
 
-        // Update the password in the database
-        $sql = "UPDATE test_registration SET Password = ? WHERE Email = ?";
-        $stmt = mysqli_stmt_init($conn);
+        // Check if the email exists in the database
+        $sqlCheck = "SELECT * FROM test_registration WHERE Email = ?";
+        $stmtCheck = mysqli_stmt_init($conn);
 
-        if (mysqli_stmt_prepare($stmt, $sql)) {
-            // Bind parameters and execute
-            mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $Email);
-            if (mysqli_stmt_execute($stmt)) {
-                // Show alert and redirect to login.php
-                echo "<script>
-                        alert('The password has been changed successfully.');
-                        window.location.href = 'login.php';
-                      </script>";
-                exit(); // Ensure no further code is executed
+        if (mysqli_stmt_prepare($stmtCheck, $sqlCheck)) {
+            // Bind and execute the query
+            mysqli_stmt_bind_param($stmtCheck, "s", $Email);
+            mysqli_stmt_execute($stmtCheck);
+            $result = mysqli_stmt_get_result($stmtCheck);
+
+            // Debugging: Check if the email exists in the database
+            if (mysqli_num_rows($result) == 0) {
+                $error_message = "No user found with this email.";
             } else {
-                $error_message = "Error updating password. Please try again later.";
+                // Update the password in the database
+                $sql = "UPDATE test_registration SET Password = ? WHERE Email = ?";
+                $stmt = mysqli_stmt_init($conn);
+
+                if (mysqli_stmt_prepare($stmt, $sql)) {
+                    // Bind parameters and execute
+                    mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $Email);
+                    if (mysqli_stmt_execute($stmt)) {
+                        // Success - Redirect to login page
+                        echo "<script>
+                                alert('The password has been changed successfully.');
+                                window.location.href = 'login.php';
+                              </script>";
+                        exit(); // Ensure no further code is executed
+                    } else {
+                        $error_message = "Error updating password. Please try again later.";
+                    }
+                } else {
+                    $error_message = "Error processing the request. Please try again later.";
+                }
             }
         } else {
-            $error_message = "Error processing the request. Please try again later.";
+            $error_message = "Error checking email. Please try again later.";
         }
     }
 }
@@ -51,12 +70,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <form action="" method="POST" id="resetPasswordForm">
         <h1>Reset Password</h1>
-        <div class="input-box">
-            <input type="email" name="Email" placeholder="Enter your email" value="<?php echo htmlspecialchars($_GET['email']); ?>" readonly>
-        </div>
 
         <div class="text">
-            <p>Enter your new password.</p>
+            <p>Enter your email and new password.</p>
+        </div>
+
+        <!-- Manual Email input -->
+        <div class="input-box">
+            <input type="email" name="Email" placeholder="Enter your email" required>
         </div>
 
         <div class="input-box">
