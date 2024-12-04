@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check if user exists
         if ($user) {
             // Email found, redirect to newpassword.php
-            header("Location: newpassword.php?email=" . urlencode($Email));
+            header("Location: newpassword.php?email=" . urlencode($Email));;
             exit();  // Make sure to stop the script after the redirection
         } else {
             // Email not found, show error message
