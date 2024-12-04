@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Forgot Password</title>
+    <link rel="stylesheet" href="admin_newpass.css">
+</head>
+<body>
+    <div class="new-password-container">
+        <div class="new-password-box">
+            <h2>PM&JI Admin</h2>
+            <h3>Forgot Password</h3>
+            <p>Enter your new password and confirm password.</p>
+            <form>
+                <div class="input-container">
+                    <input type="password" id="new-password" placeholder="New Password:" required>
+                    <img src="images/password_hide.png.png" alt="Hide" class="eye-icon" id="toggle-new-password">
+                </div>
+                <div class="input-container">
+                    <input type="password" id="confirm-password" placeholder="Retype New Password:" required>
+                    <img src="images/password_hide.png.png" alt="Hide" class="eye-icon" id="toggle-confirm-password">
+                </div>
+
+                <button type="submit" class="confirm-btn">Confirm Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle visibility for new password field
+        const toggleNewPassword = document.getElementById('toggle-new-password');
+        const newPasswordInput = document.getElementById('new-password');
+        toggleNewPassword.addEventListener('click', function() {
+            if (newPasswordInput.type === 'password') {
+                newPasswordInput.type = 'text';
+                toggleNewPassword.src = 'images/password_unhide.png.png';  // Change to unhide icon
+            } else {
+                newPasswordInput.type = 'password';
+                toggleNewPassword.src = 'images/password_hide.png.png';  // Change to hide icon
+            }
+        });
+
+        // Toggle visibility for confirm password field
+        const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        toggleConfirmPassword.addEventListener('click', function() {
+            if (confirmPasswordInput.type === 'password') {
+                confirmPasswordInput.type = 'text';
+                toggleConfirmPassword.src = 'images/password_unhide.png.png';  // Change to unhide icon
+            } else {
+                confirmPasswordInput.type = 'password';
+                toggleConfirmPassword.src = 'images/password_hide.png.png';  // Change to hide icon
+            }
+        });
+    </script>
+</body>
+</html>

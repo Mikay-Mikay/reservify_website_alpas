@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Forgot Password</title>
+    <link rel="stylesheet" href="admin_forgotpass.css">
+</head>
+<body>
+    <div class="forgot-password-container">
+        <div class="forgot-password-box">
+            <h2>PM&JI Admin</h2>
+            <h3>Forgot Password</h3>
+            <p>Enter your ID to reset your password.</p>
+            <form id="forgotPasswordForm">
+                <input type="text" id="id" placeholder="ID:" required>
+                <button type="submit" class="next-btn">Next</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to navigate to admin_newpass.html upon form submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent form from submitting normally
+            window.location.href = 'admin_newpass.html';  // Navigate to admin_newpass.html
+        });
+    </script>
+</body>
+</html>

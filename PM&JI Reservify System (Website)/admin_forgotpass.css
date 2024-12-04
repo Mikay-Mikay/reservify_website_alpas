@@ -1,0 +1,83 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #56aeff; /* Background color as specified */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for the entire form box */
+.forgot-password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Box where the form resides */
+.forgot-password-box {
+    background-color: #ffffff;
+    padding: 50px 50px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 400px;
+}
+
+/* Title styles */
+.forgot-password-box h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 1px;
+    color: #000000; /* Black color as requested */
+}
+
+.forgot-password-box h3 {
+    font-size: 20px;
+    color: #000000; /* Black color as requested */
+    margin-bottom: 25px;
+}
+
+.forgot-password-box p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 30px;
+    font-weight: normal; /* Not bold as requested */
+}
+
+/* Form elements styling */
+.forgot-password-box input {
+    width: 100%;
+    padding: 12px 20px;
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #94e1ff; /* Textbox color as specified */
+}
+
+/* Next button styling */
+.next-btn {
+    background-color: #56aeff; /* Button color as specified */
+    color: white; /* White font for the button */
+    font-weight: bold;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.next-btn:hover {
+    background-color: #4694cf;
+}
