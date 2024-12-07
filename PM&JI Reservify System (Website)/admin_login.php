@@ -26,11 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Redirect based on role
             if ($role === 'Owner') {
-                header("Location: admin_dashboard.html");
+                header("Location: admin_dashboard.php");
             } elseif ($role === 'Co-Owner') {
-                header("Location: admin_dashboard.html");
+                header("Location: admin_dashboard.php");
             } elseif ($role === 'Customer Support') {
-                header("Location: admin_dashboard.html");
+                header("Location: admin_dashboard.php");
             } else {
                 echo "<script>alert('Unauthorized access!');</script>";
             }
