@@ -1,0 +1,207 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+}
+
+.admin-dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 20%;
+    background-color: #56aeff;
+    color: white;
+    height: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    max-width: 30%;
+    margin: 0;
+}
+
+.logo p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.sidebar nav ul li img {
+    max-height: 35px;
+    margin-left: 5px;
+    transition: transform 0.3s ease; /* Smooth icon scaling */
+}
+
+.sidebar nav ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 5px; /* Smooth corners for hover effect */
+    transform: scale(1.03); /* Slight zoom effect on hover */
+}
+
+.sidebar nav ul li:hover img {
+    transform: scale(1.1); /* Slight zoom effect for icons */
+}
+
+/* Divider */
+.divider {
+    border: 0;
+    border-top: 2px solid white;
+    margin: 10px 0;
+}
+
+/* Main Content Styles */
+main.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-right img {
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+/* Dropdown Styles */
+.profile-container {
+    position: relative;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #56aeff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: none;
+    min-width: 200px;
+    z-index: 10;
+}
+
+.dropdown.show {
+    display: block;
+}
+
+.dropdown-header {
+    font-weight: bold;
+    margin: 10px;
+}
+
+.dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown ul li {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.dropdown ul li:hover {
+    background-color: #f4f4f9;
+}
+
+.dropdown a.logout {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.dropdown .logout:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+} 
+
+/* Activity Log Section */
+.activity-log h2 {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.activity-card {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.activity-card p {
+    margin: 5px 0;
+    margin-left: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: black;
+}
+
+.back-button img {
+    max-width: 5%;
+    height: auto;
+    margin-left: 3px;
+}
+
+.activity-card p strong {
+    color: #333;
+}
