@@ -108,7 +108,7 @@ if (isset($_GET['logout'])) {
                             <hr>
                             <ul>
                                 <li><a href="admin_profile.php">Profile</a></li>
-                                <li><a href="activity_log.php">Activity Log</a></li>
+                                <li><a href="admin_activitylog.php">Activity Log</a></li>
                             </ul>
                             <hr>
                             <a class="logout" href="?logout">Logout</a>
