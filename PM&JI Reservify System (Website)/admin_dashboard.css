@@ -84,6 +84,12 @@ body {
     background-color: #f9f9f9;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between notification and profile icons */
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -98,7 +104,6 @@ header h1 {
 
 header img {
     max-height: 40px;
-    margin-right: 60px;
     cursor: pointer;
 }
 
@@ -110,7 +115,6 @@ header img {
 .profile-icon {
     width: 40px;
     height: 40px;
-    margin-left: 80px;
     border-radius: 50%;
     cursor: pointer;
 }
