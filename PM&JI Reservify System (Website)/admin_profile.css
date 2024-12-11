@@ -83,11 +83,18 @@ body {
     background-color: #f9f9f9;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between notification and profile icons */
+}
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    gap: 20px;
 }
 
 header h1 {
@@ -95,8 +102,14 @@ header h1 {
     color: rgba(0, 0, 0, 0.7);
 }
 
+header img {
+    max-height: 40px;
+    cursor: pointer;
+}
+
 .profile-container {
     position: relative;
+    display: inline-block;
 }
 
 .profile-icon {
@@ -104,6 +117,7 @@ header h1 {
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
+    gap: 20px;
 }
 
 /* Additional styles to meet requirements */
@@ -134,7 +148,7 @@ header h1 {
     color: black; /* Text remains black */
     margin-left: 20px;
 }
-
+ 
 .dropdown {
     position: absolute;
     top: 50px;
@@ -151,14 +165,33 @@ header h1 {
     display: block;
 }
 
+.dropdown-header {
+    font-weight: bold;
+    padding: 10px 15px;
+    margin-left: 35px;
+}
+
 .dropdown ul {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
 .dropdown ul li {
     padding: 10px 15px;
+}
+
+.dropdown ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.dropdown ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 2px; /* Smooth corners for hover effect */
+    transform: scale(1.03);
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease;
 }
 
 .logout {
