@@ -36,16 +36,17 @@ if (isset($_GET['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin PM&JI Reservify</title>
+    <title>Admin Profile</title>
     <link rel="stylesheet" href="admin_profile.css?v=1.0">
     <link rel="stylesheet" href="admin_dashboard.css">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
 </head>
 <body>
     <div class="admin-dashboard">
         <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, Admin!</p>
+                <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
             </div>
             <nav>
                 <ul>
