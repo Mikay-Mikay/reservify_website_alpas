@@ -107,9 +107,11 @@ header img {
     cursor: pointer;
 }
 
+/* Profile Dropdown */
 .profile-container {
     position: relative;
     display: inline-block;
+    z-index: 20; /* Higher than the notification dropdown */
 }
 
 .profile-icon {
@@ -119,10 +121,28 @@ header img {
     cursor: pointer;
 }
 
+#profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #56aeff;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 20; /* Ensure it is above the notification dropdown */
+    padding: 15px;
+}
+
+#profile-dropdown.show {
+    display: block;
+}
+
 /* Notification Dropdown */
 .notification-container {
     position: relative;
     display: inline-block;
+    z-index: 10; /* Lower z-index to move it behind the profile container */
 }
 
 .notification-dropdown {
@@ -136,7 +156,7 @@ header img {
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth dropdown animation */
-    z-index: 100;
+    z-index: 10; /* Ensure it doesn't block the profile dropdown */
     padding: 15px;
 }
 
@@ -148,8 +168,9 @@ header img {
 .notification-dropdown h2 {
     font-size: 18px;
     font-weight: bold;
+    text-align: center;
     margin-bottom: 15px;
-    color: #333;
+    color: black;
     border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
 }
@@ -168,7 +189,7 @@ header img {
 .notification p {
     margin: 0;
     font-size: 14px;
-    color: #555;
+    color: black;
 }
 
 .notification span {
