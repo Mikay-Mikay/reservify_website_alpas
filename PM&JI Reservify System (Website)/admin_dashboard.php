@@ -17,11 +17,12 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css">
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
 </head>
 <body>
-    <div class="admin-dashboard">
+<div class="admin-dashboard">
         <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
@@ -39,38 +40,52 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        Booking Status
+                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Booking Status</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                     <li>
                         Payments
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_payments.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                     <li>
                         Booking History
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_bookinghistory.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                     <li>
                         Manage Feedback
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_managefeedback.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                 </ul>
                 <hr class="divider">
                 <ul>
                     <li>
                         Calendar
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_calendar.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                     <li>
                         Progress
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_managefeedback.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                 </ul>
                 <hr class="divider">
                 <ul>
                     <li>
                         Manage Inquiries
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        <a href="admin_managefeedback.php">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
                     </li>
                 </ul>
             </nav>
