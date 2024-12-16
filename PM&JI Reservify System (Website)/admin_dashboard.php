@@ -46,8 +46,8 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li>
-                        Payments
-                        <a href="admin_payments.php">
+                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Payments</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
