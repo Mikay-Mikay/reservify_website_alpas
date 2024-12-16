@@ -129,13 +129,18 @@ header img {
     width: 200px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: none;
+    opacity: 0;
+    transform: translateY(-10px); /* Start slightly above its final position */
+    visibility: hidden; /* Ensures it's removed from screen readers and prevents interaction */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; /* Smooth fade and slide effect */
     z-index: 20; /* Ensure it is above the notification dropdown */
     padding: 15px;
 }
 
 #profile-dropdown.show {
-    display: block;
+    opacity: 1;
+    transform: translateY(0); /* Slide to its final position */
+    visibility: visible;
 }
 
 /* Notification Dropdown */
