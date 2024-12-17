@@ -28,12 +28,12 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookinghistory.css?v=1.1">
-    <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_activitylog.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
-    <link rel="stylesheet" href="admin_payments.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css">
+    <link rel="stylesheet" href="admin_bookinghistory.css">
+    <link rel="stylesheet" href="admin_profile.css">
+    <link rel="stylesheet" href="admin_activitylog.css">
+    <link rel="stylesheet" href="admin_bookingstatus.css">
+    <link rel="stylesheet" href="admin_payments.css">
 </head>
 <body>
 <div class="admin-dashboard">
@@ -106,21 +106,23 @@ if (isset($_GET['logout'])) {
         </aside>
 
     <!-- Main Content -->
-    <main class="content">
-        <header>
-        <!-- Header Section -->
-        <div class="header">
-            <div class="header-left">
-                <h1>Booking History</h1>
-                <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchTable()">
-            </div>
-            <div class="header-right">
-                <!-- Notification Bell -->
-        <div class="notification-container">
+<main class="content">
+<header>
+    <!-- Header Section -->
+    <div class="header">
+        <!-- Booking History Title -->
+        <h1>Booking History</h1>
+        <!-- Search Bar -->
+        <div class="search-bar-container">
+            <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchTable()">
+        </div>
+            <!-- Notification Bell and Profile -->
+        <div class="header-right">
+            <!-- Notification Bell -->
+            <div class="notification-container">
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                 <div id="notification-dropdown" class="notification-dropdown">
                     <h2>Notifications</h2>
-                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
                     <div class="notification">
                         <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
                         <span>3:30 PM, Nov 29, 2024</span>
@@ -154,7 +156,7 @@ if (isset($_GET['logout'])) {
                 </div>
             </div>
         </div>
-</header>
+    </header>
         <!-- Booking List -->
         <div class="booking-list">
             <?php foreach ($bookings as $booking): ?>
@@ -166,22 +168,7 @@ if (isset($_GET['logout'])) {
         </div>
     </main>
 </div>
-
 <script>
-    // Search Function
-function searchTable() {
-        const input = document.getElementById("searchBar").value.toUpperCase();
-        const table = document.querySelector("table tbody");
-        const rows = table.getElementsByTagName("tr");
-
-        for (let i = 0; i < rows.length; i++) {
-            const cell = rows[i].getElementsByTagName("td")[0];
-            if (cell) {
-                const textValue = cell.textContent || cell.innerText;
-                rows[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
-            }
-        }
-    }
     // Search Function
 function searchTable() {
         const input = document.getElementById("searchBar").value.toUpperCase();
