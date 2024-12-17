@@ -45,7 +45,7 @@ if (isset($_GET['logout'])) {
 </head>
 <body>
 <div class="admin-dashboard">
-        <aside class="sidebar">
+<aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
                 <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
@@ -74,29 +74,14 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li>
-                        Booking History
-                        <a href="admin_bookinghistory.php">
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Booking History</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        Manage Feedback
-                        <a href="admin_managefeedback.php">
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                </ul>
-                <hr class="divider">
-                <ul>
-                    <li>
-                        Calendar
-                        <a href="admin_calendar.php">
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        Progress
-                        <a href="admin_managefeedback.php">
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Feedback</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -104,14 +89,30 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        Manage Inquiries
-                        <a href="admin_managefeedback.php">
+                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Calendar</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Progress</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                 </ul>
             </nav>
         </aside>
+        
         <main class="content">
             <header>
                 <h1>Activity Log</h1>
