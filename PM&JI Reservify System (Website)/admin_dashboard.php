@@ -31,10 +31,10 @@ if (isset($_GET['logout'])) {
             <nav>
                 <ul>
                     <li class="dashboard-item">
-                        <div style="display: flex; align-items: center;">
-                            <img src="images/home.png.png" alt="Home Icon" style="margin-right: 8px;">
-                            <span style="margin-top: 4px;">Dashboard</span>
-                        </div>
+                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
+                            <img src="images/home.png.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                        </a>
                     </li>
                 </ul>
                 <hr class="divider">
@@ -52,29 +52,14 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li>
-                        Booking History
-                        <a href="admin_bookinghistory.php">
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Booking History</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        Manage Feedback
-                        <a href="admin_managefeedback.php">
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                </ul>
-                <hr class="divider">
-                <ul>
-                    <li>
-                        Calendar
-                        <a href="admin_calendar.php">
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        Progress
-                        <a href="admin_managefeedback.php">
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Feedback</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -82,8 +67,23 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        Manage Inquiries
-                        <a href="admin_managefeedback.php">
+                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Calendar</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Progress</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
