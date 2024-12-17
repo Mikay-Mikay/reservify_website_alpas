@@ -101,6 +101,7 @@ header h1 {
 .header-right {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .header-right img {
