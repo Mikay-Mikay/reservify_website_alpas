@@ -26,7 +26,7 @@ $sql = "
         r.number_of_participants, 
         r.contact_number, 
         r.date_and_schedule,
-        p.payment_id, 
+        r.image,
         p.payment_method
     FROM 
         test_registration tr
@@ -58,8 +58,8 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
         $number_of_participants = $data['number_of_participants'];
         $contact_number = $data['contact_number'];
         $date_and_schedule = $data['date_and_schedule'];
+        $image = $data['image'];
         $payment_method = $data['payment_method'];
-        $payment_id = $data['payment_id'];
     } else {
         echo "No booking summary available.";
         exit();
@@ -69,13 +69,29 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     exit();
 }
 
-// Check if form is submitted and redirect to the thank you page
+// Check if form is submitted and insert data into the booking_summary table
 if (isset($_POST['submit'])) {
-    // Process the reservation data here, if needed
+    // Insert the booking summary into the booking_summary table
+    $insert_sql = "
+        INSERT INTO booking_summary (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
+                                      number_of_participants, contact_number, date_and_schedule, image, payment_method)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ";
 
-    // After successful processing, redirect to the thank you page
-    header("Location: thankyoupage.php");
-    exit();
+    $stmt = mysqli_prepare($conn, $insert_sql);
+    mysqli_stmt_bind_param($stmt, "issssssissss", $user_id, $first_name, $middle_name, $last_name, $email, $event_type,
+                           $event_place, $number_of_participants, $contact_number, $date_and_schedule, $image, $payment_method);
+
+    if (mysqli_stmt_execute($stmt)) {
+        // Add JavaScript alert for success
+        echo "<script>alert('Your reservation request has been successfully submitted.');</script>";
+
+        // After successful processing, redirect to the thank you page
+        header("Location: thankyoupage.php");
+        exit();
+    } else {
+        echo "Error saving reservation: " . mysqli_error($conn);
+    }
 }
 ?>
 
@@ -143,14 +159,18 @@ if (isset($_POST['submit'])) {
                 <input type="text" value="<?php echo htmlspecialchars($date_and_schedule); ?>" disabled />
             </div>
             <div class="summary-item">
+                <label>Image:</label>
+                <?php 
+                if (!empty($image)) { ?>
+                    <img src="Images/<?php echo htmlspecialchars($image); ?>" alt="Uploaded Image" style="max-width: 100px; max-height: 100px;">
+                <?php } else { ?>
+                    <p>No image uploaded</p>
+                <?php } ?>
+            </div>
+            <div class="summary-item">
                 <label>Mode of Payment:</label>
                 <input type="text" value="<?php echo htmlspecialchars($payment_method); ?>" disabled />
             </div>
-            <div class="summary-item">
-                <label>Payment ID:</label>
-                <input type="text" value="<?php echo htmlspecialchars($payment_id); ?>" disabled />
-            </div>
-
             <div class="buttons">
                 <button type="submit" class="confirm-btn" name="submit">Confirm and Submit</button>
                 <button type="button" class="cancel-btn">Cancel</button>  
