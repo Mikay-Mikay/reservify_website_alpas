@@ -6,7 +6,7 @@ session_start();
 $errors = array();
 
 // Check if the user is logged in
-if (!isset($_SESSION['id'])) {  // Changed to 'id' since that's what you're using for user_id
+if (!isset($_SESSION['id'])) {
     die("You must be logged in to make a reservation.");
 }
 
@@ -15,18 +15,30 @@ $user_id = $_SESSION['id'];
 
 // Validate the submit button
 if (isset($_POST["submit"])) {
-    // Retrieve from inputs using null coalescing operator to avoid undefined key warnings
-    $event_type = $_POST["event_type"] ?? '';  // Correct variable for event_type
+    // Retrieve form inputs
+    $event_type = $_POST["event_type"] ?? '';  
     $event_place = $_POST["event_place"] ?? '';
     $number_of_participants = $_POST["number_of_participants"] ?? '';
     $contact_number = $_POST["contact_number"] ?? '';
     $date_and_schedule = $_POST["dob"] ?? '';
 
-    // Validation checks
-    if (
-        empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($date_and_schedule)
-    ) {
+    // Validate form data
+    if (empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($date_and_schedule)) {
         array_push($errors, "All fields are required.");
+    }
+
+    // Check if the file is uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $file_name = $_FILES['image']['name'];
+        $file_tmp = $_FILES['image']['tmp_name'];
+        $folder = 'Images/' . $file_name;
+
+        // Move the uploaded image to the designated folder
+        if (!move_uploaded_file($file_tmp, $folder)) {
+            array_push($errors, "File upload failed.");
+        }
+    } else {
+        array_push($errors, "Please upload an image.");
     }
 
     // Display errors or process the form
@@ -38,10 +50,10 @@ if (isset($_POST["submit"])) {
         // Database connection
         require_once "database.php";
 
-        // SQL query to insert reservation along with the user_id (now 'id')
-        $sql = "INSERT INTO reservation
-                (user_id, event_type, event_place, number_of_participants, contact_number, date_and_schedule) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        // SQL query to insert reservation and image file name
+        $sql = "INSERT INTO reservation 
+                (user_id, event_type, event_place, number_of_participants, contact_number, date_and_schedule, image) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         // Prepare and execute the statement
         $stmt = mysqli_stmt_init($conn);
@@ -51,7 +63,7 @@ if (isset($_POST["submit"])) {
         }
 
         // Bind the parameters to the prepared statement
-        mysqli_stmt_bind_param($stmt, "ssssss", $user_id, $event_type, $event_place, $number_of_participants, $contact_number, $date_and_schedule);
+        mysqli_stmt_bind_param($stmt, "sssssss", $user_id, $event_type, $event_place, $number_of_participants, $contact_number, $date_and_schedule, $file_name);
 
         if (mysqli_stmt_execute($stmt)) {
             // Get the last inserted ID (reservation_id)
@@ -72,7 +84,6 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
-
 
 
 <!DOCTYPE html>
@@ -119,7 +130,7 @@ if (isset($_POST["submit"])) {
     <div class="container">
         <div class="title">Registration</div>
         <div class="content">
-            <form action="reservation.php" method="POST">
+            <form action="reservation.php" method="POST" enctype="multipart/form-data">
                 <div class="user-details">
                     <!-- Dropdown for event type -->
                     <div class="input-box">
@@ -159,6 +170,7 @@ if (isset($_POST["submit"])) {
                         <label for="timedatePicker">Date and Schedule:</label>
                         <input type="text" id="timedatePicker" name="dob" placeholder="Select Date and Time" required>
                     </div>
+                    
                      <!-- Date Picker Script -->
               <script src="jquery.js"></script>
               <script src="jquery.datetimepicker.full.min.js"></script>
@@ -168,6 +180,40 @@ if (isset($_POST["submit"])) {
                 });
               </script>
             </div>
+            <!-- For uploading image -->
+        <div class="upload-container">
+            <h2>Upload Image</h2>
+            <p>Assist us in creating temporary a custom background for your selected image.</p>
+            <div class="form-group">
+                <input type="file" name="image" />
+            </div>
+        </div>
+
+        <style>
+            .upload-container {
+                display: flex; /* Enables flexbox layout */
+                flex-direction: column; /* Stacks the elements vertically */
+                align-items: center; /* Centers content horizontally */
+                text-align: center; /* Centers the heading text */
+                margin-top: 20px; /* Optional space from the top */
+            }
+
+            .form-group {
+                margin-top: 10px; /* Optional spacing between the heading and input */
+            }
+
+            .form-group input[type="file"] {
+                margin: 0 auto; /* Centers the file input */
+            }
+
+            /* Adding space between the upload section and the submit button */
+            .parent-container {
+                margin-top: 20px; /* Adds space between the submit button and the upload section */
+                text-align: center; /* Centers the button */
+            }
+        </style>
+
+
             <div class="parent-container">
             <input type="submit" name="submit" class="btn" value="Submit">
               </div>
@@ -284,14 +330,12 @@ if (isset($_POST["submit"])) {
         <span class="dot" onclick="currentSlide(16)"></span>
     </div>
     
-    <a href="customer_support.php" class="message-link">
+    <a href="connect_with_us.php" class="message-link">
     <div class="message-icon">
         <i class="fa fa-message"></i>
         <span>Connect with Us</span>
     </div>
 </a>
-
-
 
 </body>
 </html>
