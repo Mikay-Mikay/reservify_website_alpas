@@ -73,15 +73,21 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 if (isset($_POST['submit'])) {
     // Insert the booking summary into the booking_summary table
     $insert_sql = "
-        INSERT INTO booking_summary (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
-                                      number_of_participants, contact_number, date_and_schedule, image, payment_method)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO booking_summary 
+        (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
+        number_of_participants, contact_number, date_and_schedule, image, payment_method, reservation_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
 
+    // Prepare the SQL statement
     $stmt = mysqli_prepare($conn, $insert_sql);
-    mysqli_stmt_bind_param($stmt, "issssssissss", $user_id, $first_name, $middle_name, $last_name, $email, $event_type,
-                           $event_place, $number_of_participants, $contact_number, $date_and_schedule, $image, $payment_method);
 
+    // Bind the parameters (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
+    // number_of_participants, contact_number, date_and_schedule, image, payment_method, reservation_id)
+    mysqli_stmt_bind_param($stmt, "issssssissssi", $user_id, $first_name, $middle_name, $last_name, $email, $event_type,
+                           $event_place, $number_of_participants, $contact_number, $date_and_schedule, $image, $payment_method, $reservation_id);
+
+    // Execute the query
     if (mysqli_stmt_execute($stmt)) {
         // Add JavaScript alert for success
         echo "<script>alert('Your reservation request has been successfully submitted.');</script>";
