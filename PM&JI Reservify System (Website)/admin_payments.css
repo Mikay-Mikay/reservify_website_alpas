@@ -150,7 +150,7 @@ button.create {
 .profile-container {
     position: relative;
     display: inline-block;
-    z-index: 20;
+    z-index: 20; /* Higher than the notification dropdown */
 }
 
 .profile-icon {
@@ -164,19 +164,21 @@ button.create {
     position: absolute;
     top: 50px;
     right: 0;
-    background-color: #fff;
+    background-color: #56aeff;
     width: 200px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transform: translateY(-10px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-10px); /* Start slightly above its final position */
+    visibility: hidden; /* Ensures it's removed from screen readers and prevents interaction */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; /* Smooth fade and slide effect */
+    z-index: 20; /* Ensure it is above the notification dropdown */
+    padding: 15px;
 }
 
-.profile-container .show {
+#profile-dropdown.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0); /* Slide to its final position */
     visibility: visible;
 }
 
@@ -184,33 +186,27 @@ button.create {
 .notification-container {
     position: relative;
     display: inline-block;
-    z-index: 20; /* Ensure it's above other elements */
+    z-index: 10; /* Lower z-index to move it behind the profile container */
 }
 
-#notification-dropdown {
+.notification-dropdown {
     position: absolute;
     top: 50px;
-    right: 50%; /* Adjust alignment based on layout */
-    background-color: #fff;
-    width: 300px;
+    right: 0;
+    background-color: #ffffff;
+    width: 350px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transform: translateY(-10px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth dropdown animation */
+    z-index: 10; /* Ensure it doesn't block the profile dropdown */
+    padding: 15px;
 }
 
-.notification-container img {
-    cursor: pointer;
-    width: 40px; /* Adjust icon size */
-    height: 40px;
-}
-
-.notification-container .show {
+.notification-dropdown.show {
     opacity: 1;
     transform: translateY(0);
-    visibility: visible;
 }
 
 .notification-dropdown h2 {
@@ -265,9 +261,9 @@ button.create {
 
 .dropdown-header {
     font-weight: bold;
-    color: white;
     padding: 10px 15px;
     margin-left: 35px;
+    color: white;
 }
 
 .dropdown ul {
