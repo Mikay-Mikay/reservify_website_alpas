@@ -79,16 +79,6 @@ body {
     transform: scale(1.1); /* Slight zoom effect for icons */
 }
 
-.icon-container {
-    position: relative;
-    cursor: pointer;
-}
-
-.icon {
-    width: 24px;
-    height: 24px;
-}
-
 /* Booking List */
 .booking-list {
     display: flex;
@@ -109,8 +99,22 @@ body {
 }
 
 .booking-item:hover {
-    background-color: #eef6ff;
-    border-color: #56aeff;
+    background-color: #e6e6e6; /* Highlight effect on hover */
+}
+
+.click-icon {
+    width: 20px; /* Adjust size of the icon */
+    height: 20px;
+    margin-left: 10px; /* Space between text and icon */
+    transition: transform 0.3s ease;
+}
+
+.booking-item:hover .click-icon {
+    transform: scale(1.1); /* Slightly enlarge the icon on hover */
+}
+
+.show-details {
+    display: block; /* Show content dynamically */
 }
 
 /* Divider styling */
@@ -182,13 +186,12 @@ header img {
 .profile-container {
     position: relative;
     display: inline-block;
-    z-index: 20;
+    z-index: 20; /* Higher than the notification dropdown */
 }
 
 .profile-icon {
     width: 40px;
     height: 40px;
-    margin-right: 20px;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -197,19 +200,21 @@ header img {
     position: absolute;
     top: 50px;
     right: 0;
-    background-color: #fff;
+    background-color: #56aeff;
     width: 200px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transform: translateY(-10px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-10px); /* Start slightly above its final position */
+    visibility: hidden; /* Ensures it's removed from screen readers and prevents interaction */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; /* Smooth fade and slide effect */
+    z-index: 20; /* Ensure it is above the notification dropdown */
+    padding: 15px;
 }
 
-.profile-container .show {
+#profile-dropdown.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0); /* Slide to its final position */
     visibility: visible;
 }
 
@@ -217,34 +222,27 @@ header img {
 .notification-container {
     position: relative;
     display: inline-block;
-    z-index: 20; /* Ensure it's above other elements */
+    z-index: 10; /* Lower z-index to move it behind the profile container */
 }
 
-#notification-dropdown {
+.notification-dropdown {
     position: absolute;
     top: 50px;
-    right: 50%; /* Adjust alignment based on layout */
-    background-color: #fff;
-    width: 300px;
+    right: 0;
+    background-color: #ffffff;
+    width: 350px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transform: translateY(-10px);
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth dropdown animation */
+    z-index: 10; /* Ensure it doesn't block the profile dropdown */
+    padding: 15px;
 }
 
-.notification-container img {
-    cursor: pointer;
-    margin-left: 100px;
-    width: 40px; /* Adjust icon size */
-    height: 40px;
-}
-
-.notification-container .show {
+.notification-dropdown.show {
     opacity: 1;
     transform: translateY(0);
-    visibility: visible;
 }
 
 .notification-dropdown h2 {
@@ -299,9 +297,9 @@ header img {
 
 .dropdown-header {
     font-weight: bold;
-    color: white;
     padding: 10px 15px;
     margin-left: 35px;
+    color: white;
 }
 
 .dropdown ul {
@@ -333,11 +331,4 @@ header img {
     font-weight: bold;
     display: block;
     padding: 10px 15px;
-}
-
-.logout:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
-    border-radius: 2px; /* Smooth corners for hover effect */
-    transform: scale(1.03);
-    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease;
-}
+} 
