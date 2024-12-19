@@ -91,11 +91,11 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments - Admin Panel</title>
-    <link rel="stylesheet" href="admin_payments.css?v=1.1">
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
-    <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_activitylog.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_payments.css?">
+    <link rel="stylesheet" href="admin_dashboard.css">
+    <link rel="stylesheet" href="admin_profile.css?">
+    <link rel="stylesheet" href="admin_activitylog.css">
+    <link rel="stylesheet" href="admin_bookingstatus.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -152,7 +152,7 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Progress</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -161,7 +161,7 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -206,20 +206,20 @@ if (isset($_GET['logout'])) {
                     </div>
                 </div>
             </div>
-                        <!-- Profile Icon -->
-                        <div class="profile-container">
-                            <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                            <div id="profile-dropdown" class="dropdown">
-                                <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
-                                <hr>
-                                <ul>
-                                    <li><a href="admin_profile.php">Profile</a></li>
-                                    <li><a href="admin_activitylog.php">Activity Log</a></li>
-                                </ul>
-                                <hr>
-                                <a class="logout" href="?logout">Logout</a>
-                            </div>
-                        </div>
+            <!-- Profile Icon -->
+            <div class="profile-container">
+                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
+                <div id="profile-dropdown" class="dropdown">
+                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                    <hr>
+                    <ul>
+                        <li><a href="admin_profile.php">Profile</a></li>
+                        <li><a href="admin_activitylog.php">Activity Log</a></li>
+                    </ul>
+                    <hr>
+                    <a class="logout" href="?logout">Logout</a>
+                </div>
+            </div>
         </header>
         
 <!-- Table -->
