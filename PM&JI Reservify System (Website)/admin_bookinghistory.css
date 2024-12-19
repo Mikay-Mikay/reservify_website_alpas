@@ -117,6 +117,62 @@ body {
     display: block; /* Show content dynamically */
 }
 
+/* Modal Container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto; /* Center the content on the screen */
+    padding: 20px;
+    padding-bottom: 30px; /* Add padding to the bottom */
+    border: 2px solid #888;
+    width: 80%; /* Adjust to fit the screen */
+    max-width: 600px; /* Maximum width */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    text-align: left; /* Align content to the left */
+}
+/* Modal Header */
+.modal-header {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    justify-content: flex-start; /* Align items to the left */
+}
+
+/* Back Button (Image) */
+.close-btn {
+    width: 40px; /* Set width of the back button image */
+    height: 40px; /* Set height of the back button image */
+    margin-right: 5px; /* Space between the button and the title */
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+/* Modal Title */
+#modal-title {
+    font-size: 24px;
+    color: black;
+    margin: 0; /* Remove default margin */
+}
+
+/* Modal Text */
+#modal-content {
+    font-size: 16px;
+    color: black;
+    margin-top: 20px;
+    text-align: left;
+}
+
 /* Divider styling */
 .divider {
     border: 0;
