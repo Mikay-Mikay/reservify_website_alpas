@@ -3,17 +3,6 @@ session_start();
 // Assuming the admin's name is stored in the session after login
 $admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
 
-// Simulated booking history data
-$bookings = [
-    "PMJI-20241130-CUST001", "PMJI-20241130-CUST002", "PMJI-20241130-CUST003",
-    "PMJI-20241130-CUST004", "PMJI-20241130-CUST005", "PMJI-20241130-CUST006",
-    "PMJI-20241130-CUST007", "PMJI-20241130-CUST008", "PMJI-20241130-CUST009",
-    "PMJI-20241130-CUST010", "PMJI-20241130-CUST011", "PMJI-20241130-CUST012",
-    "PMJI-20241130-CUST013", "PMJI-20241130-CUST014", "PMJI-20241130-CUST015",
-    "PMJI-20241130-CUST016", "PMJI-20241130-CUST017", "PMJI-20241130-CUST018",
-    "PMJI-20241130-CUST019", "PMJI-20241130-CUST020"
-];
-
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -28,12 +17,11 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_dashboard.css">
-    <link rel="stylesheet" href="admin_bookinghistory.css">
-    <link rel="stylesheet" href="admin_profile.css">
-    <link rel="stylesheet" href="admin_activitylog.css">
-    <link rel="stylesheet" href="admin_bookingstatus.css">
-    <link rel="stylesheet" href="admin_payments.css">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookinghistory.css?v=1.1">
+    <link rel="stylesheet" href="admin_profile.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_payments.css?v=1.1">
 </head>
 <body>
 <div class="admin-dashboard">
@@ -87,7 +75,7 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Progress</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -96,7 +84,7 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -112,17 +100,17 @@ if (isset($_GET['logout'])) {
     <div class="header">
         <!-- Booking History Title -->
         <h1>Booking History</h1>
-        <!-- Search Bar -->
-        <div class="search-bar-container">
-            <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchTable()">
-        </div>
+            <div class="search-bar-container">
+                <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchBookings()">
+            </div>
             <!-- Notification Bell and Profile -->
         <div class="header-right">
             <!-- Notification Bell -->
-            <div class="notification-container">
+        <div class="notification-container">
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                 <div id="notification-dropdown" class="notification-dropdown">
                     <h2>Notifications</h2>
+                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
                     <div class="notification">
                         <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
                         <span>3:30 PM, Nov 29, 2024</span>
@@ -141,64 +129,381 @@ if (isset($_GET['logout'])) {
                     </div>
                 </div>
             </div>
-            <!-- Profile Icon -->
-            <div class="profile-container">
-                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
-                    <hr>
-                    <ul>
-                        <li><a href="admin_profile.php">Profile</a></li>
-                        <li><a href="admin_activitylog.php">Activity Log</a></li>
-                    </ul>
-                    <hr>
-                    <a class="logout" href="?logout">Logout</a>
-                </div>
-            </div>
+                        <!-- Profile Icon -->
+                        <div class="profile-container">
+                            <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
+                            <div id="profile-dropdown" class="dropdown">
+                                <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                                <hr>
+                                <ul>
+                                    <li><a href="admin_profile.php">Profile</a></li>
+                                    <li><a href="admin_activitylog.php">Activity Log</a></li>
+                                </ul>
+                                <hr>
+                                <a class="logout" href="?logout">Logout</a>
+                            </div>
+                        </div>
         </div>
     </header>
         <!-- Booking List -->
         <div class="booking-list">
-            <?php foreach ($bookings as $booking): ?>
-                <div class="booking-item">
-                    <span><?php echo htmlspecialchars($booking); ?></span>
-                    <img src="images/click_here_black.png.png" alt="Arrow" width="20">
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST001')">
+                    PMJI-20241130-CUST001
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
                 </div>
-            <?php endforeach; ?>
-        </div>
-    </main>
-</div>
-<script>
-    // Search Function
-function searchTable() {
-        const input = document.getElementById("searchBar").value.toUpperCase();
-        const table = document.querySelector("table tbody");
-        const rows = table.getElementsByTagName("tr");
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST002')">
+                    PMJI-20241130-CUST002
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST003')">
+                    PMJI-20241130-CUST003
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST004')">
+                    PMJI-20241130-CUST004
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST005')">
+                    PMJI-20241130-CUST005
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST006')">
+                    PMJI-20241130-CUST006
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST007')">
+                    PMJI-20241130-CUST007
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST008')">
+                    PMJI-20241130-CUST008
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST009')">
+                    PMJI-20241130-CUST009
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST010')">
+                    PMJI-20241130-CUST010
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST011')">
+                    PMJI-20241130-CUST011
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST012')">
+                    PMJI-20241130-CUST012
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST013')">
+                    PMJI-20241130-CUST013
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST014')">
+                    PMJI-20241130-CUST014
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST015')">
+                    PMJI-20241130-CUST015
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST016')">
+                    PMJI-20241130-CUST016
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST017')">
+                    PMJI-20241130-CUST017
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST018')">
+                    PMJI-20241130-CUST018
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST019')">
+                    PMJI-20241130-CUST019
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST020')">
+                    PMJI-20241130-CUST020
+                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
+                </div>
+            </div>
+        </main>
+    </div>
 
-        for (let i = 0; i < rows.length; i++) {
-            const cell = rows[i].getElementsByTagName("td")[0];
-            if (cell) {
-                const textValue = cell.textContent || cell.innerText;
-                rows[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+    <!-- Modal Container -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDetails()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-content"></p>
+        </div>
+    </div>
+
+    <script>
+        // Booking details data
+        const bookingData = {
+            "PMJI-20241130-CUST001": {
+                title: "PMJI-20241130-CUST001",
+                content: 
+                    Event Type: Wedding<br>
+                    Event Place: XYZ Garden, Quezon City<br>
+                    Event Date: Saturday, December 1, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: Credit Card<br>
+                    Total Amount: P20,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST002": {
+                title: "PMJI-20241130-CUST002",
+                content: 
+                    Event Type: Birthday Party<br>
+                    Event Place: ABC Banquet Hall, Manila<br>
+                    Event Date: Sunday, December 2, 2024<br>
+                    Status: Pending<br>
+                    Mode of Payment: Cash<br>
+                    Total Amount: P10,000.00<br>
+                    Payment Status: Unpaid
+                
+            },
+            "PMJI-20241130-CUST003": {
+                title: "PMJI-20241130-CUST003",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST004": {
+                title: "PMJI-20241130-CUST004",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST005": {
+                title: "PMJI-20241130-CUST005",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST006": {
+                title: "PMJI-20241130-CUST006",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST007": {
+                title: "PMJI-20241130-CUST007",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST008": {
+                title: "PMJI-20241130-CUST008",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST009": {
+                title: "PMJI-20241130-CUST009",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST010": {
+                title: "PMJI-20241130-CUST010",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST011": {
+                title: "PMJI-20241130-CUST011",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST012": {
+                title: "PMJI-20241130-CUST012",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST013": {
+                title: "PMJI-20241130-CUST013",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST014": {
+                title: "PMJI-20241130-CUST014",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST015": {
+                title: "PMJI-20241130-CUST015",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST016": {
+                title: "PMJI-20241130-CUST016",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST017": {
+                title: "PMJI-20241130-CUST017",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST018": {
+                title: "PMJI-20241130-CUST018",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST019": {
+                title: "PMJI-20241130-CUST019",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
+            },
+            "PMJI-20241130-CUST020": {
+                title: "PMJI-20241130-CUST020",
+                content: 
+                    Event Type: Company Christmas Party<br>
+                    Event Place: ABC Corporation Center, Marikina Philippines<br>
+                    Event Date: Monday, December 2, 2024<br>
+                    Status: Approved<br>
+                    Mode of Payment: GCash<br>
+                    Total Amount: P15,000.00<br>
+                    Payment Status: Paid
+                
             }
+        };
+
+        // Toggle Profile Dropdown
+function toggleDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdowns when clicking outside
+window.onclick = function(event) {
+    // Close profile dropdown if clicked outside
+    if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
+        const dropdown = document.getElementById('profile-dropdown');
+        if (dropdown && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
         }
     }
+}
 
-    function toggleDropdown() {
-            const dropdown = document.getElementById('profile-dropdown');
-            dropdown.classList.toggle('show');
-        }
-
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-icon')) {
-                const dropdown = document.getElementById('profile-dropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        }
-        // Toggle Notification Dropdown
-        function toggleNotification() {
+// Toggle Notification Dropdown
+function toggleNotification() {
             const notifDropdown = document.getElementById('notification-dropdown');
             notifDropdown.classList.toggle('show');
 
@@ -210,6 +515,34 @@ function searchTable() {
                 }
             }
         }
+
+        // Show modal with booking details
+        function showDetails(bookingId) {
+            const modal = document.getElementById('details-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+
+            // Update modal content
+            if (bookingData[bookingId]) {
+                modalTitle.innerHTML = bookingData[bookingId].title;
+                modalContent.innerHTML = bookingData[bookingId].content;
+                modal.style.display = "flex";
+            }
+        }
+
+        // Close modal
+        function closeDetails() {
+            const modal = document.getElementById('details-modal');
+            modal.style.display = "none";
+        }
+
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            const modal = document.getElementById('details-modal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
     </script>
 </body>
 </html>
