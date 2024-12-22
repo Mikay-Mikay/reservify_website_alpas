@@ -6,12 +6,6 @@
     font-family: Arial, sans-serif;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    color: #ffffff;
-}
-
 .admin-dashboard {
     display: flex;
     height: 100vh;
@@ -79,22 +73,56 @@ body {
     transform: scale(1.1); /* Slight zoom effect for icons */
 }
 
-.filter-icon {
-    width: 24px; /* Adjust size to match notification and profile icons */
-    height: 24px;
-    background-image: url('images/filter.png.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
+ /* Filter Container */
+ .filter-container {
+    position: relative;
     display: inline-block;
-    vertical-align: middle;
+    padding: 10px;
+    cursor: pointer;
 }
 
+.filter-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.filter-button img {
+    width: 24px; /* Adjust width as needed */
+    height: 24px; /* Adjust height as needed */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+}
+
+.filter-menu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 150px;
+    top: 45px;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filter-menu .filter-option {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.filter-menu .filter-option:hover {
+    background-color: #f0f0f0;
+}
 
 .feedback-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.feedback-row {
+    display: flex;
+    justify-content: space-between;
     gap: 20px;
 }
 
