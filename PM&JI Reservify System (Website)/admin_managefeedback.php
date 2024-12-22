@@ -22,7 +22,7 @@ if (isset($_GET['logout'])) {
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
     <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
     <link rel="stylesheet" href="admin_payments.css?v=1.1">
-    <link rel="stylesheet" href="admin_managefeedback.css?v=1.1">
+    <link rel="stylesheet" href="admin_managefeedback.css?">
 </head>
 <body>
     <div class="admin-dashboard">
@@ -93,17 +93,25 @@ if (isset($_GET['logout'])) {
                 </ul>
             </nav>
         </aside>
-
         <main class="content">
-            <header>
-                <div class="header">
-                    <h1>Manage Feedback</h1>
+    <header class="header">
+        <h1>Manage Feedback</h1>
+        <div class="header-right">
+        <div class="filter-container">
+                        <button class="filter-button" onclick="toggleFilterMenu()">
+                            <img src="images/filter.png.png" alt="Filter">
+                        </button>
+                        <div class="filter-menu" id="filterMenu">
+                            <div class="filter-option" onclick="filterByStar(1)">1 Star ⭐</div>
+                            <div class="filter-option" onclick="filterByStar(2)">2 Star ⭐⭐</div>
+                            <div class="filter-option" onclick="filterByStar(3)">3 Star ⭐⭐⭐</div>
+                            <div class="filter-option" onclick="filterByStar(4)">4 Star ⭐⭐⭐⭐</div>
+                            <div class="filter-option" onclick="filterByStar(5)">5 Star ⭐⭐⭐⭐⭐</div>
+                        </div>
                     </div>
-                    <div class="header-right">
-                        <div class="filter-icon" id="filter" onclick="toggleFilter()" title="Filter"></div>
-                        <div class="notification-container">
-                            <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
-                            <div id="notification-dropdown" class="notification-dropdown">
+            <div class="notification-container">
+                <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
+                <div id="notification-dropdown" class="notification-dropdown">
                                 <h2>Notifications</h2>
                                 <div class="notification">
                                     <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
@@ -124,21 +132,22 @@ if (isset($_GET['logout'])) {
                             </div>
                         </div>
                         <div class="profile-container">
-                            <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                            <div id="profile-dropdown" class="dropdown">
-                                <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
-                                <hr>
-                                <ul>
-                                    <li><a href="admin_profile.php">Profile</a></li>
-                                    <li><a href="admin_activitylog.php">Activity Log</a></li>
-                                </ul>
-                                <hr>
-                                <a class="logout" href="?logout">Logout</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feedback-container">
+                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
+                <div id="profile-dropdown" class="dropdown">
+                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                    <hr>
+                    <ul>
+                        <li><a href="admin_profile.php">Profile</a></li>
+                        <li><a href="admin_activitylog.php">Activity Log</a></li>
+                    </ul>
+                    <hr>
+                    <a class="logout" href="?logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="feedback-container">
+        <div class="feedback-row">
             <!-- Feedback 1 -->
             <div class="feedback-card">
                 <div class="profile">
@@ -155,7 +164,6 @@ if (isset($_GET['logout'])) {
                     <img src="images/star_empty.png.png" alt="Star">
                 </div>
             </div>
-
             <!-- Feedback 2 -->
             <div class="feedback-card">
                 <div class="profile">
@@ -172,7 +180,9 @@ if (isset($_GET['logout'])) {
                     <img src="images/star_empty.png.png" alt="Star">
                 </div>
             </div>
+        </div>
 
+        <div class="feedback-row">
             <!-- Feedback 3 -->
             <div class="feedback-card">
                 <div class="profile">
@@ -189,7 +199,6 @@ if (isset($_GET['logout'])) {
                     <img src="images/star_filled.png.png" alt="Star">
                 </div>
             </div>
-
             <!-- Feedback 4 -->
             <div class="feedback-card">
                 <div class="profile">
@@ -208,7 +217,6 @@ if (isset($_GET['logout'])) {
             </div>
         </div>
     </div>
-</header>
 </main>
 </div>
 <script>
@@ -242,6 +250,20 @@ window.onclick = function(event) {
         }
     }
 };
+ // Toggle the filter menu visibility
+ function toggleFilterMenu() {
+            const filterMenu = document.getElementById("filterMenu");
+            filterMenu.style.display = filterMenu.style.display === "block" ? "none" : "block";
+        }
+
+        // Filter feedback cards based on selected star rating
+        function filterByStar(starCount) {
+            const feedbackCards = document.querySelectorAll(".feedback-card");
+            feedbackCards.forEach(card => {
+                const stars = parseInt(card.getAttribute("data-stars"));
+                card.style.display = stars === starCount ? "block" : "none";
+            });
+        }
 </script>
 </body>
 </html>
