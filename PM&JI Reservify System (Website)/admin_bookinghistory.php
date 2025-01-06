@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once 'database.php';
 // Assuming the admin's name is stored in the session after login
 $admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
 
@@ -9,6 +10,40 @@ if (isset($_GET['logout'])) {
     header('Location: admin_login.php');
     exit();
 }
+// Get all reservations and their associated booking details
+$sql = "
+    SELECT r.reservation_id, r.status, 
+           bs.first_name, bs.middle_name, bs.last_name, bs.email, 
+           bs.event_type, bs.event_place, bs.number_of_participants, 
+           bs.date_and_schedule, bs.payment_method
+    FROM reservation r
+    INNER JOIN booking_summary bs ON r.reservation_id = bs.reservation_id
+    ORDER BY r.reservation_id ASC
+";
+$result = $conn->query($sql);
+
+// Handle database error
+if (!$result) {
+    echo "Error: " . $conn->error;
+    exit();
+}
+
+$bookingData = []; // Array to store the booking details
+while ($row = $result->fetch_assoc()) {
+    // Format reservation number (Example: PMJI-YYYYMMDD-CUST001)
+    $reservation_number = "PMJI-" . date("Ymd") . "-CUST" . str_pad($row['reservation_id'], 3, "0", STR_PAD_LEFT);
+    $bookingData[$reservation_number] = [
+        'email' => $row['email'],
+        'event_type' => $row['event_type'],
+        'event_place' => $row['event_place'],
+        'number_of_participants' => $row['number_of_participants'],
+        'date_and_schedule' => $row['date_and_schedule'],
+        'payment_method' => $row['payment_method'],
+        'status' => $row['status']
+    ];
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +69,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png (1).png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
@@ -146,376 +181,44 @@ if (isset($_GET['logout'])) {
         </div>
     </header>
         <!-- Booking List -->
-        <div class="booking-list">
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST001')">
-                    PMJI-20241130-CUST001
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST002')">
-                    PMJI-20241130-CUST002
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST003')">
-                    PMJI-20241130-CUST003
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST004')">
-                    PMJI-20241130-CUST004
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST005')">
-                    PMJI-20241130-CUST005
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST006')">
-                    PMJI-20241130-CUST006
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST007')">
-                    PMJI-20241130-CUST007
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST008')">
-                    PMJI-20241130-CUST008
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST009')">
-                    PMJI-20241130-CUST009
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST010')">
-                    PMJI-20241130-CUST010
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST011')">
-                    PMJI-20241130-CUST011
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST012')">
-                    PMJI-20241130-CUST012
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST013')">
-                    PMJI-20241130-CUST013
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST014')">
-                    PMJI-20241130-CUST014
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST015')">
-                    PMJI-20241130-CUST015
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST016')">
-                    PMJI-20241130-CUST016
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST017')">
-                    PMJI-20241130-CUST017
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST018')">
-                    PMJI-20241130-CUST018
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST019')">
-                    PMJI-20241130-CUST019
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
-                <div class="booking-item" onclick="showDetails('PMJI-20241130-CUST020')">
-                    PMJI-20241130-CUST020
-                    <img src="images/click_here_black.png.png" alt="Click here" class="click-icon">
-                </div>
+<!-- Displaying Booking List -->
+<div class="booking-list">
+        <?php foreach ($bookingData as $reservation_number => $details) { ?>
+            <div class="booking-item" onclick="showDetails('<?php echo $reservation_number; ?>')">
+                <?php echo $reservation_number; ?>
             </div>
+        <?php } ?>
+    </div>
         </main>
     </div>
 
-    <!-- Modal Container -->
-<div id="details-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <a href="admin_bookinghistory.php">
-                <img src="images/back button.png" alt="Back" class="close-btn">
-            </a>
-            <h2 id="modal-title"></h2>
-        </div>
-        <p id="modal-content"></p>
-    </div>
-</div>
-
+   
 
     <script>
     // Booking details data
-    const bookingData = {
-        "PMJI-20241130-CUST001": {
-            title: "PMJI-20241130-CUST001",
-            content: `
-                Event Type: Wedding<br>
-                Event Place: XYZ Garden, Quezon City<br>
-                Event Date: Saturday, December 1, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P20,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST002": {
-            title: "PMJI-20241130-CUST002",
-            content: `
-                Event Type: Birthday Party<br>
-                Event Place: ABC Banquet Hall, Manila<br>
-                Event Date: Sunday, December 2, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: Cash<br>
-                Total Amount: P10,000.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST003": {
-            title: "PMJI-20241130-CUST003",
-            content: `
-                Event Type: Company Christmas Party<br>
-                Event Place: ABC Corporation Center, Marikina Philippines<br>
-                Event Date: Monday, December 2, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: GCash<br>
-                Total Amount: P15,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST004": {
-            title: "PMJI-20241130-CUST004",
-            content: `
-                Event Type: Baby Shower<br>
-                Event Place: Little Wonders Venue, Makati<br>
-                Event Date: Thursday, December 5, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Bank Transfer<br>
-                Total Amount: P12,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST005": {
-            title: "PMJI-20241130-CUST005",
-            content: `
-                Event Type: Corporate Meeting<br>
-                Event Place: Global Business Tower, Taguig<br>
-                Event Date: Friday, December 6, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P30,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST006": {
-            title: "PMJI-20241130-CUST006",
-            content: `
-                Event Type: Anniversary Celebration<br>
-                Event Place: Grand Ballroom, Quezon City<br>
-                Event Date: Saturday, December 7, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: Cash<br>
-                Total Amount: P18,000.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST007": {
-            title: "PMJI-20241130-CUST007",
-            content: `
-                Event Type: Charity Gala<br>
-                Event Place: Metro Convention Center, Makati<br>
-                Event Date: Sunday, December 8, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P50,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST008": {
-            title: "PMJI-20241130-CUST008",
-            content: `
-                Event Type: Product Launch<br>
-                Event Place: Innovation Center, Quezon City<br>
-                Event Date: Monday, December 9, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: GCash<br>
-                Total Amount: P25,000.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST009": {
-            title: "PMJI-20241130-CUST009",
-            content: `
-                Event Type: Wedding Reception<br>
-                Event Place: Sapphire Hotel, Manila<br>
-                Event Date: Tuesday, December 10, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Bank Transfer<br>
-                Total Amount: P40,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST010": {
-            title: "PMJI-20241130-CUST010",
-            content: `
-                Event Type: Holiday Party<br>
-                Event Place: Elite Hotel, Pasig<br>
-                Event Date: Thursday, December 12, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P22,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST011": {
-            title: "PMJI-20241130-CUST011",
-            content: `
-                Event Type: Corporate Seminar<br>
-                Event Place: Greenfield Conference Hall, Mandaluyong<br>
-                Event Date: Friday, December 13, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Cash<br>
-                Total Amount: P35,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST012": {
-            title: "PMJI-20241130-CUST012",
-            content: `
-                Event Type: Concert<br>
-                Event Place: Metro Arena, Quezon City<br>
-                Event Date: Saturday, December 14, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: GCash<br>
-                Total Amount: P45,000.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST013": {
-            title: "PMJI-20241130-CUST013",
-            content: `
-                Event Type: Graduation Party<br>
-                Event Place: Prestige Hall, Pasay<br>
-                Event Date: Sunday, December 15, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P28,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST014": {
-            title: "PMJI-20241130-CUST014",
-            content: `
-                Event Type: Team Building<br>
-                Event Place: Adventure Resort, Tagaytay<br>
-                Event Date: Monday, December 16, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: Cash<br>
-                Total Amount: P18,500.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST015": {
-            title: "PMJI-20241130-CUST015",
-            content: `
-                Event Type: Charity Auction<br>
-                Event Place: Luxury Ballroom, Makati<br>
-                Event Date: Wednesday, December 17, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Bank Transfer<br>
-                Total Amount: P55,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST016": {
-            title: "PMJI-20241130-CUST016",
-            content: `
-                Event Type: Product Demo<br>
-                Event Place: City Hall Conference Center, Quezon City<br>
-                Event Date: Thursday, December 18, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P27,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST017": {
-            title: "PMJI-20241130-CUST017",
-            content: `
-                Event Type: Birthday Party<br>
-                Event Place: Palm Garden Hotel, Quezon City<br>
-                Event Date: Friday, December 19, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: GCash<br>
-                Total Amount: P12,000.00<br>
-                Payment Status: Unpaid
-            `
-        },
-        "PMJI-20241130-CUST018": {
-            title: "PMJI-20241130-CUST018",
-            content: `
-                Event Type: Workshop<br>
-                Event Place: Knowledge Hub, Makati<br>
-                Event Date: Saturday, December 20, 2021<br>
-                Status: Approved<br>
-                Mode of Payment: Bank Transfer<br>
-                Total Amount: P5,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST019": {
-            title: "PMJI-20241130-CUST019",
-            content: `
-                Event Type: Retirement Party<br>
-                Event Place: Golden Hall, Pasig<br>
-                Event Date: Sunday, December 21, 2024<br>
-                Status: Approved<br>
-                Mode of Payment: Cash<br>
-                Total Amount: P10,000.00<br>
-                Payment Status: Paid
-            `
-        },
-        "PMJI-20241130-CUST020": {
-            title: "PMJI-20241130-CUST020",
-            content: `
-                Event Type: New Year's Eve Party<br>
-                Event Place: Sky Lounge, Makati<br>
-                Event Date: Wednesday, December 31, 2024<br>
-                Status: Pending<br>
-                Mode of Payment: Credit Card<br>
-                Total Amount: P35,000.00<br>
-                Payment Status: Unpaid
-            `
-        }
-    };
-    // Show modal with booking details
-    function showDetails(bookingId) {
-        const modal = document.getElementById('details-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalContent = document.getElementById('modal-content');
+    // Example data fetched from PHP (you could also fetch this via AJAX if needed)
+// Assuming you have fetched the `$row` data from your database
+const bookingData = <?php echo json_encode($bookingData); ?>;
 
-        // Update modal content
-        if (bookingData[bookingId]) {
-            modalTitle.innerHTML = bookingData[bookingId].title;
-            modalContent.innerHTML = bookingData[bookingId].content;
-            modal.style.display = "flex";
-        }
+// Show booking details in an alert box
+function showDetails(reservationNumber) {
+    const bookingDetails = bookingData[reservationNumber];
+    if (bookingDetails) {
+        // Display details in an alert box
+        alert(
+            "Reservation ID: " + reservationNumber + "\n" +
+            "Email: " + bookingDetails.email + "\n" +
+            "Event Type: " + bookingDetails.event_type + "\n" +
+            "Event Place: " + bookingDetails.event_place + "\n" +
+            "Participants: " + bookingDetails.number_of_participants + "\n" +
+            "Date & Schedule: " + bookingDetails.date_and_schedule + "\n" +
+            "Payment Method: " + bookingDetails.payment_method + "\n" +
+            "Status: " + bookingDetails.status
+        );
+    } else {
+        alert("No details found for this reservation.");
     }
-
-    // Close modal
-    function closeDetails() {
-        const modal = document.getElementById('details-modal');
-        modal.style.display = "none";
-    }
-
-    // Close modal when clicking outside the content
-    window.onclick = function (event) {
-        const modal = document.getElementById('details-modal');
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    };
+}
 
     function toggleDropdown() {
             const dropdown = document.getElementById('profile-dropdown');
