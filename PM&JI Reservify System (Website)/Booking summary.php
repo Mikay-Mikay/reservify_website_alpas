@@ -39,8 +39,8 @@ $sql = "
 ";
 
 // Prepare and execute the query
-$stmt = mysqli_stmt_init($conn);
-if (mysqli_stmt_prepare($stmt, $sql)) {
+$stmt = mysqli_prepare($conn, $sql);
+if ($stmt) {
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -52,7 +52,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
         $middle_name = $data['Middle_Name'];
         $last_name = $data['Last_Name'];
         $email = $data['Email'];
-        $reservation_id = $data['reservation_id'];  // Reservation ID from reservation table
+        $reservation_id = $data['reservation_id'];
         $event_type = $data['event_type'];
         $event_place = $data['event_place'];
         $number_of_participants = $data['number_of_participants'];
@@ -71,35 +71,58 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 
 // Check if form is submitted and insert data into the booking_summary table
 if (isset($_POST['submit'])) {
-    // Insert the booking summary into the booking_summary table
+    // Insert booking summary
     $insert_sql = "
         INSERT INTO booking_summary 
         (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
         number_of_participants, contact_number, date_and_schedule, image, payment_method, reservation_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
-
-    // Prepare the SQL statement
+    
     $stmt = mysqli_prepare($conn, $insert_sql);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "issssssissssi", $user_id, $first_name, $middle_name, $last_name, $email, 
+                              $event_type, $event_place, $number_of_participants, $contact_number, 
+                              $date_and_schedule, $image, $payment_method, $reservation_id);
 
-    // Bind the parameters (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
-    // number_of_participants, contact_number, date_and_schedule, image, payment_method, reservation_id)
-    mysqli_stmt_bind_param($stmt, "issssssissssi", $user_id, $first_name, $middle_name, $last_name, $email, $event_type,
-                           $event_place, $number_of_participants, $contact_number, $date_and_schedule, $image, $payment_method, $reservation_id);
+        if (mysqli_stmt_execute($stmt)) {
+            // Retrieve the newly inserted booking ID
+            $booking_id = mysqli_insert_id($conn);
 
-    // Execute the query
-    if (mysqli_stmt_execute($stmt)) {
-        // Add JavaScript alert for success
-        echo "<script>alert('Your reservation request has been successfully submitted.');</script>";
+            // Insert notification for admin
+            $admin_id = 1; // Assuming admin ID is 1
+            $message = "New booking request from $first_name $last_name (Reservation ID: $reservation_id).";
 
-        // After successful processing, redirect to the thank you page
-        header("Location: thankyoupage.php");
-        exit();
+            $insert_notification_sql = "
+                INSERT INTO admin_notifications (admin_id, user_id, message) 
+                VALUES (?, ?, ?)
+            ";
+
+            $stmt_notification = mysqli_prepare($conn, $insert_notification_sql);
+            if ($stmt_notification) {
+                mysqli_stmt_bind_param($stmt_notification, "iis", $admin_id, $user_id, $message);
+
+                if (!mysqli_stmt_execute($stmt_notification)) {
+                    echo "Error creating notification: " . mysqli_error($conn);
+                }
+            } else {
+                echo "Error preparing notification SQL: " . mysqli_error($conn);
+            }
+
+            // Success message and redirection
+            echo "<script>alert('Your reservation request has been successfully submitted.');</script>";
+            header("Location: thankyoupage.php");
+            exit();
+        } else {
+            echo "Error saving reservation: " . mysqli_error($conn);
+        }
     } else {
-        echo "Error saving reservation: " . mysqli_error($conn);
+        echo "Error preparing booking summary SQL: " . mysqli_error($conn);
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
