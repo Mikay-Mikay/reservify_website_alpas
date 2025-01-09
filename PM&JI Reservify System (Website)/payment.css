@@ -1,0 +1,427 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+a, a:hover {
+    text-decoration: none;
+}
+
+nav {
+    background: #fac08d;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensure even spacing between logo and menu */
+    position: relative;
+}
+
+nav a {
+    color: black;
+}
+
+nav a:hover {
+    color: white;
+    transition: color 0.3s;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.logo img {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px; /* Add uniform spacing between menu items */
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.menu li.user-logo img {
+    width: 55px;
+    height: 55px;
+    margin-left: 10px;
+}
+
+.menu li.user-logo {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.toggle {
+    font-size: 30px;
+    display: none;
+    cursor: pointer;
+}
+
+/* General styles for icons */
+.fa-user, .fa-bell {
+    color: black;
+    cursor: pointer;
+    margin-right: 8px; /* Ensure consistent spacing between icons */
+}
+
+/* Notification Bell Container */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Notification Count Badge */
+.notification-bell::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    display: none; /* Initially hidden */
+}
+
+/* Show count only if there's a notification */
+.notification-bell[data-count]:not([data-count="0"])::after {
+    display: inline-block;
+}
+
+/* Dropdown Menu */
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 250px;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 0;
+    color: gray;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Notification Items */
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: black;
+    text-decoration: none;
+    display: block;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+/* Ensure the dropdown stays open when clicked */
+.notification-bell.active + .notification-dropdown {
+    display: block;
+}
+
+/* Remove underline and ensure blue color for links in notifications */
+.notification-item a {
+    color: #007bff;  /* Set text color to blue */
+    text-decoration: none; /* No underline */
+}
+
+/* If you want to remove any hover effect */
+.notification-item a:hover {
+    text-decoration: none;  /* Ensure no underline on hover */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fac08d;
+    width: 100%;
+    margin: 20px auto;
+    border-radius: 8px;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.container .title {
+    font-size: 32px; /* Prominent title */
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.container .title::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 80px;
+    border-radius: 5px;
+    background: #f4a36c;
+}
+
+.content form .user-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+
+form .user-details .input-box span.details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+
+.user-details .input-box input,
+.user-details .input-box select {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f4a36c;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Poppins', sans-serif; /* Apply font to button */
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+    #logo-pic {
+        width: 200px;
+    }
+    .menu li {
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(250, 192, 141, 0.9);
+        width: 100%;
+    }
+    .menu.active {
+        display: flex;
+    }
+    .toggle {
+        display: block;
+    }
+}
+.title {
+  text-align: center;
+  
+}
+.slideshow-container {
+  position: relative;
+  max-width: 90%;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+}
+
+.slide img {
+  width: 100%;
+  border-radius: 10px;
+  
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  user-select: none;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.dots-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.message-icon i {
+    font-size: 24px;
+    color: #f4a36c;
+}
+
+.message-icon span {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+
+/* For tablets */
+@media (max-width: 768px) {
+    #logo-pic {
+        width: 200px;
+    }
+    .welcome-text,
+    .reservify-text {
+        font-size: 24px;
+    }
+    .menu li {
+        padding: 10px 15px;
+    }
+    .book-now {
+        font-size: 18px;
+        padding: 8px 16px;
+    }
+    .img-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* For mobile */
+@media (max-width: 600px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(250, 192, 141, 0.9);
+        width: 100%;
+    }
+    
+    .menu.active {
+        display: flex;
+    }
+    
+    .toggle {
+        display: block;
+    }
+    
+    #logo-pic {
+        width: 150px;
+    }
+    
+    .welcome-text,
+    .reservify-text {
+        font-size: 20px;
+    }
+
+    .book-now {
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+
+    .img-container {
+        grid-template-columns: 1fr; /* Single column layout for small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .message-icon {
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+
+    .message-icon span {
+        font-size: 12px;
+    }
+}
+
