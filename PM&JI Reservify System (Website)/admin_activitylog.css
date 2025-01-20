@@ -1,208 +1,197 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    color: #ffffff;
-}
+<?php
+session_start();
 
-.admin-dashboard {
-    display: flex;
-    height: 100vh;
-}
+// Define default values or fetch them from the session
+$admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : 'AD-0001';
 
-/* Sidebar Styles */
-.sidebar {
-    width: 20%;
-    background-color: #56aeff;
-    color: white;
-    height: 100%;
-    padding: 10px 15px;
-    box-sizing: border-box;
-}
+// Sample activities (you can replace these with data from a database)
+$activities = [
+    [
+        'time' => '08:00 AM',
+        'activity' => 'Logged in',
+        'details' => 'Customer Support accessed the Manage Inquiries to address inquiries.'
+    ],
+    [
+        'time' => '08:15 AM',
+        'activity' => 'Responded to Bookings',
+        'details' => 'Owner checked pending reservations.'
+    ],
+    [
+        'time' => '09:45 AM',
+        'activity' => 'Approved Booking',
+        'details' => 'Owner approved Reservation #34567 for a wedding.'
+    ]
+];
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: admin_login.php');
+    exit();
 }
+?>
 
-.logo img {
-    max-width: 30%;
-    margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin PM&JI Reservify</title>
+    <link rel="stylesheet" href="admin_profile.css?v=1.0">
+    <link rel="stylesheet" href="admin_dashboard.css">
+    <link rel="stylesheet" href="admin_activitylog.css">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+</head>
+<body>
+<div class="admin-dashboard">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="images/reservify_logo.png" alt="Reservify Logo">
+                <p>Hello, Admin!</p>
+            </div>
+            <nav>
+                <ul>
+                    <li class="dashboard-item">
+                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
+                            <img src="images/home.png.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Bookings</span>
+                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Payments</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Booking History</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Feedback</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Calendar</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Manage Inquiries</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="content">
+            <header>
+                <h1>Activity Log</h1>
+                <div class="header-right">
+                    <!-- Notification Bell -->
+        <div class="notification-container">
+                <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
+                <div id="notification-dropdown" class="notification-dropdown">
+                    <h2>Notifications</h2>
+                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
+                        <span>3:30 PM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
+                        <span>11:30 AM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
+                        <span>2:45 PM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
+                        <span>4:15 PM, Nov 29, 2024</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Profile Icon -->
+            <div class="profile-container">
+                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
+                <div id="profile-dropdown" class="dropdown">
+                    <p class="dropdown-header"> Admin</p>
+                    <hr>
+                    <ul>
+                        <li><a href="admin_profile.php">Profile</a></li>
+                        <li><a href="admin_activitylog.php">Activity Log</a></li>
+                    </ul>
+                    <hr>
+                    <a class="logout" href="?logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+            <!-- Activity Log Section -->
+            <section class="activity-log">
+                <h2>December 08, 2024</h2>
+                <a href="admin_dashboard.php" class="back-button">
+                    <img src="images/back button.png" alt="Back Button">
+                </a>
+                <div class="activity-list">
+                    <?php foreach ($activities as $activity): ?>
+                        <div class="activity-card">
+                            <p><strong>Time:</strong> <?php echo $activity['time']; ?></p>
+                            <p><strong>Activity:</strong> <?php echo $activity['activity']; ?></p>
+                            <p><strong>Details:</strong> <?php echo $activity['details']; ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('show');
+        }
 
-.logo p {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0;
-}
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon')) {
+                const dropdown = document.getElementById('profile-dropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+        // Toggle Notification Dropdown
+        function toggleNotification() {
+            const notifDropdown = document.getElementById('notification-dropdown');
+            notifDropdown.classList.toggle('show');
 
-.sidebar nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar nav ul li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    font-size: 18px;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease; /* Smooth transitions */
-}
-
-.sidebar nav ul li img {
-    max-height: 35px;
-    margin-left: 5px;
-    transition: transform 0.3s ease; /* Smooth icon scaling */
-}
-
-.sidebar nav ul li:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
-    border-radius: 5px; /* Smooth corners for hover effect */
-    transform: scale(1.03); /* Slight zoom effect on hover */
-}
-
-.sidebar nav ul li:hover img {
-    transform: scale(1.1); /* Slight zoom effect for icons */
-}
-
-/* Divider */
-.divider {
-    border: 0;
-    border-top: 2px solid white;
-    margin: 10px 0;
-}
-
-/* Main Content Styles */
-main.content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-header h1 {
-    font-size: 24px;
-    color: rgba(0, 0, 0, 0.7);
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-right img {
-    margin-left: 15px;
-    cursor: pointer;
-}
-
-/* Dropdown Styles */
-.profile-container {
-    position: relative;
-}
-
-.profile-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.dropdown {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background-color: #56aeff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    display: none;
-    min-width: 200px;
-    z-index: 10;
-}
-
-.dropdown.show {
-    display: block;
-}
-
-.dropdown-header {
-    font-weight: bold;
-    margin: 10px;
-}
-
-.dropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.dropdown ul li {
-    padding: 10px 15px;
-    cursor: pointer;
-}
-
-.dropdown ul li:hover {
-    background-color: #f4f4f9;
-}
-
-.dropdown a.logout {
-    display: block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-}
-
-.dropdown .logout:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-} 
-
-/* Activity Log Section */
-.activity-log h2 {
-    font-size: 20px;
-    color: #555;
-    margin-bottom: 15px;
-}
-
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.activity-card {
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    border-radius: 8px;
-}
-
-.activity-card p {
-    margin: 5px 0;
-    margin-left: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: black;
-}
-
-.back-button img {
-    max-width: 5%;
-    height: auto;
-    margin-left: 3px;
-}
-
-.activity-card p strong {
-    color: #333;
-}
+            // Close notification dropdown if clicked outside
+            if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
+                const notifDropdown = document.getElementById('notification-dropdown');
+                if (notifDropdown && notifDropdown.classList.contains('show')) {
+                    notifDropdown.classList.remove('show');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
