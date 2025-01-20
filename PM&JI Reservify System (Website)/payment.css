@@ -8,6 +8,7 @@
 
 body {
     font-family: "Poppins", sans-serif;
+    
 }
 
 a, a:hover {
@@ -179,78 +180,181 @@ nav a:hover {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 800px;
+    margin-top: 20px;
+    margin-left: 100px;
+    margin-right: 100px; /* Set right margin to keep centering */
     padding: 20px;
     background-color: #fac08d;
-    width: 100%;
-    margin: 20px auto;
     border-radius: 8px;
-    height: auto;
-    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+    
 }
 
-.container .title {
-    font-size: 32px; /* Prominent title */
+
+.title {
+    font-size: 24px;
     font-weight: bold;
-    color: black;
     text-align: center;
     margin-bottom: 20px;
-    position: relative;
 }
 
-.container .title::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -10px;
-    transform: translateX(-50%);
-    height: 4px;
-    width: 80px;
-    border-radius: 5px;
-    background: #f4a36c;
+.input-box {
+    margin-bottom: 20px;
 }
 
-.content form .user-details {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 20px 0 12px 0;
+/* Apply flexbox or grid to make the layout two columns */
+.user-details {
+    display: grid; /* Enable grid layout */
+    grid-template-columns: repeat(2, 1fr); /* 2 equal-width columns */
+    gap: 20px; /* Space between columns */
 }
 
-form .user-details .input-box span.details {
+/* Ensuring labels and inputs stay aligned */
+.form-label {
     display: block;
-    font-weight: 500;
+    font-size: 16px;
     margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.upload-container h2 {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.upload-container p {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.upload-input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 
-.user-details .input-box input,
-.user-details .input-box select {
-    height: 45px;
-    width: 100%;
-    outline: none;
-    font-size: 16px;
-    border-radius: 5px;
-    padding-left: 15px;
-    border: 1px solid #ccc;
-    border-bottom-width: 2px;
-    transition: all 0.3s ease;
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
 }
 
 .btn {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #f4a36c;
-  color: black;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: 'Poppins', sans-serif; /* Apply font to button */
-  font-weight: bold;
+    background-color: #f4a36c;;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
 }
+
+.btn:hover {
+    background-color: #0056b3;
+}
+ /* Existing CSS */
+ .payment-type {
+    max-width: 100%;
+    display: flex;
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 20px;
+    flex-wrap: wrap; /* Ensures items wrap in smaller screens */
+    margin-top: 20px;
+    padding-left: 0; /* Optional: Remove left padding */
+}
+
+.payment-type img {
+    max-width: 100%;
+    height: auto;
+    max-width: 200px;
+    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+    cursor: pointer; /* Pointer cursor for clickable images */
+}
+
+.payment-type img.zoomed {
+    transform: scale(1.5); /* Zoom in effect */
+    z-index: 10; /* Ensure it appears above other elements */
+    position: relative;
+}
+
+.zoomable {
+    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+    cursor: pointer; /* Pointer cursor to indicate clickable images */
+}
+
+.zoomable.zoomed {
+    transform: scale(1.5); /* Zoom effect */
+    z-index: 10; /* Ensure it appears above other elements */
+    position: relative;
+}
+
+.payment-type img {
+    max-width: 100%; /* Para mag-adjust ang laki depende sa parent container */
+    height: auto;
+    max-width: 200px; /* Pinakamalaking laki ng bawat larawan */
+}
+
+.upload-container1 h2{
+    text-align: center;  
+}
+
+.payment_details {
+    margin-top: 50px;
+    gap: 20px;
+    width: 20px;
+}
+.prices {
+    display: flex; /* Ensure the container is a flex container */
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center content horizontally */
+    text-align: center; /* Align text inside the container */
+    margin: 20px auto; /* Center the entire container on the page */
+    width: 80%; /* Optional: control width */
+}
+
+
+/* Media queries para sa responsive design ng payment images */
+@media (max-width: 768px) {
+    .payment-type img {
+        max-width: 150px; /* Mas maliit na laki ng larawan para sa tablet */
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-type {
+        justify-content: center; /* Sentro sa mas maliit na screen */
+    }
+
+    .payment-type img {
+        max-width: 120px; /* Mas maliit na laki ng larawan para sa mobile */
+    }
+}
+
+
 
 
 @media (max-width: 768px) {
@@ -425,3 +529,19 @@ form .user-details .input-box span.details {
     }
 }
 
+/* Media queries para sa responsive design ng payment images */
+@media (max-width: 768px) {
+    .payment-type img {
+        max-width: 150px; /* Mas maliit na laki ng larawan para sa tablet */
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-type {
+        justify-content: center; /* Sentro sa mas maliit na screen */
+    }
+
+    .payment-type img {
+        max-width: 120px; /* Mas maliit na laki ng larawan para sa mobile */
+    }
+}
