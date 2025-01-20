@@ -9,9 +9,12 @@ $errors = array();
 if (isset($_POST["submit"])) {
     // Get the inputs from the form
     $payment_method = $_POST["paymentType"] ?? ''; // The selected payment method by the user
+    $Amount = $_POST["amount"] ?? ''; // The selected payment amount by the user
+    $ref_no = $_POST["reference"] ?? '';
+    $Payment_type = $_POST["paymentclass"] ?? '';
     $reservation_id = $_SESSION["reservation_id"] ?? null; // Get the reservation_id from the session
 
-    // Validation checks
+    // Validate the form inputs
     if (empty($payment_method)) {
         array_push($errors, "Please select a payment method.");
     }
@@ -19,10 +22,29 @@ if (isset($_POST["submit"])) {
         array_push($errors, "No reservation ID found. Please log in again or contact support.");
     }
 
+    // Handle file upload
+    $file_name = '';
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $file_name = $_FILES['image']['name'];
+        $file_tmp = $_FILES['image']['tmp_name'];
+        $folder = 'Images/' . $file_name;
+
+        // Check if the uploaded file is an image
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+
+        if (!in_array(strtolower($file_extension), $allowed_extensions)) {
+            $errors[] = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
+        } elseif (!move_uploaded_file($file_tmp, $folder)) {
+            $errors[] = "File upload failed.";
+        }
+    } else {
+        $errors[] = "Please upload an image. Error code: " . $_FILES['image']['error'];
+    }
+
     // Display errors or process the form
     if (count($errors) > 0) {
         foreach ($errors as $error) {
-            // JavaScript alert for error messages
             echo "<script>alert('Error: $error');</script>";
         }
     } else {
@@ -30,39 +52,31 @@ if (isset($_POST["submit"])) {
         require_once "database.php";
 
         if (!$conn) {
-            // JavaScript alert for database connection error
             echo "<script>alert('Error connecting to the database: " . mysqli_connect_error() . "');</script>";
         }
 
         // SQL query to insert payment details (payment_method and reservation_id) into the payment table
         $sql = "
-            INSERT INTO payment (reservation_id, payment_method) 
-            VALUES (?, ?)";
-
+            INSERT INTO payment (reservation_id, payment_method, Amount, ref_no, Payment_type, image) 
+            VALUES (?, ?, ?, ?, ?, ?)";
 
         // Prepare and execute the statement
         $stmt = mysqli_stmt_init($conn);
 
         if (!mysqli_stmt_prepare($stmt, $sql)) {
-            // JavaScript alert for query preparation error
             echo "<script>alert('Database error: " . mysqli_error($conn) . "');</script>";
         } else {
             // Bind the parameters to the query
-            mysqli_stmt_bind_param($stmt, "is", $reservation_id, $payment_method);
+            mysqli_stmt_bind_param($stmt, "isssss", $reservation_id, $payment_method, $Amount, $ref_no, $Payment_type, $file_name);
 
-           // Execute the query
+            // Execute the query
             if (mysqli_stmt_execute($stmt)) {
-                // JavaScript alert for success
                 echo "<script>alert('Payment details saved successfully.');</script>";
-
-                // Redirect to booking_summary.php
                 echo "<script>window.location.href='booking summary.php';</script>";
                 exit;
             } else {
-                // Handle query execution failure
                 echo "<script>alert('Failed to save payment details. Please try again.');</script>";
             }
-
 
             // Close the statement
             mysqli_stmt_close($stmt);
@@ -76,14 +90,13 @@ if (isset($_POST["submit"])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css">
+    <link rel="stylesheet" href="payment.css?v=1.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -123,123 +136,74 @@ if (isset($_POST["submit"])) {
 
 
 <!--For payment process-->
-    <div class="container">
-        <div class="title">Payment</div>
-        <div class="content">
-            <form action="payment.php" method="POST">
-                <div class="user-details">
-                    <div class="input-box">
-                        <label for="paymentType">Select Payment:</label>
-                        <select id="paymentType" name ="paymentType" required> <!-- Changed the id here to paymentType -->
-                            <option value="" disabled selected>Select Payment Type</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Button container with added margin-top -->
-                <div class="parent-container" style="margin-top: 15px;">
-                    <button type="submit" name="submit" class="btn">Next</button>
-                </div>
-            </form>
+<div class="container">
+    <div class="title">Payment</div>
+    <div class="content">
+        <form action="payment.php" method="POST" enctype="multipart/form-data">
+            <div class="user-details">
+                <!-- Payment Method -->
+                <div class="input-box">
+                <label for="paymentType" class="form-label">Payment Method:</label>
+                <select id="paymentType" name="paymentType" class="form-input" required>
+            <option value="" disabled selected>Select Payment Method:</option>
+        </select>
         </div>
+
+
+                <!-- Reference Number -->
+                <div class="input-box">
+                    <label for="reference" class="form-label">Reference Number:</label>
+                    <input type="text" id="reference" name="reference" class="form-input" placeholder="Enter Reference Number" required>
+                </div>
+
+                <!-- Amount to Pay -->
+                <div class="input-box">
+                    <label for="amount" class="form-label">Amount to Pay:</label>
+                    <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
+                </div>
+
+                
+              <!-- Payment Type -->
+              <div class="input-box">
+                    <label for="paymentclass" class="form-label">Payment Type:</label>
+                    <select id="paymentclass" name="paymentclass" class="form-input" required>
+                        <option value="" disabled selected>Select Payment Type</option>
+                        <option value="Downpayment">Downpayment</option>
+                        <option value="Full Payment">Full Payment</option>
+                    </select>
+                </div>
+            </div>
+
+             <!-- Upload Image Section -->
+             <div class="upload-container">
+                <h2>Upload Payment Proof</h2>
+                <p>Attach proof of payment below:</p>
+                <input type="file" name="image" class="upload-input" required>
+            </div>
+
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" name="submit" class="btn">Submit Payment</button>
+            </div>
+
+        
+        </form>
+    </div>
+</div>
         <div class="prices">
         <p><strong>Here are the 50% down payment amounts for each event based on the original prices:</strong>
                 <br>Wedding: Original Price: ₱25,000. 50% Down Payment: ₱12,500<br>Reunion: Original Price: ₱20,000. 50% Down Payment: ₱10,000<br>Baptism: Original Price: ₱18,000. 50% Down Payment: ₱9,000
                 <br>Birthday: Original Price: ₱17,500. 50% Down Payment: ₱8,750<br>Company Event: Original Price: ₱30,000. 50% Down Payment: ₱15,000.
             </p>
-
-            <style>
-        .prices {
-            text-align: center !important;
-            font-style: italic !important;
-            margin-top: 20px;
-            font-family: "Poppins", sans-serif;
-            display: flex;
-            flex-wrap: wrap; /* allows items to wrap to the next line if necessary */
-            justify-content: center; /* centers the content horizontally */
-        }
-
-        .prices p {
-            display: inline; /* Makes the paragraph inline */
-            margin-right: 20px; /* Space between items */
-            white-space: nowrap; /* Prevents text from wrapping */
-        }
-        </style>
-
         </div>
 
           <!--For payment option images-->
         <div class="payment-type">
             <img src="images/Gcash.jpg" alt="Gcash" class="zoomable">
             <img src="images/Maya.jpg" alt="Maya" class="zoomable">
-
-        <style>
-            .payment-type {
-    max-width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-    padding-left: 20px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-
-.payment-type img {
-    max-width: 100%;
-    height: auto ;
-    max-width: 200px;
-    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
-    cursor: pointer; /* Pointer cursor for clickable images */
-}
-
-.payment-type img.zoomed {
-    transform: scale(1.5); /* Zoom in effect */
-    z-index: 10; /* Ensure it appears above other elements */
-    position: relative;
-}
-.zoomable {
-    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
-    cursor: pointer; /* Pointer cursor to indicate clickable images */
-}
-
-.zoomable.zoomed {
-    transform: scale(1.5); /* Zoom effect */
-    z-index: 10; /* Ensure it appears above other elements */
-    position: relative;
-}
-.payment-type img {
-    max-width: 100%; /* Para mag-adjust ang laki depende sa parent container */
-    height: auto;
-    max-width: 200px; /* Pinakamalaking laki ng bawat larawan */
-}
-.upload-container1 h2{
-    text-align: center;
-   
-    
-}
-
-/* Media queries para sa responsive design ng payment images */
-@media (max-width: 768px) {
-    .payment-type img {
-        max-width: 150px; /* Mas maliit na laki ng larawan para sa tablet */
-    }
-}
-
-@media (max-width: 480px) {
-    .payment-type {
-        justify-content: center; /* Sentro sa mas maliit na screen */
-    }
-
-    .payment-type img {
-        max-width: 120px; /* Mas maliit na laki ng larawan para sa mobile */
-    }
-}
-
-
-        </style>
         </div>
-    </div>
+  
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -270,7 +234,7 @@ if (isset($_POST["submit"])) {
 
     <div class="title">
         <h2>Our Work</h2>
-    </div>
+    
 
     <div class="slideshow-container">
         <div class="slide fade">
@@ -350,7 +314,7 @@ if (isset($_POST["submit"])) {
         <span class="dot" onclick="currentSlide(15)"></span>
         <span class="dot" onclick="currentSlide(16)"></span>
     </div>
-    
+  </div>  
   
        
     <a href="customer_support.php" class="message-link">
