@@ -1,40 +1,7 @@
 <?php
 session_start();
-// Database connection (update with your own credentials)
-require_once "database.php";
-// Assuming the admin's name is stored in the session after login
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
-
-// Ensure admin_id is in the session (set during login)
-$admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
-
-if (!$admin_id) {
-    // If admin_id is not found in the session, redirect to login
-    header('Location: admin_login.php');
-    exit();
-}
-
-// Fetch total count of booking statuses from the reservation table
-$total_booking_status = 0;
-$status_query = "SELECT COUNT(*) AS total FROM reservation WHERE status IS NOT NULL";
-$status_result = $conn->query($status_query);
-
-
-if ($status_result) {
-    $status_row = $status_result->fetch_assoc();
-    $total_booking_status = $status_row['total'];
-} else {
-    echo "Error: " . $conn->error;
-}
-// Fetch total number of registered accounts
-$total_registered_accounts = 0;
-$sql = "SELECT COUNT(id) AS total FROM test_registration";
-$result = $conn->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
-    $total_registered_accounts = $row['total'];
-}
+// Assuming the admin's id is stored in the session after login
+$admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -42,64 +9,6 @@ if (isset($_GET['logout'])) {
     header('Location: admin_login.php');
     exit();
 }
-// Fetch total count of booking statuses from the reservation table
-$total_booking_status = 0;
-$status_query = "SELECT COUNT(*) AS total FROM reservation WHERE status IS NOT NULL";
-$status_result = $conn->query($status_query);
-
-if ($status_result) {
-    $status_row = $status_result->fetch_assoc();
-    $total_booking_status = $status_row['total'];
-} else {
-    echo "Error fetching booking status: " . $conn->error;
-}
-
-// Fetch total number of registered accounts
-$total_registered_accounts = 0;
-$sql = "SELECT COUNT(id) AS total FROM test_registration";
-$result = $conn->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
-    $total_registered_accounts = $row['total'];
-} else {
-    echo "Error fetching registered accounts: " . $conn->error;
-}
-
-// Fetch total number of payments in payment table
-$total_payment = 0;
-$sql = "SELECT COUNT(payment_id) AS total FROM payment";
-$result = $conn->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
-    $total_payment = $row['total'];
-} else {
-    echo "Error fetching payment count: " . $conn->error;
-}
-// Fetch notifications from the database for the admin
-$notifications = [];
-$sql = "SELECT * FROM admin_notifications WHERE admin_id = ? ORDER BY created_at DESC";
-$stmt = $conn->prepare($sql);
-
-if ($stmt) {
-    $stmt->bind_param("i", $admin_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Debugging: Check the number of rows returned
-    // echo "Number of notifications: " . $result->num_rows;
-
-    while ($row = $result->fetch_assoc()) {
-        $notifications[] = $row;
-    }
-
-    $stmt->close();
-} else {
-    echo "Error: " . $conn->error;
-}
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -117,13 +26,13 @@ $conn->close();
         <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
+                <p>Hello, Admin!</p>
             </div>
             <nav>
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png (1).png" alt="Home Icon">
+                            <img src="images/home.png.png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
@@ -132,7 +41,7 @@ $conn->close();
                 <ul>
                     <li>
                         <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Booking Status</span>
+                        <span>Bookings</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -154,18 +63,9 @@ $conn->close();
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
-                </ul>
-                <hr class="divider">
-                <ul>
                     <li>
                         <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Progress</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -185,32 +85,35 @@ $conn->close();
     <header>
         <h1>Dashboard</h1>
         <div class="header-right">
-           <!-- Notification Bell -->
-           <div class="notification-container">
+        <!-- Notification Bell -->
+        <div class="notification-container">
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                 <div id="notification-dropdown" class="notification-dropdown">
                     <h2>Notifications</h2>
-                    <?php if (!empty($notifications)): ?>
-                        <?php foreach ($notifications as $notification): ?>
-                            <div class="notification">
-                                <!-- Notification link -->
-                                <a href="admin_view_notification.php?id=<?php echo urlencode($notification['id']); ?>" class="notification-link">
-                                    <p><strong>Notification ID: </strong><?php echo htmlspecialchars($notification['id']); ?></p>
-                                    <p><?php echo htmlspecialchars($notification['message']); ?></p>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>No notifications found.</p>
-                    <?php endif; ?>
+                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
+                        <span>3:30 PM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
+                        <span>11:30 AM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
+                        <span>2:45 PM, Nov 29, 2024</span>
+                    </div>
+                    <div class="notification">
+                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
+                        <span>4:15 PM, Nov 29, 2024</span>
+                    </div>
                 </div>
             </div>
-
             <!-- Profile Icon -->
             <div class="profile-container">
                 <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
                 <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                    <p class="dropdown-header"> Admin</p>
                     <hr>
                     <ul>
                         <li><a href="admin_profile.php">Profile</a></li>
@@ -223,61 +126,60 @@ $conn->close();
         </div>
     </header>
             <section class="dashboard-cards">
-            <div class="card">
-                    <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Payments:</p>
-                    <h2><?php echo $total_payment; ?></h2>
+                <div class="card">
+                    <img src="images/booking.png.png" alt="Booking Icon" style="float: left; margin-right: 10px;">
+                    <p>Total of Customer's Booking:</p>
+                    <h2>20</h2>
                 </div>
                 <div class="card">
                     <img src="images/progress.png.png" alt="Progress Icon" style="float: left; margin-right: 10px;">
                     <p>Total of Progress:</p>
-                    <h2>0</h2>
+                    <h2>12</h2>
                 </div>
                 <div class="card">
                     <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
                     <p>Total of Booking Status:</p>
-                    <h2><?php echo $total_booking_status; ?></h2>
+                    <h2>9</h2>
                 </div>
                 <div class="card">
-                <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
-                <p>Registered Accounts:</p>
-                <h2><?php echo $total_registered_accounts; ?></h2>
-            </div>
+                    <img src="images/visitors.png.png" alt="Visitors Icon" style="float: left; margin-right: 10px;">
+                    <p>Total of Visitors:</p>
+                    <h2>45</h2>
+                </div>
             </section>
         </main>
     </div>
-
     <script>
         // Toggle Profile Dropdown
-        function toggleDropdown() {
-            const dropdown = document.getElementById('profile-dropdown');
-            dropdown.classList.toggle('show');
+function toggleDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Toggle Notification Dropdown
+function toggleNotification() {
+    const notifDropdown = document.getElementById('notification-dropdown');
+    notifDropdown.classList.toggle('show');
+}
+
+// Close dropdowns when clicking outside
+window.onclick = function(event) {
+    // Close profile dropdown if clicked outside
+    if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
+        const dropdown = document.getElementById('profile-dropdown');
+        if (dropdown && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
         }
+    }
 
-        // Toggle Notification Dropdown
-        function toggleNotification() {
-            const notifDropdown = document.getElementById('notification-dropdown');
-            notifDropdown.classList.toggle('show');
+    // Close notification dropdown if clicked outside
+    if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
+        const notifDropdown = document.getElementById('notification-dropdown');
+        if (notifDropdown && notifDropdown.classList.contains('show')) {
+            notifDropdown.classList.remove('show');
         }
-
-        // Close dropdowns when clicking outside
-        window.onclick = function(event) {
-            // Close profile dropdown if clicked outside
-            if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
-                const dropdown = document.getElementById('profile-dropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-
-            // Close notification dropdown if clicked outside
-            if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
-                const notifDropdown = document.getElementById('notification-dropdown');
-                if (notifDropdown && notifDropdown.classList.contains('show')) {
-                    notifDropdown.classList.remove('show');
-                }
-            }
-        };
+    }
+};
     </script>
 </body>
 </html>
