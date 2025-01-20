@@ -2,7 +2,6 @@
 session_start();
 
 // Define default values or fetch them from the session
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
 $admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : 'AD-0001';
 
 // Sample activities (you can replace these with data from a database)
@@ -45,10 +44,10 @@ if (isset($_GET['logout'])) {
 </head>
 <body>
 <div class="admin-dashboard">
-<aside class="sidebar">
+        <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
+                <p>Hello, Admin!</p>
             </div>
             <nav>
                 <ul>
@@ -63,7 +62,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li>
                         <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Booking Status</span>
+                        <span>Bookings</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -85,18 +84,9 @@ if (isset($_GET['logout'])) {
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
-                </ul>
-                <hr class="divider">
-                <ul>
                     <li>
                         <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Progress</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -145,7 +135,7 @@ if (isset($_GET['logout'])) {
             <div class="profile-container">
                 <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
                 <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                    <p class="dropdown-header"> Admin</p>
                     <hr>
                     <ul>
                         <li><a href="admin_profile.php">Profile</a></li>
