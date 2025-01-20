@@ -1,185 +1,296 @@
-<?php
-session_start();
-// Assuming the admin's id is stored in the session after login
-$admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
-
-// Handle logout
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header('Location: admin_login.php');
-    exit();
-}
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
-    <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
-</head>
-<body>
-<div class="admin-dashboard">
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, Admin!</p>
-            </div>
-            <nav>
-                <ul>
-                    <li class="dashboard-item">
-                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
-                        </a>
-                    </li>
-                </ul>
-                <hr class="divider">
-                <ul>
-                    <li>
-                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Bookings</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Payments</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Booking History</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Manage Feedback</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Calendar</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                </ul>
-                <hr class="divider">
-                <ul>
-                    <li>
-                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Manage Inquiries</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="content">
-    <header>
-        <h1>Dashboard</h1>
-        <div class="header-right">
-        <!-- Notification Bell -->
-        <div class="notification-container">
-                <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
-                <div id="notification-dropdown" class="notification-dropdown">
-                    <h2>Notifications</h2>
-                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
-                        <span>3:30 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
-                        <span>11:30 AM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
-                        <span>2:45 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
-                        <span>4:15 PM, Nov 29, 2024</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Profile Icon -->
-            <div class="profile-container">
-                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"> Admin</p>
-                    <hr>
-                    <ul>
-                        <li><a href="admin_profile.php">Profile</a></li>
-                        <li><a href="admin_activitylog.php">Activity Log</a></li>
-                    </ul>
-                    <hr>
-                    <a class="logout" href="?logout">Logout</a>
-                </div>
-            </div>
-        </div>
-    </header>
-            <section class="dashboard-cards">
-                <div class="card">
-                    <img src="images/booking.png.png" alt="Booking Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Customer's Booking:</p>
-                    <h2>20</h2>
-                </div>
-                <div class="card">
-                    <img src="images/progress.png.png" alt="Progress Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Progress:</p>
-                    <h2>12</h2>
-                </div>
-                <div class="card">
-                    <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Booking Status:</p>
-                    <h2>9</h2>
-                </div>
-                <div class="card">
-                    <img src="images/visitors.png.png" alt="Visitors Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Visitors:</p>
-                    <h2>45</h2>
-                </div>
-            </section>
-        </main>
-    </div>
-    <script>
-        // Toggle Profile Dropdown
-function toggleDropdown() {
-    const dropdown = document.getElementById('profile-dropdown');
-    dropdown.classList.toggle('show');
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
 }
 
-// Toggle Notification Dropdown
-function toggleNotification() {
-    const notifDropdown = document.getElementById('notification-dropdown');
-    notifDropdown.classList.toggle('show');
+.admin-dashboard {
+    display: flex;
+    height: 100vh;
 }
 
-// Close dropdowns when clicking outside
-window.onclick = function(event) {
-    // Close profile dropdown if clicked outside
-    if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
-        const dropdown = document.getElementById('profile-dropdown');
-        if (dropdown && dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
-        }
-    }
+.sidebar {
+    width: 20%;
+    background-color: #56aeff;
+    color: white;
+    height: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
 
-    // Close notification dropdown if clicked outside
-    if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
-        const notifDropdown = document.getElementById('notification-dropdown');
-        if (notifDropdown && notifDropdown.classList.contains('show')) {
-            notifDropdown.classList.remove('show');
-        }
-    }
-};
-    </script>
-</body>
-</html>
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    max-width: 30%;
+    margin: 0;
+}
+
+.logo p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.sidebar nav ul li img {
+    max-height: 35px;
+    margin-left: 5px;
+    transition: transform 0.3s ease; /* Smooth icon scaling */
+}
+
+.sidebar nav ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 5px; /* Smooth corners for hover effect */
+    transform: scale(1.03); /* Slight zoom effect on hover */
+}
+
+.sidebar nav ul li:hover img {
+    transform: scale(1.1); /* Slight zoom effect for icons */
+}
+
+/* Divider styling */
+.divider {
+    border: 0;
+    border-top: 2px solid white;
+    margin: 10px 0;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between notification and profile icons */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+header img {
+    max-height: 40px;
+    cursor: pointer;
+}
+
+/* Profile Dropdown */
+.profile-container {
+    position: relative;
+    display: inline-block;
+    z-index: 20; /* Higher than the notification dropdown */
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #56aeff;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px); /* Start slightly above its final position */
+    visibility: hidden; /* Ensures it's removed from screen readers and prevents interaction */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; /* Smooth fade and slide effect */
+    z-index: 20; /* Ensure it is above the notification dropdown */
+    padding: 15px;
+}
+
+#profile-dropdown.show {
+    opacity: 1;
+    transform: translateY(0); /* Slide to its final position */
+    visibility: visible;
+}
+
+/* Notification Dropdown */
+.notification-container {
+    position: relative;
+    display: inline-block;
+    z-index: 10; /* Lower z-index to move it behind the profile container */
+}
+
+.notification-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #ffffff;
+    width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth dropdown animation */
+    z-index: 10; /* Ensure it doesn't block the profile dropdown */
+    padding: 15px;
+}
+
+.notification-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification-dropdown h2 {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    color: black;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}
+
+.notification {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.notification:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.notification p {
+    margin: 0;
+    font-size: 14px;
+    color: black;
+}
+
+.notification span {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+.dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #56aeff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: none;
+    min-width: 200px;
+    z-index: 10;
+}
+
+.dropdown.show {
+    display: block;
+}
+
+.dropdown-header {
+    font-weight: bold;
+    padding: 10px 15px;
+    margin-left: 35px;
+}
+
+.dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown ul li {
+    padding: 10px 15px;
+}
+
+.dropdown ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.dropdown ul li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 2px; /* Smooth corners for hover effect */
+    transform: scale(1.03);
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease;
+}
+
+.logout {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+    padding: 10px 15px;
+}
+
+.logout:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 2px; /* Smooth corners for hover effect */
+    transform: scale(1.03);
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: #56aeff;
+    padding: 40px;
+    padding-bottom: 60px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    max-height: 90px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.card p {
+    font-size: 20px;
+    margin: 1px 0;
+}
+
+.card h2 {
+    font-size: 60px;
+    margin: 20px 0 0;
+}
