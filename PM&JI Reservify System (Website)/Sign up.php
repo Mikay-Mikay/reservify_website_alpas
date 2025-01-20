@@ -1,4 +1,7 @@
 <?php
+// Start the session to track user information
+session_start();
+
 // Initialize variables
 $errors = array();
 
@@ -10,25 +13,30 @@ if (isset($_POST["submit"])) {
     $Last_Name = $_POST["last_name"] ?? '';
     $Email = $_POST["email"] ?? '';
     $Phone_Number = $_POST["phone"] ?? '';
-    $Country = $_POST["country"] ?? '';
-    $Region = $_POST["region"] ?? '';
-    $City = $_POST["city"] ?? '';
-    $Barangay = $_POST["barangay"] ?? '';
     $Address = $_POST["address"] ?? '';
     $Date_of_Birth = $_POST["dob"] ?? '';
-    $Age = $_POST["age"] ?? '';
     $Password = $_POST["password"] ?? '';
     $Confirm_Password = $_POST["confirm_password"] ?? '';
     $Gender = $_POST["gender"] ?? '';
+    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
-    // Hash the password
+    // reCAPTCHA validation
+    $recaptchaSecret = '6Le6rr0qAAAAALs9WJj78sqgHxZ2IvQCOFp825iL';  // Replace with your secret key
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptchaSecret&response=$recaptchaResponse");
+    $responseKeys = json_decode($response, true);
+
+    // If reCAPTCHA validation fails
+    if (!$responseKeys["success"]) {
+        array_push($errors, "Please verify that you are not a bot.");
+    }
+
+    // Sanitize and hash the password
     $passwordHash = password_hash($Password, PASSWORD_DEFAULT);
 
     // Validation checks
     if (
         empty($First_Name) || empty($Last_Name) || empty($Email) || empty($Phone_Number) ||
-        empty($Country) || empty($Region) || empty($City) || empty($Barangay) ||
-        empty($Address) || empty($Date_of_Birth) || empty($Age) ||
+        empty($Address) || empty($Date_of_Birth) ||
         empty($Password) || empty($Confirm_Password) || empty($Gender)
     ) {
         array_push($errors, "All fields are required.");
@@ -57,8 +65,8 @@ if (isset($_POST["submit"])) {
 
         // SQL query
         $sql = "INSERT INTO test_registration 
-        (First_Name, Middle_Name, Last_Name, Email, Phone_Number, Country, Region, City, Barangay, Address, Date_of_Birth, Age, Password, Gender) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (First_Name, Middle_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth, Password, Gender) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Prepare and execute the statement
         $stmt = mysqli_stmt_init($conn);
@@ -67,7 +75,7 @@ if (isset($_POST["submit"])) {
             die("Database error: " . mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "ssssssssssssss", $First_Name, $Middle_Name, $Last_Name, $Email, $Phone_Number, $Country, $Region, $City, $Barangay, $Address, $Date_of_Birth, $Age, $passwordHash, $Gender);
+        mysqli_stmt_bind_param($stmt, "sssssssss", $First_Name, $Middle_Name, $Last_Name, $Email, $Phone_Number,  $Address, $Date_of_Birth, $passwordHash, $Gender);
 
         if (mysqli_stmt_execute($stmt)) {
             echo "<script>
@@ -79,7 +87,11 @@ if (isset($_POST["submit"])) {
         }
     }
 }
+
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -87,7 +99,9 @@ if (isset($_POST["submit"])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
-  <link rel="stylesheet" href="Sign up.css">
+  <link rel="stylesheet" type="text/css" href="Sign up.css?v=1.0">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -119,41 +133,14 @@ if (isset($_POST["submit"])) {
             <span class="details">Phone Number</span>
             <input type="text" name="phone" placeholder="e.g., 09123456789" required>
           </div>
+
           <div class="input-box">
-            <span class="details">Country</span>
-            <select id="countrySelect" name="country" required>
-              <option value="" disabled selected>Select your country</option>
-            </select>
-          </div>
-          <div class="input-box">
-            <span class="details">Region</span>
-            <select name="region" id="regionSelect" required>
-              <option value="" disabled selected>Select your region</option>
-            </select>
-          </div>
-          <div class="input-box">
-            <span class="details">City</span>
-            <select name="city" id="citySelect" required>
-              <option value="" disabled selected>Select your city</option>
-            </select>
-          </div>
-          <div class="input-box">
-            <span class="details">Barangay</span>
-            <select id="barangaySelect" name="barangay" required>
-              <option value="" disabled selected>Select your barangay</option>
-            </select>
-          </div>
-          <div class="input-box">
-            <span class="details">Address</span>
-            <input type="text" name="address" placeholder="Enter your address" required>
+            <span class="details">Full Address</span>
+            <input type="text" name="address" placeholder="Enter your full address" required>
           </div>
           <div class="input-box">
             <span class="details">Date of Birth</span>
             <input type="date" name="dob" required>
-          </div>
-          <div class="input-box">
-            <span class="details">Age</span>
-            <input type="number" name="age" min="1" max="120" placeholder="Enter your age" required>
           </div>
           <div class="input-box">
             <span class="details">Password</span>
@@ -184,9 +171,14 @@ if (isset($_POST["submit"])) {
             </label>
           </div>
         </div>
+
+
+        <div class="g-recaptcha" data-sitekey="6Le6rr0qAAAAAHRn-AkSkpYlNlHsQCwg_xh_w32w"></div>
+
         <div class="button">
           <input type="submit" name="submit" value="Register">
         </div>
+
         <div class="checkbox-container">
           <input type="checkbox" id="terms" name="terms" required>
           <label for="terms">
