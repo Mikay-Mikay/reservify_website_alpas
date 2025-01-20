@@ -90,6 +90,7 @@ if ($result && $result->num_rows > 0) {
 // Close the database connection
 $stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,73 +110,64 @@ $stmt->close();
 </head>
 <body>
 <div class="admin-dashboard">
-    <aside class="sidebar">
-        <div class="logo">
-            <img src="images/reservify_logo.png" alt="Reservify Logo">
-            <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
-        </div>
-        <nav>
-            <ul>
-                <li class="dashboard-item">
-                    <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                        <img src="images/home.png (1).png" alt="Home Icon">
-                        <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
-                    </a>
-                </li>
-            </ul>
-            <hr class="divider">
-            <ul>
-                <li>
-                    <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Booking Status</span>
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="images/reservify_logo.png" alt="Reservify Logo">
+                <p>Hello, Admin!</p>
+            </div>
+            <nav>
+                <ul>
+                    <li class="dashboard-item">
+                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
+                            <img src="images/home.png.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Bookings</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_payments.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Payments</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_bookinghistory.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Booking History</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_managefeedback.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Feedback</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-            </ul>
-            <hr class="divider">
-            <ul>
-                <li>
-                    <a href="admin_calendar.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_progress.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Progress</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-            </ul>
-            <hr class="divider">
-            <ul>
-                <li>
-                    <a href="admin_manageinquiries.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+                <hr class="divider">
+                <ul>
+                    <li>
+                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
-                        <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
     <main class="content">
         <header class="header">
