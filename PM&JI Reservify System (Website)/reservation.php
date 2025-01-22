@@ -21,10 +21,11 @@ if (isset($_POST["submit"])) {
     $event_place = $_POST["event_place"] ?? '';
     $number_of_participants = $_POST["number_of_participants"] ?? '';
     $contact_number = $_POST["contact_number"] ?? '';
-    $date_and_schedule = $_POST["dob"] ?? '';
+    $start_time = $_POST["timedatePickerStart"] ?? '';
+    $end_time = $_POST["timedatePickerEnd"] ?? '';
 
     // Validate form data
-    if (empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($date_and_schedule)) {
+    if (empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($start_time) || empty($end_time)) {
         $errors[] = "All fields are required.";
     }
 
@@ -81,8 +82,9 @@ if (isset($_POST["submit"])) {
 
         // SQL query to insert reservation
         $sql = "INSERT INTO reservation 
-                (user_id, event_type, event_place, number_of_participants, contact_number, date_and_schedule, image) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        (user_id, event_type, event_place, number_of_participants, contact_number, start_time, end_time, image) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -90,7 +92,7 @@ if (isset($_POST["submit"])) {
             die("Database error: " . mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "issssss", $user_id, $event_type, $event_place, $number_of_participants, $contact_number, $date_and_schedule, $file_name);
+        mysqli_stmt_bind_param($stmt, "isssssss", $user_id, $event_type, $event_place, $number_of_participants, $contact_number, $start_time, $end_time, $file_name);
 
         if (mysqli_stmt_execute($stmt)) {
             $reservation_id = mysqli_insert_id($conn);
@@ -103,7 +105,8 @@ if (isset($_POST["submit"])) {
                 . "Event Type: $event_type, \n"
                 . "Location: $event_place, \n"
                 . "Participants: $number_of_participants, \n"
-                . "Date: $date_and_schedule, \n"
+                . "start_time: $start_time, \n"
+                . "end_time: $end_time, \n"
                 . "Image: $file_name.";
 
             $notification_sql = "INSERT INTO admin_notifications 
@@ -139,6 +142,8 @@ if (isset($_POST["submit"])) {
     
 }
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -247,6 +252,58 @@ if (isset($_POST["submit"])) {
     background-color: red !important;
     color: white !important;
 }
+/* Container to hold the inputs in two columns */
+.input-container {
+    display: flex; /* Flexbox layout */
+    gap: 20px; /* Space between the columns */
+    flex-wrap: wrap; /* Ensures it wraps on smaller screens */
+    align-items: center; /* Vertically center the items within the container */
+    justify-content: center; /* Horizontally center the container */
+    width: 100%; /* Ensure full width for the container */
+    max-width: 800px; /* Optional: Set a max-width to prevent it from stretching too wide */
+    margin: 0 auto; /* Center the container on the page */
+}
+
+/* Common styles for both start and end time inputs */
+input[type="text"] {
+    flex: 1; /* Make each input take equal width in the container */
+    padding: 12px 15px; /* Spacing inside the input field */
+    margin-bottom: 15px; /* Space between input fields */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Text size */
+    background-color: #fff; /* Background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effects */
+    height: 45px; /* Add a height to the input fields */
+}
+
+/* Ensure both inputs fit in the container */
+.input-container input[type="text"] {
+    margin-bottom: 0; /* Remove bottom margin on the inputs in the same row */
+}
+
+/* Adjust input to take up full width on small screens */
+@media (max-width: 768px) {
+    .input-container {
+        flex-direction: column; /* Stack the inputs vertically on small screens */
+        align-items: flex-start; /* Align items to the start in vertical layout */
+    }
+
+    input[type="text"] {
+        width: 100%; /* Make inputs full width on smaller screens */
+    }
+}
+
+/* Labels for clarity */
+label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+}
+
 
 
 
@@ -286,7 +343,7 @@ if (isset($_POST["submit"])) {
     </nav>
 
     <div class="container">
-        <div class="title">Registration</div>
+        <div class="title">Reservation</div>
         <div class="content">
             <form action="reservation.php" method="POST" enctype="multipart/form-data">
                 <div class="user-details">
@@ -320,13 +377,22 @@ if (isset($_POST["submit"])) {
 
                     <div class="input-box">
                         <label for="contactNumber">Contact Number:</label>
-                        <input id="contactNumber" type="text" name="contact_number" placeholder="e.g. 09123456712" required>
+                        <input id="contactNumber" type="number" name="contact_number" placeholder="e.g. 09123456712" required>
                     </div>
 
-                    <div class="timepicker">
-                        <label for="timedatePicker">Date and Schedule:</label>
-                        <input type="text" id="timedatePicker" name="dob" placeholder="Select Date and Time" required>
+                    <div class="input-container">
+                    <div class="input-item">
+                        <label for="timedatePickerStart">Start Time</label>
+                        <input type="text" name="timedatePickerStart"id="timedatePickerStart" placeholder="Select start date and time" required>
                     </div>
+                    
+                    <div class="input-item">
+                        <label for="timedatePickerEnd">End Time</label>
+                        <input type="text" name="timedatePickerEnd"id="timedatePickerEnd" placeholder="Select end date and time">
+                    </div>
+                </div>
+
+
                 </div>
 
                 <div class="upload-container">
@@ -433,8 +499,8 @@ if (isset($_POST["submit"])) {
             <span>Connect with Us</span>
         </div>
     </a>
+    
 
-    <input type="text" id="timedatePicker" placeholder="Select date and time">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
@@ -444,26 +510,34 @@ if (isset($_POST["submit"])) {
             method: 'GET',
             dataType: 'json',
             success: function (data) {
-                flatpickr("#timedatePicker", {
+                // Initialize start time picker
+                flatpickr("#timedatePickerStart", {
                     enableTime: true,
                     dateFormat: "Y-m-d h:i K",
                     time_24hr: false,
                     disable: data,  // Disable unavailable dates
                     onDayCreate: function (dObj, dStr, instance) {
-                        console.log("onDayCreate triggered");
-                        // Log the current day and its formatted date string
-                        console.log("dStr: ", dStr);
-                        console.log("Unavailable Dates: ", data);
-
-                        // Get the date from the string in 'YYYY-MM-DD' format
+                        console.log("onDayCreate triggered for start time");
+                        // Logic to mark unavailable dates for start time
                         var dateString = dStr.split(' ')[0]; // 'YYYY-MM-DD'
-                        console.log("Date String: ", dateString);
-                        
-                        // Check if the current date is in the unavailable dates
                         if (data.includes(dateString)) {
-                            // Apply the 'unavailable' class to the day
                             $(dObj).addClass('unavailable');
-                            console.log("Adding 'unavailable' class to: ", dateString);
+                        }
+                    }
+                });
+
+                // Initialize end time picker
+                flatpickr("#timedatePickerEnd", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d h:i K",
+                    time_24hr: false,
+                    disable: data,  // Disable unavailable dates for end time
+                    onDayCreate: function (dObj, dStr, instance) {
+                        console.log("onDayCreate triggered for end time");
+                        // Logic to mark unavailable dates for end time
+                        var dateString = dStr.split(' ')[0]; // 'YYYY-MM-DD'
+                        if (data.includes(dateString)) {
+                            $(dObj).addClass('unavailable');
                         }
                     }
                 });
