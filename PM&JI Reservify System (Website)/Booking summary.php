@@ -25,7 +25,8 @@ $sql = "
         r.event_place, 
         r.number_of_participants, 
         r.contact_number, 
-        r.date_and_schedule,
+        r.start_time,
+        r.end_time,
         r.image,
         p.payment_method
     FROM 
@@ -57,7 +58,8 @@ if ($stmt) {
         $event_place = $data['event_place'];
         $number_of_participants = $data['number_of_participants'];
         $contact_number = $data['contact_number'];
-        $date_and_schedule = $data['date_and_schedule'];
+        $start_time = $data["start_time"];
+        $end_time = $data["end_time"];
         $image = $data['image'];
         $payment_method = $data['payment_method'];
     } else {
@@ -75,15 +77,15 @@ if (isset($_POST['submit'])) {
     $insert_sql = "
         INSERT INTO booking_summary 
         (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
-        number_of_participants, contact_number, date_and_schedule, image, payment_method, reservation_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        number_of_participants, contact_number, start_time, end_time, image, payment_method, reservation_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
     
     $stmt = mysqli_prepare($conn, $insert_sql);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "issssssissssi", $user_id, $first_name, $middle_name, $last_name, $email, 
+        mysqli_stmt_bind_param($stmt, "issssssssisssi", $user_id, $first_name, $middle_name, $last_name, $email, 
                               $event_type, $event_place, $number_of_participants, $contact_number, 
-                              $date_and_schedule, $image, $payment_method, $reservation_id);
+                              $start_time, $end_time, $image, $payment_method, $reservation_id);
 
         if (mysqli_stmt_execute($stmt)) {
             // Retrieve the newly inserted booking ID
@@ -184,8 +186,12 @@ if (isset($_POST['submit'])) {
                 <input type="text" value="<?php echo htmlspecialchars($contact_number); ?>" disabled />
             </div>
             <div class="summary-item">
-                <label>Date and Schedule:</label>
-                <input type="text" value="<?php echo htmlspecialchars($date_and_schedule); ?>" disabled />
+                <label>Start Time:</label>
+                <input type="text" value="<?php echo htmlspecialchars($start_time); ?>" disabled />
+            </div>
+            <div class="summary-item">
+                <label>End Time:</label>
+                <input type="text" value="<?php echo htmlspecialchars($end_time); ?>" disabled />
             </div>
             <div class="summary-item">
                 <label>Image:</label>
