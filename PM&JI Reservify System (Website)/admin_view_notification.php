@@ -205,19 +205,22 @@ if ($notification_id) {
         <p><strong>Created At:</strong> <?php echo htmlspecialchars($notification['created_at']); ?></p>
 
         <!-- Display the image -->
-        <?php
-        if (!empty($notification['image'])) {
-            $file_path = htmlspecialchars($notification['image']);
-            if (file_exists($file_path)) {
-                echo '<p><strong>Image:</strong></p>';
-                echo '<img src="' . $file_path . '" alt="Notification Image" style="max-width: 100%; height: auto;">';
-            } else {
-                echo '<p>Image file not found.</p>';
-            }
-        } else {
-            echo '<p>No image associated with this notification.</p>';
-        }
-        ?>
+<?php
+if (!empty($notification['image'])) {
+    // Add the correct path to the image file (assuming 'images/' is your folder)
+    $file_path = 'images/' . htmlspecialchars($notification['image']);
+    
+    if (file_exists($file_path)) {
+        echo '<p><strong>Image:</strong></p>';
+        echo '<img src="' . $file_path . '" alt="Notification Image" style="max-width: 100%; height: auto;">';
+    } else {
+        echo '<p>Image file not found at: ' . $file_path . '</p>';
+    }
+} else {
+    echo '<p>No image associated with this notification.</p>';
+}
+?>
+
 
         <!-- Approve and Reject Buttons -->
         <form action="handle_notification.php" method="POST">
