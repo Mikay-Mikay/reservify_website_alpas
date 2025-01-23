@@ -1,7 +1,8 @@
 <?php
 session_start();
-// Assuming the admin's name is stored in the session after login
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
+require_once "database.php";
+// Assuming the admin's ID is stored in the session after login
+$admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -22,11 +23,11 @@ if (isset($_GET['logout'])) {
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
     <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
     <link rel="stylesheet" href="admin_payments.css?v=1.1">
-    <link rel="stylesheet" href="admin_managefeedback.css">
+    <link rel="stylesheet" href="admin_managefeedback.css?">
 </head>
 <body>
-<div class="admin-dashboard">
-        <aside class="sidebar">
+    <div class="admin-dashboard">
+    <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
                 <p>Hello, Admin!</p>
@@ -35,7 +36,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png (1).png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
