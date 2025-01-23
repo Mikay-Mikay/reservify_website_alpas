@@ -1,14 +1,17 @@
 <?php
 session_start();
 
-// Check if the admin is logged in
-if (!isset($_SESSION['admin_id'])) {
+require_once "database.php";
+// Assuming the admin's ID is stored in the session after login
+$admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
     header('Location: admin_login.php');
     exit();
 }
 
-$admin_id = $_SESSION['admin_id']; // Get admin ID from session
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
 
 // Database connection (update with your own credentials)
 require_once "database.php";
@@ -25,6 +28,7 @@ $notifications = [];
 $sql = "SELECT * FROM admin_notifications WHERE admin_id = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($sql);
 
+
 if ($stmt) {
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
@@ -38,6 +42,11 @@ if ($stmt) {
 } else {
     echo "Error: " . $conn->error;
 }
+// Query to fetch reservation_id and status
+$sql = "SELECT reservation_id, status FROM reservation";
+$result = $conn->query($sql); // Assuming $conn is defined in database.php
+
+
 
 $conn->close();
 ?>
@@ -55,8 +64,8 @@ $conn->close();
     <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
 </head>
 <body>
-<div class="admin-dashboard">
-        <aside class="sidebar">
+    <div class="admin-dashboard">
+    <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
                 <p>Hello, Admin!</p>
@@ -65,7 +74,7 @@ $conn->close();
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png (1).png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
@@ -124,8 +133,8 @@ $conn->close();
                             <input type="text" id="searchBar" placeholder="Search reservation number.." onkeyup="searchTable()">
 
                                                 
-                        <!-- Notification Bell -->
-            <div class="notification-container">
+                      <!-- Notification Bell -->
+           <div class="notification-container">
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                 <div id="notification-dropdown" class="notification-dropdown">
                     <h2>Notifications</h2>
@@ -137,6 +146,7 @@ $conn->close();
                                     <p><strong>Notification ID: </strong><?php echo htmlspecialchars($notification['id']); ?></p>
                                     <p><?php echo htmlspecialchars($notification['message']); ?></p>
                                 </a>
+                                
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -145,13 +155,12 @@ $conn->close();
                 </div>
             </div>
 
-
                             
                             <!-- Profile Icon -->
                             <div class="profile-container">
                                 <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
                                 <div id="profile-dropdown" class="dropdown">
-                                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                                    <p class="dropdown-header">Jiar Cabubas (Admin)</p>
                                     <hr>
                                     <ul>
                                         <li><a href="admin_profile.php">Profile</a></li>
@@ -165,10 +174,46 @@ $conn->close();
                     </header>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Reservation Number</th>
-                                <th>Status</th>
-                            </tr>
+                        <tr>
+                        <tr>
+                        <tr>
+                        <tr>
+        <th>Reservation Number</th>
+        <th>Status</th>
+    </tr>
+    <?php
+    // Get current date in YYYYMMDD format
+    $current_date = date("Ymd");
+
+    // Initialize counter for sequential number
+    $counter = 1;
+
+    // Fetch each reservation row and display
+    while ($row = $result->fetch_assoc()) {
+        $reservation_id = $row['reservation_id'];
+        $status = $row['status'];
+
+        // Format the reservation number (PMJI-YYYYMMDD-CUST001)
+        $formatted_reservation_id = "PMJI-" . $current_date . "-CUST" . str_pad($counter, 3, "0", STR_PAD_LEFT);
+        
+        // Increment the counter for the next reservation
+        $counter++;
+
+        // Assign a color based on the status
+        if ($status == 'approved') {
+            $status_color = 'green';
+        } elseif ($status == 'rejected') {
+            $status_color = 'red';
+        } else {
+            $status_color = 'gray'; // Default color if status is not approved/rejected
+        }
+        
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($formatted_reservation_id) . "</td>";
+        echo "<td style='color: $status_color;'>" . htmlspecialchars($status) . "</td>";
+        echo "</tr>";
+    }
+    ?>
                         </thead>
                     </table>
                 </main>
