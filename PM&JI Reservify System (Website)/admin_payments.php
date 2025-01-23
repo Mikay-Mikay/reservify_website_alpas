@@ -1,108 +1,81 @@
 <?php
 session_start();
-require_once 'databasee.php'; // Include the external database connection
 
-// Handle form actions (Create, Delete)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
-    // Retrieve form data
-    $ref_no = isset($_POST['ref_no']) ? trim($_POST['ref_no']) : '';
-    $date = isset($_POST['date']) ? trim($_POST['date']) : '';
-    $client_name = isset($_POST['client_name']) ? trim($_POST['client_name']) : '';
-    $amount = isset($_POST['amount']) ? trim($_POST['amount']) : '';
-    $payment_method = isset($_POST['payment_method']) ? trim($_POST['payment_method']) : '';
+// Initialize the admin name from the session
+$admin_name = $_SESSION['fullname'] ?? 'Admin'; // Default to 'Admin' if session variable is not set
+$errors = array();
 
-    // Validate payment method input
-    $allowed_methods = ['Gcash', 'Maya'];
-    if (!in_array($payment_method, $allowed_methods)) {
-        echo "<script>alert('Invalid payment method selected!');</script>";
-        exit();
-    }
+// Handle form submission
+if (isset($_POST["submit"])) {
+    // Retrieve form inputs
+    $ref_no = $_POST["ref_no"] ?? '';
+    $date = $_POST["date"] ?? '';
+    $client_name = $_POST["client_name"] ?? '';
+    $amount = $_POST["amount"] ?? '';
+    $payment_method = $_POST["payment_method"] ?? '';
 
-    // Validate all fields are present
+    // Validate the inputs
     if (empty($ref_no) || empty($date) || empty($client_name) || empty($amount) || empty($payment_method)) {
-        echo "<script>alert('All fields are required!');</script>";
-        exit();
+        array_push($errors, "All fields are required.");
     }
 
-    // Insert the payment record into the database
-    try {
-        $sql = "INSERT INTO admin_payments (ref_no, date, client_name, amount, payment_method) 
-                VALUES (:ref_no, :date, :client_name, :amount, :payment_method)";
-        $stmt = $conn->prepare($sql);
-        $result = $stmt->execute([
-            ':ref_no' => $ref_no,
-            ':date' => $date,
-            ':client_name' => $client_name,
-            ':amount' => $amount,
-            ':payment_method' => $payment_method
-        ]);
-
-        if ($result) {
-            echo "<script>alert('Payment added successfully.'); window.location.href='admin_payments.php';</script>";
-        } else {
-            echo "<script>alert('Failed to add payment. Please try again.');</script>";
+    // If errors exist, display them
+    if (count($errors) > 0) {
+        foreach ($errors as $error) {
+            echo "<div class='alert alert-danger'>$error</div>";
         }
-    } catch (PDOException $e) {
-        echo "<script>alert('Database error: {$e->getMessage()}');</script>";
-    }
-}
+    } else {
+        // Database connection
+        require_once "database.php";
 
-// Handle delete action
-if (isset($_POST['confirm_delete']) && isset($_POST['payments_to_delete'])) {
-    $payments_to_delete = $_POST['payments_to_delete'];
+        // SQL query to insert payment details
+        $sql = "INSERT INTO admin_payments (ref_no, date, client_name, amount, payment_method) VALUES (?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
 
-    try {
-        foreach ($payments_to_delete as $id) {
-            // Delete payment record
-            $stmt = $conn->prepare("DELETE FROM admin_payments WHERE id = :id");
-            $stmt->execute([':id' => $id]);
+        // Check if statement preparation was successful
+        if ($stmt === false) {
+            die("MySQL prepare failed: " . mysqli_error($conn));
         }
 
-        echo "<script>alert('Selected payments deleted successfully.'); window.location.href='admin_payments.php';</script>";
-    } catch (PDOException $e) {
-        echo "<script>alert('Failed to delete payments: {$e->getMessage()}');</script>";
+        // Bind parameters to the SQL query
+        mysqli_stmt_bind_param($stmt, "sssss", $ref_no, $date, $client_name, $amount, $payment_method);
+
+        // Execute the query and handle any errors
+        if (!mysqli_stmt_execute($stmt)) {
+            die("Error executing query: " . mysqli_error($conn));
+        }
+
+        // Success message and redirect
+        echo "<script>
+            alert('Payment details successfully added.');
+            window.location.href = 'admin_payments.php';
+        </script>";
     }
 }
 
-// Fetch all payment records
-try {
-    $sql = "SELECT * FROM admin_payments ORDER BY date DESC";
-    $stmt = $conn->query($sql);
-    $admin_payments = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-} catch (PDOException $e) {
-    echo "<script>alert('Failed to fetch payments: {$e->getMessage()}');</script>";
-    $admin_payments = [];
-}
+// Fetch the payment details from the database
+require_once "database.php";
+$sql = "SELECT * FROM admin_payments";  // Query to fetch all payment records
+$result = mysqli_query($conn, $sql);
 
-// Admin name from session
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
-
-// Handle logout
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header('Location: admin_login.php');
-    exit();
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments - Admin Panel</title>
-    <link rel="stylesheet" href="admin_payments.css?">
-    <link rel="stylesheet" href="admin_dashboard.css">
-    <link rel="stylesheet" href="admin_profile.css?">
-    <link rel="stylesheet" href="admin_activitylog.css">
-    <link rel="stylesheet" href="admin_bookingstatus.css">
+    <link rel="stylesheet" href="admin_payments.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_profile.css?v=1.1">
+    <link rel="stylesheet" href="admin_activitylog.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 </head>
 <body>
 <div class="admin-dashboard">
-        <aside class="sidebar">
+<aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
                 <p>Hello, Admin!</p>
@@ -111,7 +84,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png (1).png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
@@ -163,6 +136,8 @@ if (isset($_GET['logout'])) {
 
     <!-- Content -->
     <div class="content">
+       <!-- Content -->
+    <div class="content">
         <header>
             <h1>Payments</h1>
             <div class="header-right">
@@ -197,57 +172,65 @@ if (isset($_GET['logout'])) {
                     </div>
                 </div>
             </div>
-            <!-- Profile Icon -->
-            <div class="profile-container">
-                <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
-                    <hr>
-                    <ul>
-                        <li><a href="admin_profile.php">Profile</a></li>
-                        <li><a href="admin_activitylog.php">Activity Log</a></li>
-                    </ul>
-                    <hr>
-                    <a class="logout" href="?logout">Logout</a>
-                </div>
-            </div>
+                        <!-- Profile Icon -->
+                        <div class="profile-container">
+                            <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
+                            <div id="profile-dropdown" class="dropdown">
+                                <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                                <hr>
+                                <ul>
+                                    <li><a href="admin_profile.php">Profile</a></li>
+                                    <li><a href="admin_activitylog.php">Activity Log</a></li>
+                                </ul>
+                                <hr>
+                                <a class="logout" href="?logout">Logout</a>
+                            </div>
+                        </div>
         </header>
-        
-<!-- Table -->
-<table class="payments-table">
-    <thead>
-        <tr>
-            <th>ID/Ref No.</th>
-            <th>Date</th>
-            <th>Name of Client</th>
-            <th>Amount</th>
-            <th>Payment Method</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($admin_payments as $payment): ?>
-<tr>
-    <td><?php echo htmlspecialchars($payment['ref_no']); ?></td>
-    <td><?php echo htmlspecialchars($payment['date']); ?></td>
-    <td><?php echo htmlspecialchars($payment['client_name']); ?></td>
-    <td>PHP <?php echo number_format($payment['amount'], 2); ?></td>
-    <td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
-</tr>
-<?php endforeach; ?>
 
-</tbody>
+        <!-- Table to Display Payments -->
+        <table class="payments-table">
+            <thead>
+                <tr>
+                    <th>Ref No.</th>
+                    <th>Date</th>
+                    <th>Name of Client</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result) {
+                    // Loop through the fetched data and display each row
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['ref_no']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['date']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['client_name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['amount']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['payment_method']) . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='5'>No data available</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-</table>
-<!-- Create Payment Modal -->
+<!-- Modal for creating a payment -->
 <div id="createPaymentModal" class="modal">
     <div class="modal-content">
-        <h2>Create Payment</h2>
+        <h2>Payment Details</h2>
         <form method="POST">
             <label for="ref_no">ID/Ref No.</label>
             <input type="text" name="ref_no" required>
 
             <label for="date">Date</label>
-            <input type="text" id="datePicker" name="date" required>
+            <input type="date" id="datePicker" name="date" required>
 
             <label for="client_name">Name of Client</label>
             <input type="text" name="client_name" required>
@@ -262,64 +245,44 @@ if (isset($_GET['logout'])) {
             </select>
 
             <div class="form-actions">
-                <button type="submit" class="btn save">Save</button>
+                <button type="submit" name="submit" class="btn save">Save</button>
                 <button type="button" class="btn cancel" onclick="closeCreateModal()">Cancel</button>
             </div>
         </form>
     </div>
-</div>
-<!-- Delete Payment Modal -->
-<div id="deletePaymentModal" class="modal">
-    <div class="modal-content">
-        <h2>Select Payment/s to Delete</h2>
-        <form method="POST">
-            <?php foreach ($admin_payments as $payment): ?>
-                <div>
-                    <input type="checkbox" name="payments_to_delete[]" value="<?php echo $payment['id']; ?>">
-                    <?php echo htmlspecialchars($payment['ref_no']) . ' - ' . htmlspecialchars($payment['client_name']); ?>
-                </div>
-            <?php endforeach; ?>
 
-            <div class="form-actions">
-                <button type="submit" class="btn delete">Delete Selected</button>
-                <button type="button" class="btn cancel" onclick="closeDeleteModal()">Cancel</button>
-            </div>
-        </form>
-    </div>
+    
 </div>
+
 <!-- JavaScript -->
 <script>
     // Functions to open and close Create Modal
-function openCreateModal() {
-    document.getElementById("createPaymentModal").style.display = "flex";
-}
+    function openCreateModal() {
+        document.getElementById("createPaymentModal").style.display = "flex";
+    }
 
-function closeCreateModal() {
-    document.getElementById("createPaymentModal").style.display = "none";
-}
+    function closeCreateModal() {
+        document.getElementById("createPaymentModal").style.display = "none";
+    }
 
-// Functions to open and close Delete Modal
-function openDeleteModal() {
-    document.getElementById("deletePaymentModal").style.display = "flex";
-}
+    // Functions to open and close Delete Modal
+    function openDeleteModal() {
+        document.getElementById("deletePaymentModal").style.display = "flex";
+    }
 
-function closeDeleteModal() {
-    document.getElementById("deletePaymentModal").style.display = "none";
-}
+    function closeDeleteModal() {
+        document.getElementById("deletePaymentModal").style.display = "none";
+    }
 
-document.addEventListener('DOMContentLoaded', function () {
+    // Initialize flatpickr
+    document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#datePicker", {
             dateFormat: "Y-m-d", // Set the desired date format
         });
     });
 
-    function showAlert(message) {
-    alert(message);
-    window.location.reload();
-}
-
-// Search Function
-function searchTable() {
+    // Search Function
+    function searchTable() {
         const input = document.getElementById("searchBar").value.toUpperCase();
         const table = document.querySelector("table tbody");
         const rows = table.getElementsByTagName("tr");
@@ -332,33 +295,7 @@ function searchTable() {
             }
         }
     }
-
-    function toggleDropdown() {
-            const dropdown = document.getElementById('profile-dropdown');
-            dropdown.classList.toggle('show');
-        }
-
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-icon')) {
-                const dropdown = document.getElementById('profile-dropdown');
-                if (dropdown && dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
-            }
-        }
-        // Toggle Notification Dropdown
-        function toggleNotification() {
-            const notifDropdown = document.getElementById('notification-dropdown');
-            notifDropdown.classList.toggle('show');
-
-            // Close notification dropdown if clicked outside
-            if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
-                const notifDropdown = document.getElementById('notification-dropdown');
-                if (notifDropdown && notifDropdown.classList.contains('show')) {
-                    notifDropdown.classList.remove('show');
-                }
-            }
-        }
 </script>
+
 </body>
-</html> 
+</html>
