@@ -15,7 +15,8 @@ $sql = "
     SELECT r.reservation_id, r.status, 
            bs.first_name, bs.middle_name, bs.last_name, bs.email, 
            bs.event_type, bs.event_place, bs.number_of_participants, 
-           bs.date_and_schedule, bs.payment_method
+           bs.start_time, bs.end_time,
+            bs.payment_method
     FROM reservation r
     INNER JOIN booking_summary bs ON r.reservation_id = bs.reservation_id
     ORDER BY r.reservation_id ASC
@@ -37,7 +38,8 @@ while ($row = $result->fetch_assoc()) {
         'event_type' => $row['event_type'],
         'event_place' => $row['event_place'],
         'number_of_participants' => $row['number_of_participants'],
-        'date_and_schedule' => $row['date_and_schedule'],
+        'start_time' => $row['start_time'],
+        'end_time' => $row['end_time'],
         'payment_method' => $row['payment_method'],
         'status' => $row['status']
     ];
@@ -63,13 +65,13 @@ $conn->close();
         <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, Admin!</p>
+                <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
             </div>
             <nav>
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png (1).png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
                         </a>
                     </li>
@@ -78,7 +80,7 @@ $conn->close();
                 <ul>
                     <li>
                         <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Bookings</span>
+                        <span>Booking Status</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -100,9 +102,18 @@ $conn->close();
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
+                </ul>
+                <hr class="divider">
+                <ul>
                     <li>
                         <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
+                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Progress</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
@@ -110,7 +121,7 @@ $conn->close();
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_manageinq.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -202,7 +213,8 @@ function showDetails(reservationNumber) {
             "Event Type: " + bookingDetails.event_type + "\n" +
             "Event Place: " + bookingDetails.event_place + "\n" +
             "Participants: " + bookingDetails.number_of_participants + "\n" +
-            "Date & Schedule: " + bookingDetails.date_and_schedule + "\n" +
+            "start_time: " + bookingDetails.start_time + "\n" +
+            "end_time: " +bookingDetails.end_time + "\n" +
             "Payment Method: " + bookingDetails.payment_method + "\n" +
             "Status: " + bookingDetails.status
         );
