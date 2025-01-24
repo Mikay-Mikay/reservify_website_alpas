@@ -1,4 +1,5 @@
-/* General Reset */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -6,58 +7,555 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
+    font-family: "Poppins", sans-serif;
 }
 
-/* Header */
-h1 {
-    font-size: 2em;
-    color: #444;
+a, a:hover {
+    text-decoration: none;
+}
+
+nav {
+    background: #fac08d;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensure even spacing between logo and menu */
+    position: relative;
+}
+
+nav a {
+    color: black;
+}
+
+nav a:hover {
+    color: white;
+    transition: color 0.3s;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.logo img {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px; /* Add uniform spacing between menu items */
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.menu li.user-logo img {
+    width: 55px;
+    height: 55px;
+    margin-left: 10px;
+}
+
+.menu li.user-logo {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.toggle {
+    font-size: 30px;
+    display: none;
+    cursor: pointer;
+}
+
+/* General styles for icons */
+.fa-user, .fa-bell {
+    color: black;
+    cursor: pointer;
+    margin-right: 8px; /* Ensure consistent spacing between icons */
+}
+
+/* Notification Bell Container */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Notification Count Badge */
+.notification-bell::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    display: none; /* Initially hidden */
+}
+
+/* Show count only if there's a notification */
+.notification-bell[data-count]:not([data-count="0"])::after {
+    display: inline-block;
+}
+
+/* Dropdown Menu */
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 250px;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.notification-dropdown p {
+    margin: 0;
+    color: gray;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Notification Items */
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: black;
+    text-decoration: none;
+    display: block;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+/* Ensure the dropdown stays open when clicked */
+.notification-bell.active + .notification-dropdown {
+    display: block;
+}
+
+/* Remove underline and ensure blue color for links in notifications */
+.notification-item a {
+    color: #007bff;  /* Set text color to blue */
+    text-decoration: none; /* No underline */
+}
+
+/* If you want to remove any hover effect */
+.notification-item a:hover {
+    text-decoration: none;  /* Ensure no underline on hover */
+}
+
+.container {
+    max-width: 1000px;
+    margin: 20px auto; /* Center the container horizontally and vertically */
+    padding: 40px;
+    background-color: #fac08d;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
     margin-bottom: 20px;
 }
 
-/* Notification Container */
-#notification-content {
-    background-color: #fff;
+.input-box {
+    margin-bottom: 20px;
+}
+
+/* Apply flexbox or grid to make the layout two columns */
+.user-details {
+    display: grid; /* Enable grid layout */
+    grid-template-columns: repeat(2, 1fr); /* 2 equal-width columns */
+    gap: 20px; /* Space between columns */
+}
+
+/* Ensuring labels and inputs stay aligned */
+.form-label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-input {
     width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-/* Notification Message */
-#notification-content p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* Back Button */
-.back-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #fac08d;
-    color: #fff;
-    text-decoration: none;
-    font-size: 1em;
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    font-size: 14px;
 }
 
-.back-button:hover {
-    background-color: #e08e5b;
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.upload-container h2 {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.upload-container p {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.upload-input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Help links */
+.help-link {
+    display: inline-block;
+    background-color: #f4a36c;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.help-link:hover {
+    background-color: #ad795b;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #f4a36c;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background-color: #ad795b;
+}
+ /* Existing CSS */
+ .payment-type {
+    max-width: 100%;
+    display: flex;
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 20px;
+    flex-wrap: wrap; /* Ensures items wrap in smaller screens */
+    margin-top: 20px;
+    padding-left: 0; /* Optional: Remove left padding */
+}
+
+.payment-type img {
+    max-width: 100%;
+    height: auto;
+    max-width: 200px;
+    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+    cursor: pointer; /* Pointer cursor for clickable images */
+}
+
+.payment-type img.zoomed {
+    transform: scale(1.5); /* Zoom in effect */
+    z-index: 10; /* Ensure it appears above other elements */
+    position: relative;
+}
+
+.zoomable {
+    transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+    cursor: pointer; /* Pointer cursor to indicate clickable images */
+}
+
+.zoomable.zoomed {
+    transform: scale(1.5); /* Zoom effect */
+    z-index: 10; /* Ensure it appears above other elements */
+    position: relative;
+}
+
+.payment-type img {
+    max-width: 100%; /* Para mag-adjust ang laki depende sa parent container */
+    height: auto;
+    max-width: 200px; /* Pinakamalaking laki ng bawat larawan */
+}
+
+.upload-container1 h2{
+    text-align: center;  
+}
+
+.payment_details {
+    margin-top: 50px;
+    gap: 20px;
+    width: 20px;
+}
+.prices {
+    display: flex; /* Ensure the container is a flex container */
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center content horizontally */
+    text-align: center; /* Align text inside the container */
+    margin: 20px auto; /* Center the entire container on the page */
+    width: 80%; /* Optional: control width */
+}
+
+
+/* Media queries para sa responsive design ng payment images */
+@media (max-width: 768px) {
+    .payment-type img {
+        max-width: 150px; /* Mas maliit na laki ng larawan para sa tablet */
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-type {
+        justify-content: center; /* Sentro sa mas maliit na screen */
+    }
+
+    .payment-type img {
+        max-width: 120px; /* Mas maliit na laki ng larawan para sa mobile */
+    }
+}
+
+
+
+
+@media (max-width: 768px) {
+    #logo-pic {
+        width: 200px;
+    }
+    .menu li {
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(250, 192, 141, 0.9);
+        width: 100%;
+    }
+    .menu.active {
+        display: flex;
+    }
+    .toggle {
+        display: block;
+    }
+}
+.title {
+  text-align: center;
+  
+}
+.slideshow-container {
+  position: relative;
+  max-width: 90%;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+}
+
+.slide img {
+  width: 100%;
+  border-radius: 10px;
+  
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  user-select: none;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.dots-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.message-icon i {
+    font-size: 24px;
+    color: #f4a36c;
+}
+
+.message-icon span {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+
+/* For tablets */
+@media (max-width: 768px) {
+    #logo-pic {
+        width: 200px;
+    }
+    .welcome-text,
+    .reservify-text {
+        font-size: 24px;
+    }
+    .menu li {
+        padding: 10px 15px;
+    }
+    .book-now {
+        font-size: 18px;
+        padding: 8px 16px;
+    }
+    .img-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* For mobile */
+@media (max-width: 600px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(250, 192, 141, 0.9);
+        width: 100%;
+    }
+    
+    .menu.active {
+        display: flex;
+    }
+    
+    .toggle {
+        display: block;
+    }
+    
+    #logo-pic {
+        width: 150px;
+    }
+    
+    .welcome-text,
+    .reservify-text {
+        font-size: 20px;
+    }
+
+    .book-now {
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+
+    .img-container {
+        grid-template-columns: 1fr; /* Single column layout for small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .message-icon {
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+
+    .message-icon span {
+        font-size: 12px;
+    }
+}
+
+/* Media queries para sa responsive design ng payment images */
+@media (max-width: 768px) {
+    .payment-type img {
+        max-width: 150px; /* Mas maliit na laki ng larawan para sa tablet */
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-type {
+        justify-content: center; /* Sentro sa mas maliit na screen */
+    }
+
+    .payment-type img {
+        max-width: 120px; /* Mas maliit na laki ng larawan para sa mobile */
+    }
 }
