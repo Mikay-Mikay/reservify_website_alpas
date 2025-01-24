@@ -96,7 +96,7 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css?v=1.2">
+    <link rel="stylesheet" href="payment.css?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -134,7 +134,6 @@ if (isset($_POST["submit"])) {
         </ul>
     </nav>
 
-
 <!--For payment process-->
 <div class="container">
     <div class="title">Payment</div>
@@ -149,7 +148,6 @@ if (isset($_POST["submit"])) {
         </select>
         </div>
 
-
                 <!-- Reference Number -->
                 <div class="input-box">
                     <label for="reference" class="form-label">Reference Number:</label>
@@ -161,8 +159,7 @@ if (isset($_POST["submit"])) {
                     <label for="amount" class="form-label">Amount to Pay:</label>
                     <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
                 </div>
-
-                
+    
               <!-- Payment Type -->
               <div class="input-box">
                     <label for="paymentclass" class="form-label">Payment Type:</label>
@@ -173,6 +170,12 @@ if (isset($_POST["submit"])) {
                     </select>
                 </div>
             </div>
+
+            <!-- Gcash and Maya Instruction Modules -->
+<div class="payment-help">
+    <a href="howtosendgcash.php" id="gcashHelp" class="help-link">How to send using Gcash?</a>
+    <a href="howtosendmaya.php" id="mayaHelp" class="help-link">How to send using Maya?</a>
+</div>
 
              <!-- Upload Image Section -->
              <div class="upload-container">
