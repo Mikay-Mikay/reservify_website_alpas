@@ -289,6 +289,56 @@ nav a:hover {
 .btn:hover {
     background-color: #ad795b;
 }
+
+/* Style for the tutorial-options container */
+.tutorial-options {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px; /* Space between buttons */
+    margin: 20px 0; /* Adjust margin around the container */
+    text-align: center; /* Center-align buttons */
+}
+
+/* Style for individual buttons */
+.tutorial-options .button {
+    display: inline-flex;  /* Change to inline-flex to allow better control of alignment */
+    align-items: center;   /* Vertically align items */
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    background-color: #f4a36c; /* Button background color */
+    color: black; /* Button text color */
+    font-weight: 450;
+    text-decoration: none; /* Remove underlines from links */
+    border-radius: 6px; /* Rounded corners for the button */
+    text-align: center;
+    font-size: 15px;
+    justify-content: center; /* Ensure that both image and text are aligned */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+/* Style for the image inside the button */
+.tutorial-options .button img.button-icon {
+    width: 20px; /* Adjust the image size */
+    height: 20px;
+    margin-left: 10px; /* Space between the image and text */
+    vertical-align: middle; /* Vertically align the image with the text */
+}
+
+/* Button hover effect */
+.tutorial-options .button:hover {
+    background-color: #ad795b; /* Darker shade for hover */
+}
+
+/* Optional: Responsive layout */
+@media (min-width: 600px) {
+    .tutorial-options {
+        flex-direction: row; /* Arrange buttons horizontally on larger screens */
+        gap: 20px; /* More space between buttons */
+    }
+}
+
  /* Existing CSS */
  .payment-type {
     max-width: 100%;
