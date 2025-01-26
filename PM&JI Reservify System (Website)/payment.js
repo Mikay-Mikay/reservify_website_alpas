@@ -130,34 +130,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return `${month}/${day}/${year} at ${hours}:${minutes}`;
     }
-
-    // Get elements
-const gcashHelp = document.querySelector('#gcashHelp');
-const mayaHelp = document.querySelector('#mayaHelp');
-const gcashModal = document.querySelector('#gcashModal');
-const mayaModal = document.querySelector('#mayaModal');
-const closeGcash = document.querySelector('#closeGcash');
-const closeMaya = document.querySelector('#closeMaya');
-
-// Open modals
-gcashHelp.addEventListener('click', (e) => {
-    e.preventDefault(); // Prevent the anchor default behavior
-    gcashModal.style.display = 'block';
-});
-
-mayaHelp.addEventListener('click', (e) => {
-    e.preventDefault(); // Prevent the anchor default behavior
-    mayaModal.style.display = 'block';
-});
-
-// Close modals
-closeGcash.addEventListener('click', () => gcashModal.style.display = 'none');
-closeMaya.addEventListener('click', () => mayaModal.style.display = 'none');
-
-// Close modals when clicking outside
-window.addEventListener('click', (e) => {
-    if (e.target === gcashModal) gcashModal.style.display = 'none';
-    if (e.target === mayaModal) mayaModal.style.display = 'none';
-});
-
 });
