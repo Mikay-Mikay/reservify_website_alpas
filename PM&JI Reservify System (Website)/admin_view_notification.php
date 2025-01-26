@@ -65,137 +65,9 @@ if ($notification_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin_view_notification.css?v=1.1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Notification Details</title>
-    <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #56aeff;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Main container for notification details */
-        .notification-details {
-            width: 80%;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Heading styles */
-        .notification-details h1 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* Paragraph styles for text content */
-        .notification-details p {
-            font-size: 16px;
-            line-height: 1.6;
-            margin: 10px 0;
-        }
-
-        /* Bold text for labels */
-        .notification-details p strong {
-            font-weight: 600;
-        }
-
-        /* Image styling */
-        .notification-details img {
-            display: block;
-            margin: 20px 0;
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        /* Link for back button */
-        .notification-details .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Hover effect for back button */
-        .notification-details .back-button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Button container for Approve and Reject buttons */
-        .notification-details .button-container {
-            display: flex;
-            justify-content: flex-start; /* Align buttons to the left */
-            gap: 10px; /* Space between buttons */
-            margin-top: 20px; /* Add space above buttons */
-        }
-
-        /* Approve and Reject button styles */
-        .notification-details .approve-button, .notification-details .reject-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Approve button color */
-        .notification-details .approve-button {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        /* Reject button color */
-        .notification-details .reject-button {
-            background-color: #dc3545;
-            color: #fff;
-        }
-
-        /* Hover effect for buttons */
-        .notification-details .approve-button:hover {
-            background-color: #218838;
-        }
-
-        .notification-details .reject-button:hover {
-            background-color: #c82333;
-        }
-
-        /* Responsive Design for Mobile */
-        @media (max-width: 768px) {
-            .notification-details {
-                width: 90%;
-                padding: 15px;
-            }
-
-            .notification-details h1 {
-                font-size: 24px;
-            }
-
-            .notification-details p {
-                font-size: 14px;
-            }
-
-            .notification-details .back-button, .notification-details .approve-button, .notification-details .reject-button {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="notification-details">
@@ -222,18 +94,65 @@ if (!empty($notification['image'])) {
 ?>
 
 
-        <!-- Approve and Reject Buttons -->
-        <form action="handle_notification.php" method="POST">
-            <input type="hidden" name="notification_id" value="<?php echo htmlspecialchars($notification_id); ?>">
-            
-            <!-- Button container for inline buttons -->
-            <div class="button-container">
-                <button type="submit" name="action" value="approve" class="approve-button">Approve</button>
-                <button type="submit" name="action" value="reject" class="reject-button">Reject</button>
-            </div>
-        </form>
+    <!-- Approve and Reject Buttons -->
+<form action="handle_notification.php" method="POST">
+    <input type="hidden" name="notification_id" value="<?php echo htmlspecialchars($notification_id); ?>">
 
+    <!-- Button container for inline buttons -->
+    <div class="button-container">
+        <!-- Approve Button -->
+        <button type="submit" name="action" value="approve" class="approve-button">Approve</button>
+
+        <!-- Reject Button -->
+        <button type="button" id="reject-button" class="reject-button">Reject</button>
+
+        <!-- Back to Dashboard Button -->
         <a href="admin_dashboard.php" class="back-button">Back to Dashboard</a>
     </div>
+</form>
+
+<!-- Modal for Reject Reason -->
+<div id="reject-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-button" id="close-modal">&times;</span>
+        
+        <h2>Reason for Rejection</h2>
+        <form action="handle_notification.php" method="post">
+            <textarea id="reject-reason" name="reject_reason" rows="4" cols="40" placeholder="Enter reason for rejection"></textarea>
+            <div class="modal-actions">
+                <button type="submit" name="action" value="reject" class="submit-reject-button">Submit</button>
+            </div>
+            <input type="hidden" name="notification_id" value="<?php echo htmlspecialchars($notification_id); ?>">
+        </form>
+    </div>
+</div>
+
+
+
+
+</div>
+
+<script>
+// Show the modal when the "Reject" button is clicked
+document.getElementById("reject-button").addEventListener("click", function () {
+    const modal = document.getElementById("reject-modal");
+    modal.style.display = "flex";
+});
+
+// Close the modal when the close button is clicked
+document.getElementById("close-modal").addEventListener("click", function () {
+    const modal = document.getElementById("reject-modal");
+    modal.style.display = "none";
+});
+
+// Close the modal when clicking outside the modal content
+window.addEventListener("click", function (event) {
+    const modal = document.getElementById("reject-modal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+});
+</script>
 </body>
+
 </html>
