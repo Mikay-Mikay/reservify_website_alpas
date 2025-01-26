@@ -96,7 +96,7 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css?v=1.1">
+    <link rel="stylesheet" href="payment.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -123,14 +123,11 @@ if (isset($_POST["submit"])) {
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
             </li>
-
-
             <i class="fa fa-bell notification-bell"></i>
                 <div class="notification-dropdown">
                      <p>No new notifications</p>    
                      <p>Meow</p>   
                 </div>
-
         </ul>
     </nav>
 
@@ -140,6 +137,7 @@ if (isset($_POST["submit"])) {
     <div class="content">
         <form action="payment.php" method="POST" enctype="multipart/form-data">
             <div class="user-details">
+
                 <!-- Payment Method -->
                 <div class="input-box">
                 <label for="paymentType" class="form-label">Payment Method:</label>
@@ -147,7 +145,6 @@ if (isset($_POST["submit"])) {
             <option value="" disabled selected>Select Payment Method:</option>
         </select>
         </div>
-
                 <!-- Reference Number -->
                 <div class="input-box">
                     <label for="reference" class="form-label">Reference Number:</label>
@@ -172,9 +169,15 @@ if (isset($_POST["submit"])) {
             </div>
 
             <!-- Gcash and Maya Instruction Modules -->
-<div class="payment-help">
-    <a href="howtosendgcash.php" id="gcashHelp" class="help-link">How to send using Gcash?</a>
-    <a href="howtosendmaya.php" id="mayaHelp" class="help-link">How to send using Maya?</a>
+<div class="tutorial-options">
+    <a href="gcash.html" class="button">
+        How to Send Using Gcash
+        <img src="images/gcash_logo.png.png" alt="Gcash Logo" class="button-icon">
+    </a>
+    <a href="maya.html" class="button">
+        How to Send Using Maya
+        <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
+    </a>
 </div>
 
              <!-- Upload Image Section -->
@@ -189,8 +192,6 @@ if (isset($_POST["submit"])) {
             <div class="form-actions">
                 <button type="submit" name="submit" class="btn">Submit Payment</button>
             </div>
-
-        
         </form>
     </div>
 </div>
