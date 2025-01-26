@@ -1,0 +1,59 @@
+/* Global Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+/* Container Styling */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #f4a36c;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Headings */
+h1 {
+    font-size: 2rem;
+    color: black;
+    margin-bottom: 20px;
+}
+
+/* Tutorial List */
+.tutorial {
+    text-align: left;
+    margin: 20px 0;
+    padding-left: 20px;
+    color: black;
+    font-weight: 500;
+}
+
+.tutorial ol li {
+    margin: 10px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Button Styling */
+.button,
+.back-button {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.button:hover,
+.back-button:hover {
+    background-color: #0056b3;
+}
