@@ -1,0 +1,210 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #56aeff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container for notification details */
+.notification-details {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styles */
+.notification-details h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Paragraph styles for text content */
+.notification-details p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Bold text for labels */
+.notification-details p strong {
+    font-weight: 600;
+}
+
+/* Image styling */
+.notification-details img {
+    display: block;
+    margin: 20px 0;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Link for back button */
+.notification-details .back-button {
+    display: inline-block;
+    
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for back button */
+.notification-details .back-button:hover {
+    background-color: #0056b3;
+}
+
+/* Button container for Approve and Reject buttons */
+.notification-details .button-container {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Add space above buttons */
+}
+
+/* Approve and Reject button styles */
+.notification-details .approve-button, .notification-details .reject-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    background-color: #007BFF;  /* Unified background color for consistency */
+    color: #fff;
+}
+
+/* Approve button color */
+.notification-details .approve-button {
+    background-color: #28a745;
+}
+
+/* Reject button color */
+.notification-details .reject-button {
+    background-color: #dc3545;
+}
+
+/* Hover effect for buttons */
+.notification-details .approve-button:hover {
+    background-color: #218838;
+}
+
+.notification-details .reject-button:hover {
+    background-color: #c82333;
+}
+
+/* Modal Styles */
+.modal {
+position: fixed;
+z-index: 1000;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.modal-content {
+background-color: #fff;
+padding: 40px;
+border-radius: 10px;
+width: 600px;
+text-align: center;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+float: right;
+font-size: 1.5rem;
+font-weight: bold;
+cursor: pointer;
+}
+
+.modal-actions {
+margin-top: 20px;
+}
+
+textarea {
+width: 100%;
+padding: 10px;
+margin-top: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-family: 'Poppins', sans-serif;
+resize: none;
+}
+/* Styling for the button */
+.submit-reject-button {
+    padding: 12px 25px;               /* Adds padding inside the button */
+    font-size: 16px;                  /* Font size for text */
+    font-weight: bold;                /* Bold text */
+    color: #fff;                      /* Text color */
+    background-color: #56aeff;        /* Background color (red for reject) */
+    border: none;                     /* Removes the default border */
+    border-radius: 5px;               /* Rounded corners */
+    cursor: pointer;                 /* Cursor pointer on hover */
+    transition: all 0.3s ease;        /* Smooth transition for hover effect */
+    text-align: center;               /* Center text inside button */
+}
+
+/* Hover effect */
+.submit-reject-button:hover {
+    background-color: #56aeff;        /* Darker red on hover */
+    transform: scale(1.05);           /* Slightly enlarge the button */
+}
+
+/* Focus effect (for accessibility) */
+.submit-reject-button:focus {
+    outline: none;                   /* Remove default focus outline */
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.5);  /* Red glow on focus */
+}
+
+/* Active effect (when button is clicked) */
+.submit-reject-button:active {
+    background-color: #56aeff;        /* Even darker red on click */
+    transform: scale(1);              /* Normal size when clicked */
+}
+
+/* Modal Actions Styling */
+.modal-actions {
+    text-align: center;               /* Center the button inside the container */
+    margin-top: 20px;                  /* Space above the button */
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .notification-details {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .notification-details h1 {
+        font-size: 24px;
+    }
+
+    .notification-details p {
+        font-size: 14px;
+    }
+
+    .notification-details .back-button, .notification-details .approve-button, .notification-details .reject-button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
