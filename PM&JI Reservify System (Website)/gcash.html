@@ -4,22 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How to Send Using Gcash</title>
-    <link rel="stylesheet" href="gcash.css?v=1.1">
+    <link rel="stylesheet" href="gcash.css">
 </head>
 <body>
+    <div class="back-button" onclick="goBack()">
+        <img src="images/back button.png" alt="Back Button">
+    </div>
     <div class="container">
         <h1>How to Send Using Gcash</h1>
         <div class="tutorial">
             <ol>
-                <li>Open the Gcash app on your phone.</li>
-                <li>Tap "Send Money".</li>
-                <li>Choose "QR Code" and scan the QR code provided above.</li>
-                <li>Enter the amount and confirm the details.</li>
-                <li>Submit the payment and take a screenshot of the confirmation.</li>
+                <li>Go to Gcash App, click the 'Send' icon or 'QR' to Scan the QR Code.
+                    <br>
+                    <img src="images/step1_gcash.png.png" alt="Step 1" class="step-image">
+                </li>
+                <li>When you choose the 'Send' icon, click the 'Scan/Upload QR'.
+                    <br>
+                    <img src="images/step2_gcash.png.png" alt="Step 2" class="step-image">
+                </li>
+                <li>Next, Scan the QR Code
+                    <br>
+                    <img src="images/step3_gcash.png.png" alt="Step 3" class="step-image">
+                </li>
+                <li>Finally, you will input the exact money that you will send. Screenshot the E-receipt to have a copy of 'Proof of Payment'.
+                    <br> You will need to upload it once you have completed the transaction.
+                    <br>
+                    <img src="images/step4_gcash.png.png" alt="Step 4" class="step-image">
+                </li>
             </ol>
         </div>
-        <a href="payment.php" class="back-button">Back</a>
     </div>
     <script src="gcashandmaya.js"></script>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>
