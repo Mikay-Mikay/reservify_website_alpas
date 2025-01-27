@@ -7,19 +7,34 @@
     <link rel="stylesheet" href="maya.css">
 </head>
 <body>
+    <div class="back-button" onclick="goBack()">
+        <img src="images/back button.png" alt="Back Button">
+    </div>
     <div class="container">
         <h1>How to Send Using Maya</h1>
         <div class="tutorial">
             <ol>
-                <li>Open the Maya app on your phone.</li>
-                <li>Select "Pay via QR".</li>
-                <li>Scan the QR code provided above.</li>
-                <li>Input the required amount.</li>
-                <li>Confirm the payment and save the receipt.</li>
+                <li>Go to Maya App, click the QR Scanner.
+                    <br>
+                    <img src="images/step1_maya.png.png" alt="Step 1" class="step-image">
+                </li>
+                <li>Next, scan the QR Code.
+                    <br>
+                    <img src="images/step2_maya.png.png" alt="Step 2" class="step-image">
+                </li>
+                <li>Once you already scanned the QR code, it will navigate you to transaction page. Input the exact money that you will send. 
+                    <br> Screenshot the E-receipt to have a copy of 'Proof of Payment'. Upload the screenshot once you have completed the transaction.
+                    <br>
+                    <img src="images/step3_maya.png.png" alt="Step 3" class="step-image">
+                </li>
             </ol>
         </div>
-        <a href="payment.php" class="back-button">Back</a>
     </div>
     <script src="gcashandmaya.js"></script>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>
