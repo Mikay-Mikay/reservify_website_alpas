@@ -10,16 +10,22 @@ if (isset($_POST["submit"])) {
     // Get the inputs from the form
     $payment_method = $_POST["paymentType"] ?? ''; // The selected payment method by the user
     $Amount = $_POST["amount"] ?? ''; // The selected payment amount by the user
-    $ref_no = $_POST["reference"] ?? '';
-    $Payment_type = $_POST["paymentclass"] ?? '';
+    $ref_no = $_POST["reference"] ?? ''; // Reference number
+    $Payment_type = $_POST["paymentclass"] ?? ''; // Payment type
     $reservation_id = $_SESSION["reservation_id"] ?? null; // Get the reservation_id from the session
 
     // Validate the form inputs
     if (empty($payment_method)) {
-        array_push($errors, "Please select a payment method.");
+        $errors[] = "Please select a payment method.";
+    }
+    if (empty($Amount)) {
+        $errors[] = "Please enter the payment amount.";
+    }
+    if (empty($ref_no)) {
+        $errors[] = "Reference number is required.";
     }
     if (empty($reservation_id)) {
-        array_push($errors, "No reservation ID found. Please log in again or contact support.");
+        $errors[] = "No reservation ID found. Please log in again or contact support.";
     }
 
     // Handle file upload
@@ -27,7 +33,7 @@ if (isset($_POST["submit"])) {
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $file_name = $_FILES['image']['name'];
         $file_tmp = $_FILES['image']['tmp_name'];
-        $folder = 'Images/' . $file_name;
+        $folder = 'images/' . $file_name; // Ensure the folder name matches your setup
 
         // Check if the uploaded file is an image
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -53,11 +59,12 @@ if (isset($_POST["submit"])) {
 
         if (!$conn) {
             echo "<script>alert('Error connecting to the database: " . mysqli_connect_error() . "');</script>";
+            exit;
         }
 
-        // SQL query to insert payment details (payment_method and reservation_id) into the payment table
+        // SQL query to insert payment details into the payment table
         $sql = "
-            INSERT INTO payment (reservation_id, payment_method, Amount, ref_no, Payment_type, image) 
+            INSERT INTO payment (reservation_id, payment_method, Amount, ref_no, Payment_type, payment_image) 
             VALUES (?, ?, ?, ?, ?, ?)";
 
         // Prepare and execute the statement
@@ -71,7 +78,34 @@ if (isset($_POST["submit"])) {
 
             // Execute the query
             if (mysqli_stmt_execute($stmt)) {
+                // Retrieve the last inserted payment ID
+                $payment_id = mysqli_insert_id($conn); // Get the auto-incremented ID
+
                 echo "<script>alert('Payment details saved successfully.');</script>";
+
+                // Create a notification for the admin
+                $notification_message = "A new payment has been made. Payment ID: $payment_id,  Amount: $Amount, Reference No: $ref_no, Payment Method: $payment_method, Payment Type: $Payment_type.";
+
+                $notification_sql = "
+                    INSERT INTO admin_notifications 
+                    (payment_id, Amount, ref_no, payment_method, payment_image, payment_type, payment_received_at, message) 
+                    VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)";
+
+                $notification_stmt = mysqli_stmt_init($conn);
+
+                if (mysqli_stmt_prepare($notification_stmt, $notification_sql)) {
+                    // Bind the payment ID and other details for admin notifications
+                    mysqli_stmt_bind_param($notification_stmt, "issssss", $payment_id, $Amount, $ref_no, $payment_method, $file_name, $Payment_type, $notification_message);
+
+                    if (!mysqli_stmt_execute($notification_stmt)) {
+                        echo "<script>alert('Failed to create admin notification.');</script>";
+                    }
+                } else {
+                    echo "<script>alert('Database error: Unable to prepare admin notification query.');</script>";
+                }
+
+                mysqli_stmt_close($notification_stmt);
+
                 echo "<script>window.location.href='booking summary.php';</script>";
                 exit;
             } else {
@@ -89,6 +123,8 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -123,11 +159,14 @@ if (isset($_POST["submit"])) {
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
             </li>
+
+
             <i class="fa fa-bell notification-bell"></i>
                 <div class="notification-dropdown">
                      <p>No new notifications</p>    
                      <p>Meow</p>   
                 </div>
+
         </ul>
     </nav>
 
@@ -137,7 +176,6 @@ if (isset($_POST["submit"])) {
     <div class="content">
         <form action="payment.php" method="POST" enctype="multipart/form-data">
             <div class="user-details">
-
                 <!-- Payment Method -->
                 <div class="input-box">
                 <label for="paymentType" class="form-label">Payment Method:</label>
@@ -145,17 +183,20 @@ if (isset($_POST["submit"])) {
             <option value="" disabled selected>Select Payment Method:</option>
         </select>
         </div>
+
+            <!-- Amount to Pay -->
+             <div class="input-box">
+                    <label for="amount" class="form-label">Amount to Pay:</label>
+                    <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
+                </div>
+
                 <!-- Reference Number -->
                 <div class="input-box">
                     <label for="reference" class="form-label">Reference Number:</label>
                     <input type="text" id="reference" name="reference" class="form-input" placeholder="Enter Reference Number" required>
                 </div>
 
-                <!-- Amount to Pay -->
-                <div class="input-box">
-                    <label for="amount" class="form-label">Amount to Pay:</label>
-                    <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
-                </div>
+              
     
               <!-- Payment Type -->
               <div class="input-box">
@@ -168,17 +209,17 @@ if (isset($_POST["submit"])) {
                 </div>
             </div>
 
-            <!-- Gcash and Maya Instruction Modules -->
-<div class="tutorial-options">
-    <a href="gcash.html" class="button">
-        How to Send Using Gcash
-        <img src="images/gcash_logo.png.png" alt="Gcash Logo" class="button-icon">
-    </a>
-    <a href="maya.html" class="button">
-        How to Send Using Maya
-        <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
-    </a>
-</div>
+             <!-- Gcash and Maya Instruction Modules -->
+                <div class="tutorial-options">
+                <a href="gcash.html" class="button">
+                    How to Send Using Gcash
+                    <img src="images/gcash_logo.png" alt="Gcash Logo" class="button-icon">
+                </a>
+                <a href="maya.html" class="button">
+                    How to Send Using Maya
+                    <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
+                </a>
+            </div>
 
              <!-- Upload Image Section -->
              <div class="upload-container">
@@ -192,6 +233,8 @@ if (isset($_POST["submit"])) {
             <div class="form-actions">
                 <button type="submit" name="submit" class="btn">Submit Payment</button>
             </div>
+
+        
         </form>
     </div>
 </div>
