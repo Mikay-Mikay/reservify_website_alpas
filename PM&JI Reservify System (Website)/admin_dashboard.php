@@ -17,9 +17,8 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
-    <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="admin-dashboard">
@@ -30,10 +29,10 @@ if (isset($_GET['logout'])) {
             </div>
             <nav>
                 <ul>
-                    <li class="dashboard-item">
+                <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
                             <img src="images/home.png.png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                            <span style="margin-left: 1px; margin-top: 4px; text-decoration: none; color: white;">Dashboard</span>
                         </a>
                     </li>
                 </ul>
@@ -149,6 +148,14 @@ if (isset($_GET['logout'])) {
             </section>
         </main>
     </div>
+
+    <!-- Bar Graph Section -->
+    <section class="chart-container">
+                <canvas id="bookingChart"></canvas>
+            </section>
+        </main>
+    </div>
+
     <script>
         // Toggle Profile Dropdown
 function toggleDropdown() {
@@ -180,6 +187,50 @@ window.onclick = function(event) {
         }
     }
 };
+
+// Bar Graph Data and Configuration
+const ctx = document.getElementById('bookingChart').getContext('2d');
+    const bookingChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: 'Customer Bookings',
+                data: [10, 15, 8, 12, 20, 25, 18, 10, 5, 8, 12, 30], // Replace with dynamic PHP data
+                backgroundColor: 'rgba(86, 174, 255, 0.7)',
+                borderColor: 'rgba(86, 174, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Months'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Bookings'
+                    }
+                }
+            }
+        }
+    });
     </script>
 </body>
 </html>
