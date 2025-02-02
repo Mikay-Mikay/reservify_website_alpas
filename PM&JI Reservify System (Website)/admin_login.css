@@ -1,6 +1,6 @@
 /* Background */
 body {
-    background-color: #56aeff;
+    background-color: #fac08d;
     font-family: Arial, sans-serif;
     margin: 0;
     display: flex;
@@ -11,7 +11,7 @@ body {
 
 /* Login Container */
 .login-container {
-    background-color: #f2efeb;
+    background-color: #ffffff;
     padding: 50px;
     border-radius: 20px;
     width: 500px;
@@ -22,11 +22,11 @@ body {
 
 /* Logo */
 .logo {
-    width: 130px;
+    width: 175px;
     height: 115px;
     position: absolute;
     top: 20px;
-    left: 85px;
+    left: 55px;
     border-radius: 50%;
 }
 
@@ -48,7 +48,7 @@ p {
 
 /* Input Fields */
 input[type="text"], input[type="password"] {
-    background-color: #94e1ff;
+    background-color: #d9dfdb;
     border: 1px solid #ccc;
     padding: 10px;
     margin: 10px 0;
@@ -74,8 +74,8 @@ input[type="text"], input[type="password"] {
 
 /* Login Button */
 .login-button {
-    background-color: #56aeff;
-    color: #ffffff;
+    background-color: #fac08d;
+    color:#000000;
     border: none;
     padding: 10px;
     margin: 10px 0;
@@ -87,7 +87,7 @@ input[type="text"], input[type="password"] {
 }
 
 .login-button:hover {
-    background-color: #4694cf;
+    background-color: #f4a36c;
 }
 
 /* Forgot Password Link */
