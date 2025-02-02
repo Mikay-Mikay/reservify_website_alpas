@@ -1,42 +1,35 @@
 <?php
-require 'databasee.php'; // Include the database connection file
+require 'databasee.php'; // Ensure this file has the correct database credentials
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $admin_id = $_POST['admin_id'];
+    $admin_ID = $_POST['admin_ID']; // Ensure it matches the form's input field name
     $password = $_POST['password'];
 
     try {
-        // Query to validate admin credentials
-        $query = "SELECT role, fullname FROM admin_login WHERE admin_ID = :admin_id AND password = :password";
+        // Query to fetch admin details (Ensure 'roles' column is correct)
+        $query = "SELECT admin_ID, password, roles FROM admin_login WHERE admin_ID = :admin_ID";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':admin_id', $admin_id);
-        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':admin_ID', $admin_ID);
         $stmt->execute();
 
+        // Fetch result
         if ($stmt->rowCount() > 0) {
-            // Fetch user details
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            $role = $user['role'];
-            $fullname = $user['fullname'];
 
-            // Start session and store user details
-            session_start();
-            $_SESSION['role'] = $role;
-            $_SESSION['fullname'] = $fullname;
+            // Compare passwords (if stored as plaintext, use simple comparison)
+            if ($password === $user['password']) { // Use password_verify($password, $user['password']) if stored as hashed
+                session_start();
+                $_SESSION['roles'] = $user['roles']; // Store role in session
+                $_SESSION['admin_ID'] = $user['admin_ID']; // Store admin_ID in session
 
-            // Redirect based on role
-            if ($role === 'Owner') {
+                // Redirect to admin dashboard
                 header("Location: admin_dashboard.php");
-            } elseif ($role === 'Co-Owner') {
-                header("Location: admin_dashboard.php");
-            } elseif ($role === 'Customer Support') {
-                header("Location: admin_dashboard.php");
+                exit();
             } else {
-                echo "<script>alert('Unauthorized access!');</script>";
+                echo "<script>alert('Invalid ID or Password!'); window.location.href='admin_login.php';</script>";
             }
-            exit();
         } else {
-            echo "<script>alert('Invalid ID or Password!');</script>";
+            echo "<script>alert('Invalid ID or Password!'); window.location.href='admin_login.php';</script>";
         }
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
@@ -55,12 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <!-- Logo aligned to the left corner of the login container -->
-        <img src="images/reservify_logo_blue.png.png" alt="PM&JI Logo" class="logo">
+        <img src="images/reservify_logo.png" alt="PM&JI Logo" class="logo">
         <h1>PM&JI Admin</h1>
         <p>Login</p>
         <form action="admin_login.php" method="POST">
-            <input type="text" name="fullname" placeholder="Full Name (e.g., Maria Elena Cruz Santos):" required>
-            <input type="text" name="admin_id" placeholder="ID:" required>
+            <input type="text" name="admin_ID" placeholder="ID:" required>
             <div class="password-container">
                 <input type="password" name="password" id="password" placeholder="Password:" required>
                 <img src="images/password_hide.png.png" alt="Toggle Password" id="toggle-password" onclick="togglePassword()">
