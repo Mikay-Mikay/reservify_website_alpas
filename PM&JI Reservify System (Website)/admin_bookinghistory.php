@@ -57,7 +57,7 @@ $conn->close();
     <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
     <link rel="stylesheet" href="admin_bookinghistory.css">
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookings.css?v=1.1">
     <link rel="stylesheet" href="admin_payments.css?v=1.1">
 </head>
 <body>
@@ -65,63 +65,54 @@ $conn->close();
         <aside class="sidebar">
             <div class="logo">
                 <img src="images/reservify_logo.png" alt="Reservify Logo">
-                <p>Hello, <?php echo htmlspecialchars($admin_name); ?>!</p>
+                <p>Hello, Admin!</p>
             </div>
             <nav>
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png (1).png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                            <img src="images/home.png.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
                 </ul>
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Booking Status</span>
+                        <a href="admin_bookings.php" style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Bookings</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_payments.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Payments</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Booking History</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Feedback</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
-                </ul>
-                <hr class="divider">
-                <ul>
                     <li>
-                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_calendar.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
-                    <li>
-                        <a href="admin_progress.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Progress</span>
-                            <img class="click-here" src="images/click_here.png.png" alt="Click Here">
-                        </a>
-                    </li>
                 </ul>
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_manageinquiries.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_manageinq.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -136,7 +127,7 @@ $conn->close();
     <!-- Header Section -->
     <div class="header">
         <!-- Booking History Title -->
-        <h1>Booking History</h1>
+        <h1 style="color: black;">Booking History</h1>
             <div class="search-bar-container">
                 <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchBookings()">
             </div>
