@@ -271,6 +271,18 @@ form .user-details .input-box span.details {
     outline: none;
     box-sizing: border-box;
 }
+#otherEvent {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+    padding: 12px 15px;
+}
 
 .message-icon {
     position: fixed;
