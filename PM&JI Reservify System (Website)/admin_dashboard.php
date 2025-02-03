@@ -30,10 +30,10 @@ if (isset($_GET['logout'])) {
             <nav>
                 <ul>
                 <li class="dashboard-item">
-                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px; text-decoration: none; color: white;">Dashboard</span>
-                        </a>
+                       <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px; text-decoration: none;">
+                    <img src="images/home.png (1).png" alt="Home Icon">
+                    <span style="margin-left: 1px; margin-top: 4px; color: white;">Dashboard</span>
+                </a>
                     </li>
                 </ul>
                 <hr class="divider">
