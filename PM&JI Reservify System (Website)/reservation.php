@@ -5,7 +5,6 @@ session_start();
 // Initialize variables
 $errors = array();
 
-
 // Check if the user is logged in
 if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
     die("You must be logged in to make a reservation.");
@@ -18,6 +17,7 @@ $user_id = $_SESSION['id'];
 if (isset($_POST["submit"])) {
     // Retrieve form inputs
     $event_type = $_POST["event_type"] ?? '';  
+    $others = $_POST["other_event"] ?? '';
     $event_place = $_POST["event_place"] ?? '';
     $number_of_participants = $_POST["number_of_participants"] ?? '';
     $contact_number = $_POST["contact_number"] ?? '';
@@ -27,6 +27,11 @@ if (isset($_POST["submit"])) {
     // Validate form data
     if (empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($start_time) || empty($end_time)) {
         $errors[] = "All fields are required.";
+    }
+
+    // Check if "Others" is selected and the "other_event" field is empty
+    if ($event_type == 'others' && empty($others)) {
+        $errors[] = "Please specify your event details.";
     }
 
     // Check if the file is uploaded
@@ -82,36 +87,38 @@ if (isset($_POST["submit"])) {
 
         // SQL query to insert reservation
         $sql = "INSERT INTO reservation 
-        (user_id, event_type, event_place, number_of_participants, contact_number, start_time, end_time, image) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+        (user_id, event_type, others, event_place, number_of_participants, contact_number, start_time, end_time, image) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = mysqli_stmt_init($conn);
-
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             die("Database error: " . mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "isssssss", $user_id, $event_type, $event_place, $number_of_participants, $contact_number, $start_time, $end_time, $file_name);
+        mysqli_stmt_bind_param($stmt, "issssssss", $user_id, $event_type, $others, $event_place, $number_of_participants, $contact_number, $start_time, $end_time, $file_name);
 
         if (mysqli_stmt_execute($stmt)) {
             $reservation_id = mysqli_insert_id($conn);
             $_SESSION['reservation_id'] = $reservation_id;
 
-           // Create a notification for the admin
+            // Create a notification for the admin
             $notification_message = "A new reservation has been made. \n"
                 . "Customer: $first_name $middle_name $last_name, \n"
                 . "Email: $email, \n"
                 . "Event Type: $event_type, \n"
                 . "Location: $event_place, \n"
                 . "Participants: $number_of_participants, \n"
-                . "start_time: $start_time, \n"
-                . "end_time: $end_time, \n"
+                . "Start Time: $start_time, \n"
+                . "End Time: $end_time, \n"
                 . "Image: $file_name.";
 
+            if ($event_type == 'others' && !empty($others)) {
+                $notification_message .= "\nOther Event Details: $others";
+            }
+
             $notification_sql = "INSERT INTO admin_notifications 
-                                 (user_id, reservation_id, First_name, Middle_name, Last_Name, Email, event_type, event_place, contact_number, image, message, is_read, created_at) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, CURRENT_TIMESTAMP)";
+                                 (user_id, reservation_id, First_name, Middle_name, Last_Name, Email, event_type, others, event_place, contact_number, image, message, is_read, created_at) 
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, CURRENT_TIMESTAMP)";
 
             $notification_stmt = mysqli_stmt_init($conn);
 
@@ -119,7 +126,7 @@ if (isset($_POST["submit"])) {
                 die("Database error: Unable to prepare notification query.");
             }
 
-            mysqli_stmt_bind_param($notification_stmt, "iisssssssss", $user_id, $reservation_id, $first_name, $middle_name, $last_name, $email, $event_type, $event_place, $contact_number, $file_name, $notification_message);
+            mysqli_stmt_bind_param($notification_stmt, "iissssssssss", $user_id, $reservation_id, $first_name, $middle_name, $last_name, $email, $event_type, $others, $event_place, $contact_number, $file_name, $notification_message);
 
             if (!mysqli_stmt_execute($notification_stmt)) {
                 die("Database error: Unable to execute notification query.");
@@ -129,7 +136,7 @@ if (isset($_POST["submit"])) {
 
             // Redirect user with a success message
             echo "<script>
-                alert('Reservation submitted successfully! Please wait for your approval.');
+                alert('Reservation submitted successfully! Please wait 1-2 days for your approval.');
                 window.location.href = 'reservation.php';
                 </script>";
         } else {
@@ -139,9 +146,29 @@ if (isset($_POST["submit"])) {
         mysqli_stmt_close($stmt);
         mysqli_close($conn);
     }
+}
+
+// Fetch reservation details if available
+$reservation_id = $_SESSION['reservation_id'] ?? null;
+$reservation = null;
+
+if ($reservation_id) {
+    require_once "database.php";
+    $query = "SELECT * FROM reservation WHERE reservation_id = ? AND user_id = ?";
+    $stmt = mysqli_stmt_init($conn);
     
+    if (mysqli_stmt_prepare($stmt, $query)) {
+        mysqli_stmt_bind_param($stmt, "ii", $reservation_id, $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $reservation = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($conn);
 }
 ?>
+
 
 
 
@@ -152,7 +179,7 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="reservation.css?v=1.1">
+    <link rel="stylesheet" href="reservation.css?v=1.4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -321,10 +348,8 @@ label {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="Home.php">Home</a></li>
-            <li><a href="About Us.php">About Us</a></li>
             <li><a href="portfolio.php">Portfolio</a></li>
-            <li><a href="Contact us.php">Contact Us</a></li>
+            <li><a href="reservation.php">Book now</a></li>
             <li class="user-logo">
                 <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
@@ -341,9 +366,20 @@ label {
             </li>
         </ul>
     </nav>
-
     <div class="container">
-        <div class="title">Reservation</div>
+        <div class="title">Reservation Form</div>
+       
+        <button id="bookingStatusBtn" class="btn">Booking Status</button>
+
+<!-- Modal for Booking Status -->
+<div id="bookingStatusModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Booking Details</h2>
+        <div id="bookingDetails"></div>
+    </div>
+</div>
+
         <div class="content">
             <form action="reservation.php" method="POST" enctype="multipart/form-data">
                 <div class="user-details">
@@ -406,6 +442,11 @@ label {
                 <div class="parent-container">
                     <input type="submit" name="submit" class="btn" value="Submit">
                 </div>
+
+
+
+</div>
+</div>
             </form>
         </div>
     </div>
@@ -658,8 +699,39 @@ document.addEventListener("click", (e) => {
 // Initialize notifications on page load
 document.addEventListener("DOMContentLoaded", fetchNotifications);
 
+document.getElementById("bookingStatusBtn").addEventListener("click", function() {
+        fetch("fetch_reservation.php")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("bookingDetails").innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    document.getElementById("bookingDetails").innerHTML = `
+                        <p><strong>Event Type:</strong> ${data.event_type}</p>
+                        <p><strong>Location:</strong> ${data.event_place}</p>
+                        <p><strong>Participants:</strong> ${data.number_of_participants}</p>
+                        <p><strong>Contact:</strong> ${data.contact_number}</p>
+                        <p><strong>Start Time:</strong> ${data.start_time}</p>
+                        <p><strong>End Time:</strong> ${data.end_time}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <img src="Images/${data.image}" alt="Event Image" width="100%">
+                    `;
+                }
+                document.getElementById("bookingStatusModal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching reservation:", error));
+    });
 
+    document.querySelector(".close").addEventListener("click", function() {
+        document.getElementById("bookingStatusModal").style.display = "none";
+    });
 
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("bookingStatusModal")) {
+            document.getElementById("bookingStatusModal").style.display = "none";
+        }
+    };
     </script>
 </body>
 </html>
