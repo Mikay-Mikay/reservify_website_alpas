@@ -2,7 +2,7 @@
     padding: 20px;
     flex: 1;
     background-color: #f9f9f9;
-    color: #000;
+    color: #000000;
 }
 
 header {
@@ -47,8 +47,8 @@ table th, table td {
 }
 
 table th {
-    background-color: #56aeff;
-    color: white;
+    background-color: #fac08d;
+    color: black;
     border: 1px solid #aaa; /* Consistent border for headers */
 }
 
@@ -164,7 +164,7 @@ button.create {
     position: absolute;
     top: 50px;
     right: 0;
-    background-color: #56aeff;
+    background-color: #fac08d;
     width: 200px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -247,7 +247,7 @@ button.create {
     position: absolute;
     top: 50px;
     right: 0;
-    background-color: #56aeff;
+    background-color: #fac08d;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     display: none;
@@ -261,9 +261,9 @@ button.create {
 
 .dropdown-header {
     font-weight: bold;
+    color: black;
     padding: 10px 15px;
     margin-left: 35px;
-    color: white;
 }
 
 .dropdown ul {
@@ -278,7 +278,7 @@ button.create {
 
 .dropdown ul li a {
     text-decoration: none;
-    color: white;
+    color: black;
     font-weight: bold;
 }
 
@@ -291,8 +291,15 @@ button.create {
 
 .logout {
     text-decoration: none;
-    color: white;
+    color: black;
     font-weight: bold;
     display: block;
     padding: 10px 15px;
+}
+
+.logout:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtle white background on hover */
+    border-radius: 2px; /* Smooth corners for hover effect */
+    transform: scale(1.03);
+    transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease;
 }
