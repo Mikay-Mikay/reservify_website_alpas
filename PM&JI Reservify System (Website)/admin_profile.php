@@ -2,26 +2,23 @@
 session_start();
 
 // Determine the admin role from the session or default to 'Admin'
-$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'Admin';
+$roles = isset($_SESSION['roles']) ? $_SESSION['roles'] : 'Admin';
 
 // Assign unique IDs based on the role
-switch ($role) {
+switch ($roles) {
     case 'Owner':
-        $admin_id = 'AD-0001';
+        $admin_ID = 'AD-0001';
         break;
     case 'Co-Owner':
-        $admin_id = 'AD-0002';
+        $admin_ID = 'AD-0002';
         break;
     case 'Customer Support':
-        $admin_id = 'CS-0001';
+        $admin_ID = 'CS-0001';
         break;
     default:
-        $admin_id = 'Unknown Role';
+        $admin_ID = 'Unknown Role';
         break;
 }
-
-// Get admin name from the session or use a default value
-$admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : $role;
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -38,8 +35,8 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
     <link rel="stylesheet" href="admin_profile.css?v=1.0">
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.0">
+    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.0">
 </head>
 <body>
 <div class="admin-dashboard">
@@ -53,38 +50,38 @@ if (isset($_GET['logout'])) {
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
                             <img src="images/home.png.png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                            <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
                 </ul>
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_bookingstatus.php" style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_bookings.php" style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Bookings</span>
                         <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_payments.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_payments.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Payments</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_bookinghistory.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Booking History</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_managefeedback.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_managefeedback.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Feedback</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
                     </li>
                     <li>
-                        <a href="admin_calendar.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_calendar.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Calendar</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -93,7 +90,7 @@ if (isset($_GET['logout'])) {
                 <hr class="divider">
                 <ul>
                     <li>
-                        <a href="admin_manageinq.php"style="text-decoration: none; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="admin_manageinq.php"style="text-decoration: none; color: black; display: flex; justify-content: space-between; align-items: center;">
                         <span>Manage Inquiries</span>
                             <img class="click-here" src="images/click_here.png.png" alt="Click Here">
                         </a>
@@ -133,7 +130,7 @@ if (isset($_GET['logout'])) {
             <div class="profile-container">
                 <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
                 <div id="profile-dropdown" class="dropdown">
-                    <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
+                    <p class="dropdown-header"> Admin</p>
                     <hr>
                     <ul>
                         <li><a href="admin_profile.php">Profile</a></li>
@@ -142,7 +139,6 @@ if (isset($_GET['logout'])) {
                     <hr>
                     <a class="logout" href="?logout">Logout</a>
                 </div>
-            </div>
         </div>
     </header>
             <section class="profile-section">
@@ -150,8 +146,7 @@ if (isset($_GET['logout'])) {
                     <img src="images/back button.png" alt="Back Button">
                 </a>
                 <div class="profile-card">
-                    <p><strong>Full Name:</strong> <?php echo htmlspecialchars($admin_name); ?></p>
-                    <p><strong>ID:</strong> <?php echo htmlspecialchars($admin_id); ?></p>
+                    <p><strong>ID:</strong> <?php echo htmlspecialchars($admin_ID); ?></p>
                 </div>
             </section>
         </main>
