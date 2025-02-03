@@ -9,7 +9,6 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    color: #ffffff;
 }
 
 .admin-dashboard {
@@ -19,8 +18,8 @@ body {
 
 .sidebar {
     width: 20%;
-    background-color: #56aeff;
-    color: white;
+    background-color: #fac08d;
+    color: black;
     height: 100%;
     padding: 10px 15px;
     box-sizing: border-box;
@@ -40,7 +39,7 @@ body {
 .logo p {
     font-size: 18px;
     font-weight: bold;
-    color: #ffffff;
+    color: #000000;
     margin: 0;
 }
 
@@ -59,7 +58,7 @@ body {
     font-size: 18px;
     cursor: pointer;
     font-weight: bold;
-    color: white;
+    color: black;
     transition: background-color 0.4s ease, border-radius 0.4s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
@@ -176,7 +175,7 @@ body {
 /* Divider styling */
 .divider {
     border: 0;
-    border-top: 2px solid white;
+    border-top: 2px solid black;
     margin: 10px 0;
 }
 
