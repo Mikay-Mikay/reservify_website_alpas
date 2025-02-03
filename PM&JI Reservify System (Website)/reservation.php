@@ -369,7 +369,7 @@ label {
     <div class="container">
         <div class="title">Reservation Form</div>
        
-        <button id="bookingStatusBtn" class="btn">Booking Status</button>
+        <button id="bookingStatusBtn" class="btn">Reservation Status</button>
 
 <!-- Modal for Booking Status -->
 <div id="bookingStatusModal" class="modal">
