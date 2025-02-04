@@ -121,18 +121,18 @@ $conn->close();
             </nav>
         </aside>
 
-    <!-- Main Content -->
+   <!-- Main Content -->
 <main class="content">
 <header>
     <!-- Header Section -->
     <div class="header">
         <!-- Booking History Title -->
         <h1 style="color: black;">Booking History</h1>
-            <div class="search-bar-container">
-                <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchBookings()">
-            </div>
             <!-- Notification Bell and Profile -->
         <div class="header-right">
+        <div class="search-bar-container">
+                <input type="text" id="searchBar" placeholder="Search bookings..." onkeyup="searchBookings()">
+            </div>
             <!-- Notification Bell -->
         <div class="notification-container">
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
