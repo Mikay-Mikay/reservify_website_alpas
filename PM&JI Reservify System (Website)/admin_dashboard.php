@@ -31,7 +31,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                 <li class="dashboard-item">
                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px; text-decoration: none;">
-                    <img src="images/home.png (1).png" alt="Home Icon">
+                    <img src="images/home.png.png" alt="Home Icon">
                     <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
