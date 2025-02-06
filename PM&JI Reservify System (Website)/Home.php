@@ -22,10 +22,12 @@
         <ul class="menu">
             <li><a href="Home.php">Home</a></li>
             <li><a href="About Us.php">About Us</a></li>
-            <li><a href="portfolio.php">Portfolio</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
-            <li><a href="Sign up.php">Log In</a></li>
-            <i class="fa fa-user"></i>  
+            <li class="user-logo">
+            <a href="login.php">
+             <img src="images/user_logo.png" alt="User Logo">
+            </a>
+            </li> 
         </ul>
     </nav>
 
@@ -34,13 +36,42 @@
         <img src="images/reservify_logo.png" alt="PM&JI logo" id="logo-pic">
         <h1 class="reservify-text">PM&JI Reservify</h1>
     </div>
+
+    <div class="tag-line">
+        <p>At PM&JI Reservify, we don’t just capture moments; we craft timeless memories that you’ll cherish forever. With every click of the camera, we transform fleeting moments into cherished memories that last a lifetime. Let us preserve the essence of your special occasions through the art of photography, capturing not only the images but the emotions, the stories, and the unique moments that define your journey. From the laughter and joy to the quiet, intimate moments, we create lasting impressions that tell your unique story, allowing you to relive those precious memories for years to come.</p>
+        <style>
+            .tag-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: justify;
+    padding: 20px;
+}
+
+.tag-line p {
+    max-width: 800px; /* Optional: Sets a maximum width to prevent text from stretching too much */
+    width: 100%;
+    margin: 0;
+    font-style: italic;
+}
+
+        </style>
+    </div>
+
+
+
+
+
+
+
+
     <div>
     <button class="book-now" onclick="redirectToSignup()">Book Now!</button>
 </div>
 
 <script>
     function redirectToSignup() {
-        window.location.href = 'Sign up.php';
+        window.location.href = 'login.php';
     }
 </script>
     <div class="img-container">
@@ -71,10 +102,17 @@
             <img src="images/pic8.jpg" alt="Image 8">
         </div>
     </div>
-    <a href="customer_support.php" class="message-link">
+    <a href="connect_with_us.php" class="message-link">
     <div class="message-icon">
         <i class="fa fa-message"></i>
         <span>Connect with Us</span>
+
+        <style>
+    .box:hover {
+        transform: none;  /* Ensure no conflicting styles */
+    }
+</style>
+
     </div>
 </a>
     
