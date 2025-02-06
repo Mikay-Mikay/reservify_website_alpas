@@ -23,12 +23,15 @@
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="Home.php">Home</a></li>
-            <li><a href="About Us.php">About Us</a></li>
-            <li><a href="portfolio.php">Portfolio</a></li>
-            <li><a href="Contact us.php">Contact Us</a></li>
-            <li><a href="Sign up.php">Log In</a></li>
-            <i class="fa fa-user"></i>  
+        <li><a href="Home.php">Home</a></li> <!-- ginawa kong Home.php -->
+            <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
+            <li><a href="Contact us.php">Contact Us</a></li> <!-- ginawa kong Contact Us.php -->
+            <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- dinagdag ko -->
+            <li class="user-logo">
+            <a href="login.php">
+             <img src="images/user_logo.png" alt="User Logo">
+            </a>
+            </li> 
         </ul>
     </nav>
 
