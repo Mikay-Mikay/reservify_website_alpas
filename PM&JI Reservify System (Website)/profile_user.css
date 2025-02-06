@@ -213,7 +213,7 @@ nav .toggle {
 
 .btn-edit-password {
     padding: 10px 20px;
-    margin-right: 593px;
+    margin-right: 482px; /* ginawa kong 482, pag di pa swak sayo adjust mo na lang */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -239,6 +239,16 @@ nav .toggle {
     transition: background-color 0.3s;
 }
 
+.btn-logout { /* css ng logout, lagay mo rin yan */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
 .btn-cancel {
     background-color: #ddd;
     color: black;
@@ -255,6 +265,15 @@ nav .toggle {
 
 .btn-save:hover {
     background-color: #e2a076;
+}
+
+.btn-logout { /* nilagyan ko ng css yung logout */
+    background-color: #bc1823;
+    color: black;
+}
+
+.btn-logout { /* pati to */
+    background-color: #ccc;
 }
 
 .edit-password {
