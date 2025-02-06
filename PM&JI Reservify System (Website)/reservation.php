@@ -343,9 +343,10 @@ label {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="Home.php">Home</a></li>
-            <li><a href="About Us.php">About Us</a></li>
+        <li><a href="Home.php">Home</a></li> <!-- ginawa kong Home.php -->
+            <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
             <li><a href="customer_feedback.php">Add Review</a></li>
+            <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- nag lagay ako ng my bookings sa navbar -->
             <li class="user-logo">
                 <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
@@ -364,18 +365,7 @@ label {
     </nav>
     <div class="container">
         <div class="title">Reservation Form</div>
-       
-        <button id="bookingStatusBtn" class="btn">Reservation Status</button>
-
-<!-- Modal for Booking Status -->
-<div id="bookingStatusModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Booking Details</h2>
-        <div id="bookingDetails"></div>
-    </div>
-</div>
-
+        <!-- tinaggal ko na yung sa reservation history -->
         <div class="content">
             <form action="reservation.php" method="POST" enctype="multipart/form-data">
                 <div class="user-details">
@@ -438,9 +428,6 @@ label {
                 <div class="parent-container">
                     <input type="submit" name="submit" class="btn" value="Submit">
                 </div>
-
-
-
 </div>
 </div>
             </form>
