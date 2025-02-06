@@ -49,6 +49,13 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     echo "Database query error: " . mysqli_error($conn);
     exit();
 }
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +64,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="profile_user.css">
+    <link rel="stylesheet" href="profile_user.css?v=1.1"> <!-- Iniba ko yung .css ginawa kong .css?v=1.1 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
@@ -73,10 +80,10 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="Home.html">Home</a></li>
-            <li><a href="About Us.html">About Us</a></li>
-            <li><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="Contact us.html">Contact Us</a></li>
+            <li><a href="Home.php">Home</a></li> <!-- ginawa kong Home.php -->
+            <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
+            <li><a href="Contact us.php">Contact Us</a></li> <!-- ginawa kong Contact Us.php -->
+            <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- dinagdag ko -->
             <li class="user-logo">
                 <img src="images/user_logo.png" alt="User Logo">
             </li> 
