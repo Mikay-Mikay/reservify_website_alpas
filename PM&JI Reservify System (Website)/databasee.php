@@ -1,7 +1,7 @@
 <?php
 // database.php
 $host = 'localhost'; // Hostname
-$db = 'admin_website'; // Corrected database name
+$db = 'test_site'; // Corrected database name
 $user = 'root'; // Database username
 $pass = ''; // Database password (default is empty for XAMPP)
 
