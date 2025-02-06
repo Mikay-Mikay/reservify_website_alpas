@@ -24,8 +24,8 @@
             <li><a href="About Us.php">About Us</a></li>
             <li><a href="portfolio.php">Portfolio</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
-            <li><a href="Sign up.php">Log In</a></li>
-           <li class="user-logo">
+            <li><a href="login.php">Log In</a></li>
+            <li class="user-logo">
                 <img src="images/user_logo.png" alt="User Logo">
             </li> 
         </ul>
@@ -47,6 +47,15 @@
                  to excellence, striving to create stunning visual narratives that reflect the unique essence of each 
                  occasion.Whether you’re planning an intimate gathering or a grand celebration, PM&JI is here to provide a seamless photography experience, from initial consultation to the delivery of beautifully edited images. 
                 </p>
+            <style>
+                .about-content p {
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: justify;
+    font-style: italic;
+
+}
+            </style>
         </div>
         <a href="customer_support.php" class="message-link">
     <div class="message-icon">
