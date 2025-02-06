@@ -23,10 +23,11 @@
             <li><a href="Home.php">Home</a></li>
             <li><a href="About Us.php">About Us</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
+            <li><a href="customer_mybookings.php">My Bookings</a></li>
             <li class="user-logo">
-            <a href="login.php">
-             <img src="images/user_logo.png" alt="User Logo">
-            </a>
+                <a href="login.php">
+                    <img src="images/user_logo.png" alt="User Logo">
+                </a>
             </li> 
         </ul>
     </nav>
@@ -55,16 +56,8 @@
     font-style: italic;
 }
 
-        </style>
-    </div>
-
-
-
-
-
-
-
-
+            </style>
+        </div>
     <div>
     <button class="book-now" onclick="redirectToSignup()">Book Now!</button>
 </div>
