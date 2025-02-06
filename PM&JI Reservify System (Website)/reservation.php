@@ -168,11 +168,6 @@ if ($reservation_id) {
     mysqli_close($conn);
 }
 ?>
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -348,8 +343,9 @@ label {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="portfolio.php">Portfolio</a></li>
-            <li><a href="reservation.php">Book now</a></li>
+            <li><a href="Home.php">Home</a></li>
+            <li><a href="About Us.php">About Us</a></li>
+            <li><a href="customer_feedback.php">Add Review</a></li>
             <li class="user-logo">
                 <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
