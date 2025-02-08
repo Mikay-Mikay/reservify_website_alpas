@@ -132,7 +132,7 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css">
+    <link rel="stylesheet" href="payment.css?v1=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -221,12 +221,17 @@ if (isset($_POST["submit"])) {
                 </a>
             </div>
 
-             <!-- Upload Image Section -->
-             <div class="upload-container">
-                <h2>Upload Payment Proof</h2>
-                <p>Attach proof of payment below:</p>
-                <input type="file" name="image" class="upload-input" required>
-            </div>
+            <!-- Upload Image Section -->
+<div class="upload-container">
+    <h2>Upload Payment Proof</h2>
+    <p>Attach proof of payment below:</p>
+    <input type="file" id="imageUpload" name="image" class="upload-input" required onchange="previewImage(event)">
+</div>
+
+<!-- Image Preview -->
+<div class="preview-container">
+    <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+</div>
 
 
             <!-- Submit Button -->
@@ -277,6 +282,21 @@ if (isset($_POST["submit"])) {
             img.classList.toggle('zoomed');
         });
     });
+    function previewImage(event) {
+    var image = document.getElementById('imagePreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = "block"; // Ipakita ang preview
+        };
+        reader.readAsDataURL(file);
+    } else {
+        image.style.display = "none"; // Itago ang preview kung walang image
+    }
+}
 </script>
 
     <div class="title">
