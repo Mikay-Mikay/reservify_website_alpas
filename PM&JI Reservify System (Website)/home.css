@@ -18,6 +18,7 @@ nav {
     background: #fac08d;
     padding: 5px 20px;
     display: flex;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     align-items: center;
     position: relative;
 }
@@ -133,13 +134,14 @@ nav a:hover {
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
     margin: 25px auto 0;
     display: block;
 }
 
 .book-now:hover {
-    background-color: #f9b23b;
+    background-color: #f4a36c;
 }
 
 .img-container {
