@@ -23,7 +23,7 @@ $sql = "
         r.reservation_id, 
         r.event_type, 
         r.event_place, 
-        r.number_of_participants, 
+        r.photo_size_layout, 
         r.contact_number, 
         r.start_time,
         r.end_time,
@@ -56,12 +56,12 @@ if ($stmt) {
         $reservation_id = $data['reservation_id'];
         $event_type = $data['event_type'];
         $event_place = $data['event_place'];
-        $number_of_participants = $data['number_of_participants'];
+        $photo_size_layout = $data['photo_size_layout'];
         $contact_number = $data['contact_number'];
         $start_time = $data["start_time"];
         $end_time = $data["end_time"];
         $image = $data['image'];
-        $payment_method = $data['payment_method'];
+        $payment_method = !empty($data['payment_method']) ? $data['payment_method'] : 'Not Specified'; // Handle NULL payment_method
     } else {
         echo "No booking summary available.";
         exit();
@@ -77,14 +77,15 @@ if (isset($_POST['submit'])) {
     $insert_sql = "
         INSERT INTO booking_summary 
         (user_id, first_name, middle_name, last_name, email, event_type, event_place, 
-        number_of_participants, contact_number, start_time, end_time, image, payment_method, reservation_id)
+        photo_size_layout, contact_number, start_time, end_time, image, payment_method, reservation_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
     
     $stmt = mysqli_prepare($conn, $insert_sql);
     if ($stmt) {
+        // Handle NULL payment_method by setting it to 'Not Specified' if empty
         mysqli_stmt_bind_param($stmt, "issssssssisssi", $user_id, $first_name, $middle_name, $last_name, $email, 
-                              $event_type, $event_place, $number_of_participants, $contact_number, 
+                              $event_type, $event_place, $photo_size_layout, $contact_number, 
                               $start_time, $end_time, $image, $payment_method, $reservation_id);
 
         if (mysqli_stmt_execute($stmt)) {
@@ -178,8 +179,8 @@ if (isset($_POST['submit'])) {
                 <input type="text" value="<?php echo htmlspecialchars($event_place); ?>" disabled />
             </div>
             <div class="summary-item">
-                <label>Number of Participants:</label>
-                <input type="text" value="<?php echo htmlspecialchars($number_of_participants); ?>" disabled />
+                <label>Photo Size and Layout:</label>
+                <input type="text" value="<?php echo htmlspecialchars($photo_size_layout); ?>" disabled />
             </div>
             <div class="summary-item">
                 <label>Contact Number:</label>
