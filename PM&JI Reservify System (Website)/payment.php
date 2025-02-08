@@ -5,6 +5,13 @@ session_start();
 // Initialize the variables
 $errors = array();
 
+if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+    echo "<script>alert('Error: You must be logged in to make a payment.');</script>";
+    exit;
+}
+
+$user_id = $_SESSION['id']; // Siguraduhin na may laman ang user_id
+
 // Check if the submit button was clicked
 if (isset($_POST["submit"])) {
     // Get the inputs from the form
@@ -88,14 +95,14 @@ if (isset($_POST["submit"])) {
 
                 $notification_sql = "
                     INSERT INTO admin_notifications 
-                    (payment_id, Amount, ref_no, payment_method, payment_image, payment_type, payment_received_at, message) 
-                    VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)";
+                    (user_id, payment_id, Amount, ref_no, payment_method, payment_image, payment_type, payment_received_at, message) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)";
 
                 $notification_stmt = mysqli_stmt_init($conn);
 
                 if (mysqli_stmt_prepare($notification_stmt, $notification_sql)) {
                     // Bind the payment ID and other details for admin notifications
-                    mysqli_stmt_bind_param($notification_stmt, "issssss", $payment_id, $Amount, $ref_no, $payment_method, $file_name, $Payment_type, $notification_message);
+                    mysqli_stmt_bind_param($notification_stmt, "iissssss", $user_id, $payment_id,  $Amount, $ref_no, $payment_method, $file_name, $Payment_type, $notification_message);
 
                     if (!mysqli_stmt_execute($notification_stmt)) {
                         echo "<script>alert('Failed to create admin notification.');</script>";
@@ -180,8 +187,9 @@ if (isset($_POST["submit"])) {
                 <div class="input-box">
                 <label for="paymentType" class="form-label">Payment Method:</label>
                 <select id="paymentType" name="paymentType" class="form-input" required>
-            <option value="" disabled selected>Select Payment Method:</option>
-        </select>
+                <option value="" disabled selected>Select Payment Method:</option>
+                <option value="Cash">Cash</option>
+            </select>
         </div>
 
             <!-- Amount to Pay -->
@@ -297,6 +305,8 @@ if (isset($_POST["submit"])) {
         image.style.display = "none"; // Itago ang preview kung walang image
     }
 }
+
+
 </script>
 
     <div class="title">
