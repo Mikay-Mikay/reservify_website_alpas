@@ -14,7 +14,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #f4a36c !important;
+  background-color: #fac08d !important;
 }
 
 
@@ -41,7 +41,7 @@ body {
   height: 3px;
   width: 30px;
   border-radius: 5px;
-  background: #f4a36c;
+  background: #fac08d;
 }
 
 .content form .user-details {
@@ -150,13 +150,14 @@ form .button input {
   width: 100%;
   border-radius: 5px;
   border: none;
-  color: #fff;
+  color: black;
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
   background: #f4a36c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 form .button input:hover {
