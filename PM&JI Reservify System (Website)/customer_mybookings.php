@@ -29,19 +29,25 @@
             </li> 
         </ul>
     </nav>
-    <div class="back-button">   
-            <a href="javascript:history.back()">
-                <img src="images/back button.png" alt="Back">
-            </a>
-        </div>
-        <h1 class="page-title">My Bookings</h1>
+
+    <div class="back-title-wrapper">
+    <div class="back-button">
+        <a href="javascript:history.back()">
+            <img src="images/back button.png" alt="Back">
+        </a>
+    </div>
+    <h1 class="page-title">My Bookings</h1>
+    </div>
 
     <div class="container">
         <div class="buttons">
-            <button class="active-bookings">Active Bookings</button>
-            <button class="previous-bookings">Previous Bookings</button>
+            <a href="customer_mybookings.php">
+                <button class="active-bookings">Active Bookings</button>
+            </a>
+            <a href="previous_bookings.php">
+                <button class="previous-bookings">Previous Bookings</button>
+            </a>
         </div>
-        
         <div class="booking-container">
             <div class="booking-card">
                 <strong>PMJI-20241130-CUST003</strong> <img src="images/green_active.png.png" alt="Active" class="status-dot">
