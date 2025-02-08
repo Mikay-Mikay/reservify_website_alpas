@@ -1,5 +1,4 @@
 <?php
-// Start the session to track user information
 session_start();
 
 // Initialize variables
@@ -19,13 +18,13 @@ if (isset($_POST["submit"])) {
     $event_type = $_POST["event_type"] ?? '';  
     $others = $_POST["other_event"] ?? '';
     $event_place = $_POST["event_place"] ?? '';
-    $number_of_participants = $_POST["number_of_participants"] ?? '';
+    $photo_size_layout = $_POST["photo_size_layout"] ?? '';
     $contact_number = $_POST["contact_number"] ?? '';
     $start_time = $_POST["timedatePickerStart"] ?? '';
     $end_time = $_POST["timedatePickerEnd"] ?? '';
 
     // Validate form data
-    if (empty($event_type) || empty($event_place) || empty($number_of_participants) || empty($contact_number) || empty($start_time) || empty($end_time)) {
+    if (empty($event_type) || empty($event_place) || empty($photo_size_layout) || empty($contact_number) || empty($start_time) || empty($end_time)) {
         $errors[] = "All fields are required.";
     }
 
@@ -35,7 +34,9 @@ if (isset($_POST["submit"])) {
     }
 
     // Check if the file is uploaded
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+    if (!isset($_FILES['image']) || $_FILES['image']['error'] !== 0) {
+        $errors[] = "Please upload an image.";
+    } else {
         $file_name = $_FILES['image']['name'];
         $file_tmp = $_FILES['image']['tmp_name'];
         $folder = 'Images/' . $file_name;
@@ -49,103 +50,105 @@ if (isset($_POST["submit"])) {
         } elseif (!move_uploaded_file($file_tmp, $folder)) {
             $errors[] = "File upload failed.";
         }
-    } else {
-        $errors[] = "Please upload an image.";
     }
 
     // Display errors or process the form
-    if (count($errors) > 0) {
+    if (!empty($errors)) {
         foreach ($errors as $error) {
             echo "<div class='alert alert-danger'>$error</div>";
         }
-    } else {
-        // Database connection
-        require_once "database.php";
-
-        // Fetch user details from test_registration table
-        $user_details_query = "SELECT First_name, Middle_name, Last_Name, Email FROM test_registration WHERE id = ?";
-        $user_details_stmt = mysqli_stmt_init($conn);
-
-        if (!mysqli_stmt_prepare($user_details_stmt, $user_details_query)) {
-            die("Database error: Unable to prepare user details query.");
-        }
-
-        mysqli_stmt_bind_param($user_details_stmt, "i", $user_id);
-        mysqli_stmt_execute($user_details_stmt);
-        $result = mysqli_stmt_get_result($user_details_stmt);
-
-        if ($row = mysqli_fetch_assoc($result)) {
-            $first_name = $row['First_name'];
-            $middle_name = $row['Middle_name'];
-            $last_name = $row['Last_Name'];
-            $email = $row['Email'];
-        } else {
-            die("User details not found.");
-        }
-
-        mysqli_stmt_close($user_details_stmt);
-
-        // SQL query to insert reservation
-        $sql = "INSERT INTO reservation 
-        (user_id, event_type, others, event_place, number_of_participants, contact_number, start_time, end_time, image) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $stmt = mysqli_stmt_init($conn);
-        if (!mysqli_stmt_prepare($stmt, $sql)) {
-            die("Database error: " . mysqli_error($conn));
-        }
-
-        mysqli_stmt_bind_param($stmt, "issssssss", $user_id, $event_type, $others, $event_place, $number_of_participants, $contact_number, $start_time, $end_time, $file_name);
-
-        if (mysqli_stmt_execute($stmt)) {
-            $reservation_id = mysqli_insert_id($conn);
-            $_SESSION['reservation_id'] = $reservation_id;
-
-            // Create a notification for the admin
-            $notification_message = "A new reservation has been made. \n"
-                . "Customer: $first_name $middle_name $last_name, \n"
-                . "Email: $email, \n"
-                . "Event Type: $event_type, \n"
-                . "Location: $event_place, \n"
-                . "Participants: $number_of_participants, \n"
-                . "Start Time: $start_time, \n"
-                . "End Time: $end_time, \n"
-                . "Image: $file_name.";
-
-            if ($event_type == 'others' && !empty($others)) {
-                $notification_message .= "\nOther Event Details: $others";
-            }
-
-            $notification_sql = "INSERT INTO admin_notifications 
-                                 (user_id, reservation_id, First_name, Middle_name, Last_Name, Email, event_type, others, event_place, contact_number, image, message, is_read, created_at) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, CURRENT_TIMESTAMP)";
-
-            $notification_stmt = mysqli_stmt_init($conn);
-
-            if (!mysqli_stmt_prepare($notification_stmt, $notification_sql)) {
-                die("Database error: Unable to prepare notification query.");
-            }
-
-            mysqli_stmt_bind_param($notification_stmt, "iissssssssss", $user_id, $reservation_id, $first_name, $middle_name, $last_name, $email, $event_type, $others, $event_place, $contact_number, $file_name, $notification_message);
-
-            if (!mysqli_stmt_execute($notification_stmt)) {
-                die("Database error: Unable to execute notification query.");
-            }
-
-            mysqli_stmt_close($notification_stmt);
-
-            // Redirect user with a success message
-            echo "<script>
-                alert('Reservation submitted successfully! Please wait 1-2 days for your approval.');
-                window.location.href = 'reservation.php';
-                </script>";
-        } else {
-            die("Database error: Unable to execute query.");
-        }
-
-        mysqli_stmt_close($stmt);
-        mysqli_close($conn);
+        exit(); // Stop execution if there are errors
     }
+
+    // Database connection
+    require_once "database.php";
+
+    // Fetch user details from test_registration table
+    $user_details_query = "SELECT First_name, Middle_name, Last_Name, Email FROM test_registration WHERE id = ?";
+    $user_details_stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($user_details_stmt, $user_details_query)) {
+        die("Database error: Unable to prepare user details query.");
+    }
+
+    mysqli_stmt_bind_param($user_details_stmt, "i", $user_id);
+    mysqli_stmt_execute($user_details_stmt);
+    $result = mysqli_stmt_get_result($user_details_stmt);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        $first_name = $row['First_name'];
+        $middle_name = $row['Middle_name'];
+        $last_name = $row['Last_Name'];
+        $email = $row['Email'];
+    } else {
+        die("User details not found.");
+    }
+
+    mysqli_stmt_close($user_details_stmt);
+
+    // SQL query to insert reservation
+    $sql = "INSERT INTO reservation 
+    (user_id, event_type, others, event_place, photo_size_layout, contact_number, start_time, end_time, image) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        die("Database error: " . mysqli_error($conn));
+    }
+
+    mysqli_stmt_bind_param($stmt, "issssssss", $user_id, $event_type, $others, $event_place, $photo_size_layout, $contact_number, $start_time, $end_time, $file_name);
+
+    if (mysqli_stmt_execute($stmt)) {
+        $reservation_id = mysqli_insert_id($conn);
+        $_SESSION['reservation_id'] = $reservation_id;
+
+        // Create a notification message
+        $notification_message = "A new reservation has been made. \n"
+        . "Customer: $first_name $middle_name $last_name, \n"
+        . "Email: $email, \n"
+        . "Event Type: $event_type, \n"
+        . "Location: $event_place, \n"
+        . "Photo Layout: $photo_size_layout, \n"
+        . "Start Time: $start_time, \n"
+        . "End Time: $end_time, \n"
+        . "Image: $file_name.";
+
+        if ($event_type == 'others' && !empty($others)) {
+            $notification_message .= "\nOther Event Details: $others";
+        }
+
+        // Insert notification into admin_notifications table
+        $notification_sql = "INSERT INTO admin_notifications 
+                             (user_id, reservation_id, First_name, Middle_name, Last_Name, Email, event_type, others, event_place, photo_size_layout, contact_number, image, message, is_read, created_at) 
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, CURRENT_TIMESTAMP)";
+
+        $notification_stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($notification_stmt, $notification_sql)) {
+            die("Database error: Unable to prepare notification query.");
+        }
+
+        mysqli_stmt_bind_param($notification_stmt, "iisssssssssss", 
+            $user_id, $reservation_id, $first_name, $middle_name, $last_name, $email, 
+            $event_type, $others, $event_place, $photo_size_layout, $contact_number, $file_name, $notification_message);
+
+        if (!mysqli_stmt_execute($notification_stmt)) {
+            die("Database error: Unable to execute notification query.");
+        }
+
+        mysqli_stmt_close($notification_stmt);
+
+        // Redirect user with a success message
+        echo "<script>
+            alert('Reservation submitted successfully! Please wait 1-2 days for your approval.');
+            window.location.href = 'reservation.php';
+            </script>";
+    } else {
+        die("Database error: Unable to execute query.");
+    }
+
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
 }
 
 // Fetch reservation details if available
@@ -168,6 +171,7 @@ if ($reservation_id) {
     mysqli_close($conn);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -326,7 +330,19 @@ label {
     color: #333;
 }
 
+.preview-container {
+        margin-top: 10px;
+        text-align: center;
+    }
 
+    #imagePreview {
+        display: none; /* Hidden by default */
+        width: 500px; /* Set small width */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 10px; /* Optional: Rounded corners */
+        border: 2px solid #ddd; /* Optional: Border styling */
+        padding: 5px; /* Optional: Padding */
+    }
 
 
     </style>
@@ -343,10 +359,10 @@ label {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-        <li><a href="Home.php">Home</a></li> <!-- ginawa kong Home.php -->
             <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
-            <li><a href="customer_feedback.php">Add Review</a></li>
+            <li><a href="reservation.php">Reserve Now</a></li> <!-- ginawa kong About Us.php -->
             <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- nag lagay ako ng my bookings sa navbar -->
+            <li><a href="customer_feedback.php">Add Review</a></li>
             <li class="user-logo">
                 <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
@@ -367,70 +383,77 @@ label {
         <div class="title">Reservation Form</div>
         <!-- tinaggal ko na yung sa reservation history -->
         <div class="content">
-            <form action="reservation.php" method="POST" enctype="multipart/form-data">
-                <div class="user-details">
-                    <div class="input-box">
-                        <label for="eventType">Event Type:</label>
-                        <select id="eventType" name="event_type" required>
-                            <option value="" disabled selected>Select Event Type</option>
-                            <option value="wedding">Wedding</option>
-                            <option value="reunion">Reunion</option>
-                            <option value="baptism">Baptism</option>
-                            <option value="birthday">Birthday</option>
-                            <option value="company_event">Company Event</option>
-                            <option value="others">Others</option>
-                        </select>
-                    </div>
+        <form action="reservation.php" method="POST" enctype="multipart/form-data">
+    <div class="user-details">
+        <div class="input-box">
+            <label for="eventType">Event Type:</label>
+            <select id="eventType" name="event_type" required>
+                <option value="" disabled selected>Select Event Type</option>
+                <option value="wedding">Wedding</option>
+                <option value="reunion">Reunion</option>
+                <option value="baptism">Baptism</option>
+                <option value="birthday">Birthday</option>
+                <option value="company_event">Company Event</option>
+                <option value="others">Others</option>
+            </select>
+        </div>
 
-                    <div class="input-box" id="otherEventBox" style="display:none;">
-                        <label for="otherEvent">Please specify:</label>
-                        <textarea id="otherEvent" name="other_event" placeholder="Describe your event needs..." rows="4"></textarea>
-                    </div>
+        <div class="input-box" id="otherEventBox" style="display:none;">
+            <label for="otherEvent">Please specify:</label>
+            <textarea id="otherEvent" name="other_event" placeholder="Describe your event needs..." rows="4"></textarea>
+        </div>
 
-                    <div class="input-box">
-                        <label for="eventPlace">Event Place:</label>
-                        <input id="eventPlace" type="text" name="event_place" placeholder="Enter Event Place" required>
-                    </div>
+        <div class="input-box">
+            <label for="eventPlace">Event Place:</label>
+            <input id="eventPlace" type="text" name="event_place" placeholder="Enter Event Place" required>
+        </div>
 
-                    <div class="input-box">
-                        <label for="participants">Number of Participants:</label>
-                        <input id="participants" type="number" name="number_of_participants" min="1" max="120" placeholder="Enter Number of Participants" required>
-                    </div>
-
-                    <div class="input-box">
-                        <label for="contactNumber">Contact Number:</label>
-                        <input id="contactNumber" type="number" name="contact_number" placeholder="e.g. 09123456712" required>
-                    </div>
-
-                    <div class="input-container">
-                    <div class="input-item">
-                        <label for="timedatePickerStart">Start Time</label>
-                        <input type="text" name="timedatePickerStart"id="timedatePickerStart" placeholder="Select start date and time" required>
-                    </div>
-                    
-                    <div class="input-item">
-                        <label for="timedatePickerEnd">End Time</label>
-                        <input type="text" name="timedatePickerEnd"id="timedatePickerEnd" placeholder="Select end date and time">
-                    </div>
-                </div>
-
-
-                </div>
-
-                <div class="upload-container">
-                    <h2>Upload Image</h2>
-                    <p>Assist us in creating temporary custom background for your selected image.</p>
-                    <div class="form-group">
-                        <input type="file" name="image" />
-                    </div>
-                </div>
-
-                <div class="parent-container">
-                    <input type="submit" name="submit" class="btn" value="Submit">
-                </div>
+        <div class="input-box">
+    <label for="photo-size">Select Photo Size & Layout:</label>
+    <select id="photo-size" name="photo_size_layout" required>
+        <option value="" disabled selected>Select Photo Size & Layout</option>
+        <option value="4x4">4x4 inches (Square Layout)</option>
+        <option value="6x6">6x6 inches (Larger Square Layout)</option>
+        <option value="2x2">2x2 inches (Mini Photo Grid)</option>
+    </select>
 </div>
-</div>
-            </form>
+
+
+        <div class="input-box">
+            <label for="contactNumber">Contact Number:</label>
+            <input id="contactNumber" type="number" name="contact_number" placeholder="e.g. 09123456712" required>
+        </div>
+
+        <div class="input-container">
+            <div class="input-item">
+                <label for="timedatePickerStart">Start Time</label>
+                <input type="text" name="timedatePickerStart" id="timedatePickerStart" placeholder="Select start date and time" required>
+            </div>
+
+            <div class="input-item">
+                <label for="timedatePickerEnd">End Time</label>
+                <input type="text" name="timedatePickerEnd" id="timedatePickerEnd" placeholder="Select end date and time">
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Upload Section -->
+    <div class="upload-container">
+        <h2>Upload Image</h2>
+        <p>Assist us in creating temporary custom background for your selected image.</p>
+        <div class="form-group">
+            <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
+        </div>
+        <!-- Image Preview -->
+        <div class="preview-container">
+            <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+        </div>
+    </div>
+
+    <div class="parent-container">
+        <input type="submit" name="submit" class="btn" value="Submit">
+    </div>
+</form>
         </div>
     </div>
 
@@ -715,6 +738,23 @@ document.getElementById("bookingStatusBtn").addEventListener("click", function()
             document.getElementById("bookingStatusModal").style.display = "none";
         }
     };
+
+    //<!-- JavaScript for Image Preview -->
+    function previewImage(event) {
+    var image = document.getElementById('imagePreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = "block"; // Show the image preview
+        };
+        reader.readAsDataURL(file);
+    } else {
+        image.style.display = "none"; // Hide preview if no image selected
+    }
+}
     </script>
 </body>
 </html>
