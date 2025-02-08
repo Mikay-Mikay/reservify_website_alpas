@@ -18,8 +18,10 @@ nav {
     background: #fac08d;
     padding: 5px 20px;
     display: flex;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     align-items: center;
     position: relative;
+    font-family: 'Poppins', sans-serif; /* Apply Poppins font to form */
 }
 
 nav a {
@@ -92,6 +94,10 @@ nav a:hover {
     cursor: pointer;
 }
 
+h1 {
+    color: black;
+}
+
 .fa-user {
     color: black;
     transition: color 0.3s ease;
@@ -109,7 +115,7 @@ nav a:hover {
     text-align: center;
     margin-top: 20px;
     flex-direction: column;
-    
+    font-family: 'Poppins', sans-serif; /* Apply Poppins font to form */
 }
 
 #logo-pic {
@@ -127,6 +133,7 @@ body {
 .container1 {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     padding: 20px; /* Adjust padding for better responsiveness */
     background-color: #fac08d;
     width: 100%;
@@ -137,27 +144,52 @@ body {
     height: auto; /* Let height adjust based on content */
     flex-wrap: wrap;
     overflow-x: hidden; /* Hides the horizontal scrollbar for this specific container */
+    font-family: 'Poppins', sans-serif; /* Apply Poppins font to form */
+}
+
+@media (max-width: 768px) {
+    .container1 {
+        flex-direction: column;
+        align-items: center;
+    }
     
+    .info-section {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .column {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .map-section {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 /* Base styles */
 .info-section {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     gap: 5px;
     flex: 1;
     background-color: #fff;
-    padding: 50px;
+    padding: 30px;
     border-radius: 8px;
-    width: 40%; /* Controls width of section */
+    width: 50%; /* Controls width of section */
     margin-right: 20px;
     margin-left: 50px;
     box-sizing: border-box; /* Ensure padding is considered within the width */
     height: 50%;
+    box-sizing: border-box;
 }
 
 .details, .contact {
     flex: 1;
+    color: black;
 }
 
 .details h3 {
@@ -173,7 +205,7 @@ body {
 
 .contact .social-media {
     color: #4267B2;
-    font-size: 1.5em;
+    font-size: 1.9em;
     text-decoration: none;
 }
 
@@ -241,7 +273,6 @@ body {
         font-size: 1.2em; /* Adjust icon size */
     }
 }
-
 
 .message-icon {
     position: fixed;
@@ -383,6 +414,7 @@ body {
     text-align: right; /* Align text to the right */
     display: block; /* Make the link a block element to take up the full width */
     margin-right: 20px;
+    font-family: 'Poppins', sans-serif; /* Apply Poppins font to form */
 }
 
 .clickable-text:hover {
