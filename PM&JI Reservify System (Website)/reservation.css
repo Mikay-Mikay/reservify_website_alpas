@@ -179,8 +179,6 @@ nav a:hover {
     text-decoration: none;  /* Ensure no underline on hover */
 }
 
-
-
 .container {
     display: flex;
     flex-direction: column;
