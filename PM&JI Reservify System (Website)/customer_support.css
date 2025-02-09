@@ -131,6 +131,7 @@ nav .toggle {
     display: flex;
     align-items: center;
     margin: 20px 0;
+    text-align: center;
     padding-left: 20px;
 }
 
@@ -190,9 +191,21 @@ nav .toggle {
 }
 
 .form-group {
-    display: flex;
-    gap: 10px;
     width: 90%;
+    margin: 0 auto;  /* Center the group if desired */
+    /* Remove the flex layout to let elements stack */
+    display: block;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%; /* Full width inside the form-group */
+    padding: 10px;
+    margin-bottom: 15px; /* Matches the spacing of other inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;  /* Ensure padding/border don't exceed 100% width */
 }
 
 .chat-container button {
@@ -204,11 +217,13 @@ nav .toggle {
     border-radius: 5px;
     cursor: pointer;
     font-size: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: "Poppins", sans-serif;
     transition: background-color 0.3s;
 }
 
 .chat-container button:hover {
-    background-color: #e2935b;
+    background-color: #e3caab;
 }
 
 .chat-container .disclaimer {
