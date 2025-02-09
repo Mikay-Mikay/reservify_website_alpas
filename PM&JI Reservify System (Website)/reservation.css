@@ -20,6 +20,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between; /* Ensure even spacing between logo and menu */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
 }
 
@@ -190,11 +191,12 @@ nav a:hover {
     margin: 20px auto;
     border-radius: 8px;
     height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
 }
 
 .container .title {
-    font-size: 32px; /* Prominent title */
+    font-size: 35px; /* Prominent title */
     font-weight: bold;
     color: black;
     text-align: center;
@@ -242,6 +244,7 @@ form .user-details .input-box span.details {
     padding-left: 15px;
     border: 1px solid #ccc;
     border-bottom-width: 2px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 
@@ -320,16 +323,73 @@ form .user-details .input-box span.details {
 }
 
 .btn {
-  width: 17%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #f4a36c;
-  color: black;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: 'Poppins', sans-serif; /* Apply font to button */
-  font-weight: bold;
+    width: 17%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f4a36c;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.title h2 {
+    font-size: 35px;
+}
+
+/* Left column (images) */
+.images-container {
+    flex: 1;
+    /* Keep your existing image styling */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.images-container img {
+    width: 515px;             /* Adjust width as needed */
+    height: auto;
+    border: 2px solid white;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.3);
+}
+
+/* Right column (time inputs and upload section) */
+.right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;  /* Space between time inputs and upload section */
+}
+
+/* Hover state for the submit button */
+.btn:hover {
+    background-color: #e3caab;
+}
+
+/* Responsive: Stack columns on smaller screens */
+@media (max-width: 768px) {
+    .reservation-details {
+        flex-direction: column;
+    }
+}
+
+/* Media query for devices with a max width of 600px */
+@media (max-width: 600px) {
+    /* Stack start/end time inputs vertically */
+    .input-container {
+        flex-direction: column;
+    }
+
+    /* Make the submit button wider on small screens */
+    .btn {
+        width: 80%;
+    }
 }
 
 @media (max-width: 768px) {
@@ -456,9 +516,7 @@ form .user-details .input-box span.details {
     height: auto;
     border-radius: 5px;
 }
-.form-group {
-    align-items: center;
-}
+
 .notification-dropdown {
     position: absolute;
     right: 20px;
