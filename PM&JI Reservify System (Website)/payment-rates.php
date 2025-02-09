@@ -2,7 +2,6 @@
 session_start();
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +16,8 @@ session_start();
 
      <!-- Back Button -->
      <a href="javascript:history.back()" class="back-button">
-        <i class="fa fa-arrow-left"></i> Back
+        <img src="images/back button.png" alt="Back Button">
     </a>
-
 
     <div class="container">
         <img src="images/reservify_logo.png" alt="PM&JI logo" id="logo-pic">
@@ -37,7 +35,7 @@ All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.
 
 <strong>Reunion</strong>
 
-Minimum ₱7,000 for 3 Hours downpayment ₱3, 500
+Minimum ₱7,000 for 3 Hours downpayment ₱3,500
 Maximum ₱8,500 for 4 Hours downpayment ₱4,250
 Unlimited shots
 All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.<br><br>
@@ -67,52 +65,39 @@ Unlimited shots
 All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.<br><br>
 
 for <strong>Other events</strong>
-Price is ₱10,000 downypayment is ₱5000
+Price is ₱10,000 downpayment is ₱5000
 Unlimited shots
 All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.<br><br>
 </p>
+    </div>
 
 <a href="connect_with_us.php" class="message-link">
     <div class="message-icon">
         <i class="fa fa-message"></i>
         <span>Connect with Us</span>
-
-        <style>
-    .box:hover {
-        transform: none;  /* Ensure no conflicting styles */
-    }
-</style>
-
     </div>
 </a>
     
-
-        <style>
- /* Back Button */
+    <style>
+        /* Back Button */
         .back-button {
-            display: flex;
-            align-items: center;
-            gap: 5px;
             position: absolute;
             top: 20px;
             left: 20px;
-            background: #f4a36c;
-            color: black;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
         }
 
-        .back-button i {
-            font-size: 16px;
+        .back-button img {
+            width: 50px; /* Adjust as needed */
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
 
-        .back-button:hover {
-            background: #ad795b;
+        .back-button img:hover {
+            transform: scale(1.1);
         }
-    .tag-line {
+
+        .tag-line {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -140,20 +125,21 @@ All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.
     display: flex;
     align-items: center;
     gap: 10px;
-}
+    }
 
-.message-icon i {
-    font-size: 24px;
-    color: #f4a36c;
-}
+    .message-icon i {
+        font-size: 24px;
+        color: #f4a36c;
+    }
 
-.message-icon span {
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-}
+    .message-icon span {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
 
-</style>
+    </style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(function() {
@@ -169,7 +155,6 @@ All pictures will be enhanced and can be sent/ shared via Gmail or Google Drive.
             });
         });
     </script>
- </div>
  
 </body>
 </html>
