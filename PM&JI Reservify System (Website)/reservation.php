@@ -248,21 +248,32 @@ if ($reservation_id) {
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 20px;   /* centers the container horizontally */
+            padding: 10px;
+            max-width: 500px;    /* optional: limit the width for better responsiveness */
+        }
+
+        /* Center the file input (choose file button) */
+        .upload-container .form-group input[type="file"] {
+            display: block;
+            margin: 15px auto;   /* centers the input element */
         }
 
         .form-group {
             margin-top: 10px;
+            margin-left: 90px;
         }
 
         .form-group input[type="file"] {
             margin: 0 auto;
         }
 
-        /* Submit Button Container */
+        /* Make the submit button responsive */
         .parent-container {
-            margin-top: 20px;
-            text-align: center;
+            width: 100%;  /* Ensure the container takes full width */
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
         }
         /*for payment*/
         .payment-link {
@@ -278,6 +289,7 @@ if ($reservation_id) {
     background-color: red !important;
     color: white !important;
 }
+
 /* Container to hold the inputs in two columns */
 .input-container {
     display: flex; /* Flexbox layout */
@@ -287,7 +299,23 @@ if ($reservation_id) {
     justify-content: center; /* Horizontally center the container */
     width: 100%; /* Ensure full width for the container */
     max-width: 800px; /* Optional: Set a max-width to prevent it from stretching too wide */
-    margin: 0 auto; /* Center the container on the page */
+    margin-top: 30px;
+    margin-left: 10px;
+}
+
+.input-container .input-item input {
+    height: 45px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Common styles for both start and end time inputs */
@@ -307,6 +335,7 @@ input[type="text"] {
 /* Ensure both inputs fit in the container */
 .input-container input[type="text"] {
     margin-bottom: 0; /* Remove bottom margin on the inputs in the same row */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Adjust input to take up full width on small screens */
@@ -327,7 +356,7 @@ label {
     font-weight: 600;
     margin-bottom: 5px;
     display: block;
-    color: #333;
+    color: black;
 }
 
 .preview-container {
@@ -408,47 +437,50 @@ label {
             <input id="eventPlace" type="text" name="event_place" placeholder="Enter Event Place" required>
         </div>
 
-        <div class="input-box">
-    <label for="photo-size">Select Photo Size & Layout:</label>
-    <select id="photo-size" name="photo_size_layout" required>
-        <option value="" disabled selected>Select Photo Size & Layout</option>
-        <option value="4x4">4x4 inches (Square Layout)</option>
-        <option value="6x6">6x6 inches (Larger Square Layout)</option>
-        <option value="2x2">2x2 inches (Mini Photo Grid)</option>
-    </select>
-</div>
-
-
-        <div class="input-box">
-            <label for="contactNumber">Contact Number:</label>
-            <input id="contactNumber" type="number" name="contact_number" placeholder="e.g. 09123456712" required>
-        </div>
-
-        <div class="input-container">
-            <div class="input-item">
-                <label for="timedatePickerStart">Start Time</label>
-                <input type="text" name="timedatePickerStart" id="timedatePickerStart" placeholder="Select start date and time" required>
-            </div>
-
-            <div class="input-item">
-                <label for="timedatePickerEnd">End Time</label>
-                <input type="text" name="timedatePickerEnd" id="timedatePickerEnd" placeholder="Select end date and time">
-            </div>
-        </div>
+            <div class="input-box">
+        <label for="photo-size">Select Photo Size & Layout:</label>
+        <select id="photo-size" name="photo_size_layout" required>
+            <option value="" disabled selected>Select Photo Size & Layout</option>
+            <option value="4x4">4R Size (3 & 4 Grids)</option>
+            <option value="6x6">Photo Strip Size (2, 3 & 4 Grids)</option>
+        </select>
+    </div>
+    <div class="input-box">
+        <label for="contactNumber">Contact Number:</label>
+        <input id="contactNumber" type="number" name="contact_number" placeholder="e.g. 09123456712" required>
     </div>
 
-    <!-- Image Upload Section -->
-    <div class="upload-container">
-        <h2>Upload Image</h2>
-        <p>Assist us in creating temporary custom background for your selected image.</p>
-        <div class="form-group">
-            <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
-        </div>
-        <!-- Image Preview -->
-        <div class="preview-container">
-            <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
-        </div>
-    </div>
+     <!-- Left Column: Images Container -->
+  <div class="images-container">
+      <img src="images/4r.png.png" alt="4R Example">
+      <img src="images/strips.png.png" alt="Strips Example">
+  </div>
+  
+  <!-- Right Column: Time Inputs & Upload Section -->
+  <div class="right-section">
+      <div class="input-container">
+          <div class="input-item">
+              <label for="timedatePickerStart">Start Time</label>
+              <input type="text" name="timedatePickerStart" id="timedatePickerStart" placeholder="Select start date and time" required>
+          </div>
+          <div class="input-item">
+              <label for="timedatePickerEnd">End Time</label>
+              <input type="text" name="timedatePickerEnd" id="timedatePickerEnd" placeholder="Select end date and time">
+          </div>
+      </div>
+  
+      <div class="upload-container">
+          <h2>Upload Image</h2>
+          <p>Assist us in creating temporary custom background for your selected image.</p>
+          <div class="form-group">
+              <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
+          </div>
+          <!-- Image Preview -->
+          <div class="preview-container">
+              <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+          </div>
+      </div>
+  </div>
 
     <div class="parent-container">
         <input type="submit" name="submit" class="btn" value="Submit">
