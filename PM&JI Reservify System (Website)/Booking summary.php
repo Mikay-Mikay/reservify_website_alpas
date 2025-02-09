@@ -13,7 +13,7 @@ require_once "database.php";
 // Retrieve the user ID from the session
 $user_id = $_SESSION['id'];
 
-// Query to fetch the required data from both test_registration and reservation tables
+// Query to fetch the required data from test_registration, reservation, and payment tables
 $sql = "
     SELECT 
         tr.First_Name, 
@@ -48,7 +48,7 @@ if ($stmt) {
     $data = mysqli_fetch_assoc($result);
 
     if ($data) {
-        // Data fetched successfully
+        // Assign fetched data to variables
         $first_name = $data['First_Name'];
         $middle_name = $data['Middle_Name'];
         $last_name = $data['Last_Name'];
@@ -61,7 +61,7 @@ if ($stmt) {
         $start_time = $data["start_time"];
         $end_time = $data["end_time"];
         $image = $data['image'];
-        $payment_method = !empty($data['payment_method']) ? $data['payment_method'] : 'Not Specified'; // Handle NULL payment_method
+        $payment_method = !empty($data['payment_method']) ? $data['payment_method'] : 'Not Specified';
     } else {
         echo "No booking summary available.";
         exit();
@@ -73,6 +73,14 @@ if ($stmt) {
 
 // Check if form is submitted and insert data into the booking_summary table
 if (isset($_POST['submit'])) {
+    // Convert start_time and end_time to correct format if needed
+    if (!empty($start_time)) {
+        $start_time = date('Y-m-d H:i:s', strtotime($start_time));
+    }
+    if (!empty($end_time)) {
+        $end_time = date('Y-m-d H:i:s', strtotime($end_time));
+    }
+
     // Insert booking summary
     $insert_sql = "
         INSERT INTO booking_summary 
@@ -83,35 +91,14 @@ if (isset($_POST['submit'])) {
     
     $stmt = mysqli_prepare($conn, $insert_sql);
     if ($stmt) {
-        // Handle NULL payment_method by setting it to 'Not Specified' if empty
-        mysqli_stmt_bind_param($stmt, "issssssssisssi", $user_id, $first_name, $middle_name, $last_name, $email, 
-                              $event_type, $event_place, $photo_size_layout, $contact_number, 
-                              $start_time, $end_time, $image, $payment_method, $reservation_id);
+        // Bind parameters (fixing the incorrect type string)
+        mysqli_stmt_bind_param($stmt, "issssssssssssi", 
+            $user_id, $first_name, $middle_name, $last_name, $email, 
+            $event_type, $event_place, $photo_size_layout, $contact_number, 
+            $start_time, $end_time, $image, $payment_method, $reservation_id
+        );
 
         if (mysqli_stmt_execute($stmt)) {
-            // Retrieve the newly inserted booking ID
-            $booking_id = mysqli_insert_id($conn);
-
-            // Insert notification for admin
-            $admin_id = 1; // Assuming admin ID is 1
-            $message = "New booking request from $first_name $last_name (Reservation ID: $reservation_id).";
-
-            $insert_notification_sql = "
-                INSERT INTO admin_notifications (admin_id, user_id, message) 
-                VALUES (?, ?, ?)
-            ";
-
-            $stmt_notification = mysqli_prepare($conn, $insert_notification_sql);
-            if ($stmt_notification) {
-                mysqli_stmt_bind_param($stmt_notification, "iis", $admin_id, $user_id, $message);
-
-                if (!mysqli_stmt_execute($stmt_notification)) {
-                    echo "Error creating notification: " . mysqli_error($conn);
-                }
-            } else {
-                echo "Error preparing notification SQL: " . mysqli_error($conn);
-            }
-
             // Success message and redirection
             echo "<script>alert('Your reservation request has been successfully submitted.');</script>";
             header("Location: thankyoupage.php");
