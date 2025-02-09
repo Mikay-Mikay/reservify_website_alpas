@@ -132,14 +132,13 @@ if (isset($_POST["submit"])) {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css?v1=2">
+    <link rel="stylesheet" href="payment.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -148,7 +147,7 @@ if (isset($_POST["submit"])) {
 <body>
     <nav>
         <div class="logo">
-            <a href="#">
+            <a href="Home.php">
                 <img src="images/reservify_logo.png" alt="PM&JI logo">
                 <span class="logo-text">PM&JI<br>Reservify</span>
             </a>
@@ -156,7 +155,7 @@ if (isset($_POST["submit"])) {
         <div class="toggle">
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
-       <ul class="menu">
+        <ul class="menu">
             <li><a href="Home.php">Home</a></li>
             <li><a href="About Us.php">About Us</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
@@ -181,95 +180,90 @@ if (isset($_POST["submit"])) {
 
 <!--For payment process-->
 <div class="container">
-    <div class="title">Payment</div>
-    <div class="content">
+  <div class="payment-wrapper">
+    <!-- Left: Payment Form -->
+    <div class="payment-form">
+      <div class="title">Payment</div>
+      <div class="content">
         <form action="payment.php" method="POST" enctype="multipart/form-data">
-            <div class="user-details">
-                <!-- Payment Method -->
-                <div class="input-box">
-                <label for="paymentType" class="form-label">Payment Method:</label>
-                <select id="paymentType" name="paymentType" class="form-input" required>
+          <div class="user-details">
+            <!-- Payment Method -->
+            <div class="input-box">
+              <label for="paymentType" class="form-label">Payment Method:</label>
+              <select id="paymentType" name="paymentType" class="form-input" required>
                 <option value="" disabled selected>Select Payment Method:</option>
                 <option value="Cash">Cash</option>
-            </select>
-        </div>
+              </select>
+            </div>
 
             <!-- Amount to Pay -->
-             <div class="input-box">
-                    <label for="amount" class="form-label">Amount to Pay:</label>
-                    <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
-                </div>
-
-                <!-- Reference Number -->
-                <div class="input-box">
-                    <label for="reference" class="form-label">Reference Number:</label>
-                    <input type="text" id="reference" name="reference" class="form-input" placeholder="Enter Reference Number" required>
-                </div>
-
-              
-    
-              <!-- Payment Type -->
-              <div class="input-box">
-                    <label for="paymentclass" class="form-label">Payment Type:</label>
-                    <select id="paymentclass" name="paymentclass" class="form-input" required>
-                        <option value="" disabled selected>Select Payment Type</option>
-                        <option value="Downpayment">Downpayment</option>
-                        <option value="Full Payment">Full Payment</option>
-                    </select>
-                </div>
+            <div class="input-box">
+              <label for="amount" class="form-label">Amount to Pay:</label>
+              <input type="number" id="amount" name="amount" class="form-input" placeholder="Enter Amount" required>
             </div>
 
-             <!-- Gcash and Maya Instruction Modules -->
-                <div class="tutorial-options">
-                <a href="gcash.html" class="button">
-                    How to Send Using Gcash
-                    <img src="images/gcash_logo.png" alt="Gcash Logo" class="button-icon">
-                </a>
-                <a href="maya.html" class="button">
-                    How to Send Using Maya
-                    <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
-                </a>
-                <a href="payment-rates.php" class="payment-btn">
-                    Payment Rates
-                </a>
-                   
+            <!-- Reference Number -->
+            <div class="input-box">
+              <label for="reference" class="form-label">Reference Number:</label>
+              <input type="text" id="reference" name="reference" class="form-input" placeholder="Enter Reference Number" required>
             </div>
 
-           
-
-            <!-- Upload Image Section -->
-<div class="upload-container">
-    <h2>Upload Payment Proof</h2>
-    <p>Attach proof of payment below:</p>
-    <input type="file" id="imageUpload" name="image" class="upload-input" required onchange="previewImage(event)">
-</div>
-
-<!-- Image Preview -->
-<div class="preview-container">
-    <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
-</div>
-
-
-            <!-- Submit Button -->
-            <div class="form-actions">
-                <button type="submit" name="submit" class="btn">Submit Payment</button>
+            <!-- Payment Type -->
+            <div class="input-box">
+              <label for="paymentclass" class="form-label">Payment Type:</label>
+              <select id="paymentclass" name="paymentclass" class="form-input" required>
+                <option value="" disabled selected>Select Payment Type</option>
+                <option value="Downpayment">Downpayment</option>
+                <option value="Full Payment">Full Payment</option>
+              </select>
             </div>
+          </div>
 
-        
+          <!-- Gcash and Maya Instruction Modules -->
+          <div class="tutorial-options">
+            <a href="gcash.html" class="button">
+              How to Send Using Gcash
+              <img src="images/gcash_logo.png.png" alt="Gcash Logo" class="button-icon">
+            </a>
+            <a href="maya.html" class="button">
+              How to Send Using Maya
+              <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
+            </a>
+            <a href="payment-rates.php" class="payment-btn">
+              Payment Rates
+            </a>
+          </div>
+
+          <!-- Upload Image Section -->
+          <div class="upload-container">
+            <h2>Upload Payment Proof</h2>
+            <p>Attach proof of payment below:</p>
+            <input type="file" id="imageUpload" name="image" class="upload-input" required onchange="previewImage(event)">
+          </div>
+
+          <!-- Image Preview -->
+          <div class="preview-container">
+            <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button type="submit" name="submit" class="btn">Submit Payment</button>
+          </div>
         </form>
+      </div>
     </div>
+
+    <!-- Right: Scan Me Section -->
+    <div class="payment-scan">
+      <h2>Scan me!</h2>
+      <div class="payment-type">
+        <img src="images/Gcash.jpg" alt="Gcash" class="zoomable">
+        <img src="images/Maya.jpg" alt="Maya" class="zoomable">
+      </div>
+    </div>
+  </div>
 </div>
-    
-    <div class="title">
-        <h2>Scan me!</h2>
-    
-          <!--For payment option images-->
-        <div class="payment-type">
-            <img src="images/Gcash.jpg" alt="Gcash" class="zoomable">
-            <img src="images/Maya.jpg" alt="Maya" class="zoomable">
-        </div>
-  
-    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
@@ -493,19 +487,11 @@ document.getElementById("bookingStatusBtn").addEventListener("click", function()
   </div>  
   
        
-  <a href="connect_with_us.php" class="message-link">
-    <div class="message-icon">
-        <i class="fa fa-message"></i>
-        <span>Connect with Us</span>
-
-        <style>
-    .box:hover {
-        transform: none;  /* Ensure no conflicting styles */
-    }
-</style>
-
-    </div>
-</a>
-    
+    <a href="connect_with_us.php" class="message-link">
+        <div class="message-icon">
+            <i class="fa fa-message"></i>
+            <span>Connect with Us</span>
+        </div>
+    </a>  
 </body>
 </html>
