@@ -113,7 +113,7 @@ if (isset($_POST["submit"])) {
 
                 mysqli_stmt_close($notification_stmt);
 
-                echo "<script>window.location.href='booking summary.php';</script>";
+                echo "<script>window.location.href='payment.php';</script>";
                 exit;
             } else {
                 echo "<script>alert('Failed to save payment details. Please try again.');</script>";
@@ -139,7 +139,7 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Reservify</title>
-    <link rel="stylesheet" href="payment.css?v1=1">
+    <link rel="stylesheet" href="payment.css?v1=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
@@ -166,13 +166,15 @@ if (isset($_POST["submit"])) {
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
             </li>
-
-
-            <i class="fa fa-bell notification-bell"></i>
-                <div class="notification-dropdown">
-                     <p>No new notifications</p>    
-                     <p>Meow</p>   
+            <li>
+                <div class="notification-bell">
+                    <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
+                    <span class="notification-count"></span>
                 </div>
+                <div class="notification-dropdown">
+                    <p>Loading notifications...</p>
+                </div>
+            </li>
 
         </ul>
     </nav>
@@ -227,7 +229,13 @@ if (isset($_POST["submit"])) {
                     How to Send Using Maya
                     <img src="images/maya_logo.png.png" alt="Maya Logo" class="button-icon">
                 </a>
+                <a href="payment-rates.php" class="payment-btn">
+                    Payment Rates
+                </a>
+                   
             </div>
+
+           
 
             <!-- Upload Image Section -->
 <div class="upload-container">
@@ -251,13 +259,10 @@ if (isset($_POST["submit"])) {
         </form>
     </div>
 </div>
-        <div class="prices">
-        <p><strong>Here are the 50% down payment amounts for each event based on the original prices:</strong>
-                <br>Wedding: Original Price: ₱25,000. 50% Down Payment: ₱12,500<br>Reunion: Original Price: ₱20,000. 50% Down Payment: ₱10,000<br>Baptism: Original Price: ₱18,000. 50% Down Payment: ₱9,000
-                <br>Birthday: Original Price: ₱17,500. 50% Down Payment: ₱8,750<br>Company Event: Original Price: ₱30,000. 50% Down Payment: ₱15,000.
-            </p>
-        </div>
-
+    
+    <div class="title">
+        <h2>Scan me!</h2>
+    
           <!--For payment option images-->
         <div class="payment-type">
             <img src="images/Gcash.jpg" alt="Gcash" class="zoomable">
@@ -306,7 +311,101 @@ if (isset($_POST["submit"])) {
     }
 }
 
+   // Notification functionality
+   const fetchNotifications = async () => {
+    try {
+        const response = await fetch('fetch_notification.php');
+        const notifications = await response.json();
+        
+        // Check if there are any notifications
+        if (notifications.length > 0) {
+            document.querySelector('.notification-count').textContent = notifications.length;
 
+            // Build the dropdown content
+            const dropdownContent = notifications.map(notification => {
+                let message = notification.message;
+
+                // Validate and format the time and date when the notification was received
+                let notificationTime = new Date(notification.time);
+                
+                // Check if the date is valid
+                if (isNaN(notificationTime)) {
+                    console.error("Invalid date:", notification.time); // Log the invalid date to the console
+                    notificationTime = new Date(); // Set to current date/time if invalid
+                }
+
+                let formattedTime = notificationTime.toLocaleString('en-US', { 
+                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+                });
+
+                // Return the notification item with formatted date and time
+                return `
+                    <div class="notification-item">
+                        ${message} <span class="time">${formattedTime}</span>
+                    </div>
+                `;
+            }).join("");
+
+            // Set the content to the dropdown using innerHTML to parse any HTML tags in the message
+            document.querySelector(".notification-dropdown").innerHTML = dropdownContent;
+        } else {
+            // No notifications
+            document.querySelector(".notification-dropdown").innerHTML = "<p>No new notifications</p>";
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        document.querySelector(".notification-dropdown").innerHTML = "<p>Failed to load notifications</p>";
+    }
+};
+
+const toggleNotification = () => {
+    document.querySelector(".notification-dropdown").classList.toggle("show");
+};
+
+// Close the dropdown when clicked outside
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".notification-bell")) {
+        document.querySelector(".notification-dropdown").classList.remove("show");
+    }
+});
+
+// Initialize notifications on page load
+document.addEventListener("DOMContentLoaded", fetchNotifications);
+
+document.getElementById("bookingStatusBtn").addEventListener("click", function() {
+        fetch("fetch_reservation.php")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("bookingDetails").innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    document.getElementById("bookingDetails").innerHTML = `
+                        <p><strong>Event Type:</strong> ${data.event_type}</p>
+                        <p><strong>Location:</strong> ${data.event_place}</p>
+                        <p><strong>Participants:</strong> ${data.number_of_participants}</p>
+                        <p><strong>Contact:</strong> ${data.contact_number}</p>
+                        <p><strong>Start Time:</strong> ${data.start_time}</p>
+                        <p><strong>End Time:</strong> ${data.end_time}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <img src="Images/${data.image}" alt="Event Image" width="100%">
+                    `;
+                }
+                document.getElementById("bookingStatusModal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching reservation:", error));
+    });
+
+    document.querySelector(".close").addEventListener("click", function() {
+        document.getElementById("bookingStatusModal").style.display = "none";
+    });
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("bookingStatusModal")) {
+            document.getElementById("bookingStatusModal").style.display = "none";
+        }
+    };
 </script>
 
     <div class="title">
@@ -394,10 +493,17 @@ if (isset($_POST["submit"])) {
   </div>  
   
        
-    <a href="customer_support.php" class="message-link">
+  <a href="connect_with_us.php" class="message-link">
     <div class="message-icon">
         <i class="fa fa-message"></i>
         <span>Connect with Us</span>
+
+        <style>
+    .box:hover {
+        transform: none;  /* Ensure no conflicting styles */
+    }
+</style>
+
     </div>
 </a>
     
