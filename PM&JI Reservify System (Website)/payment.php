@@ -156,16 +156,16 @@ if (isset($_POST["submit"])) {
         <div class="toggle">
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
-        <ul class="menu">
+       <ul class="menu">
             <li><a href="Home.php">Home</a></li>
             <li><a href="About Us.php">About Us</a></li>
-            <li><a href="portfolio.php">Portfolio</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
+            <li><a href="customer_mybookings.php">My Bookings</a></li>
             <li class="user-logo">
-                <a href="profile_user.php">
+                <a href="login.php">
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
-            </li>
+            </li> 
             <li>
                 <div class="notification-bell">
                     <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
