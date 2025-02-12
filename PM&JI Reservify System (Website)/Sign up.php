@@ -1,13 +1,20 @@
 <?php
-// Start the session to track user information
+// Start session
 session_start();
 
-// Initialize variables
+// Include PHPMailer
+require 'vendor/autoload.php'; // Make sure this path is correct
+
+// Use PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+// Initialize error array
 $errors = array();
 
 // Validate the submit button
 if (isset($_POST["submit"])) {
-    // Retrieve form inputs with null coalescing operator to avoid undefined key warnings
     $First_Name = $_POST["first_name"] ?? '';
     $Middle_Name = $_POST["middle_name"] ?? '';
     $Last_Name = $_POST["last_name"] ?? '';
@@ -25,20 +32,17 @@ if (isset($_POST["submit"])) {
     $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptchaSecret&response=$recaptchaResponse");
     $responseKeys = json_decode($response, true);
 
-    // If reCAPTCHA validation fails
     if (!$responseKeys["success"]) {
         array_push($errors, "Please verify that you are not a bot.");
     }
 
-    // Sanitize and hash the password
+    // Password Hashing
     $passwordHash = password_hash($Password, PASSWORD_DEFAULT);
 
-    // Validation checks
-    if (
-        empty($First_Name) || empty($Last_Name) || empty($Email) || empty($Phone_Number) ||
+    // Basic Validation
+    if (empty($First_Name) || empty($Last_Name) || empty($Email) || empty($Phone_Number) ||
         empty($Address) || empty($Date_of_Birth) ||
-        empty($Password) || empty($Confirm_Password) || empty($Gender)
-    ) {
+        empty($Password) || empty($Confirm_Password) || empty($Gender)) {
         array_push($errors, "All fields are required.");
     }
 
@@ -54,23 +58,17 @@ if (isset($_POST["submit"])) {
         array_push($errors, "Passwords do not match.");
     }
 
-    // Display errors or process the form
-    if (count($errors) > 0) {
-        foreach ($errors as $error) {
-            echo "<div class='alert alert-danger'>$error</div>";
-        }
-    } else {
+    if (count($errors) == 0) {
         // Database connection
         require_once "database.php";
 
-        // SQL query
+        // SQL Query
         $sql = "INSERT INTO test_registration 
         (First_Name, Middle_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth, Password, Gender) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // Prepare and execute the statement
+        // Prepare & Execute Statement
         $stmt = mysqli_stmt_init($conn);
-
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             die("Database error: " . mysqli_error($conn));
         }
@@ -78,18 +76,53 @@ if (isset($_POST["submit"])) {
         mysqli_stmt_bind_param($stmt, "sssssssss", $First_Name, $Middle_Name, $Last_Name, $Email, $Phone_Number,  $Address, $Date_of_Birth, $passwordHash, $Gender);
 
         if (mysqli_stmt_execute($stmt)) {
-            echo "<script>
-                alert('Registration Successfully! You will be redirected to log in.');
-                window.location.href = 'login.php';
-            </script>";
+            // Generate OTP
+            $otp_code = rand(100000, 999999);
+
+            // Store OTP in session (or DB)
+            $_SESSION['otp'] = $otp_code;
+            $_SESSION['email'] = $Email;
+
+            // Send Email with OTP using PHPMailer
+            $mail = new PHPMailer(true);
+
+            try {
+                // SMTP Configuration
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'pmjireservify@gmail.com'; // Your Gmail Email
+                $mail->Password = 'svoa zdpp dktf izld';   // Use App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                // Email Content
+                $mail->setFrom('pmjireservify@gmail.com', 'PM&JI Reservify');
+                $mail->addAddress($Email); // Recipient
+                $mail->Subject = 'Your OTP Code';
+                $mail->Body = "Hello $First_Name,\n\nYour One-Time Password (OTP) is: $otp_code\n\nUse this code to complete your verification.\n\nBest Regards,\nPM&JI Reservify ";
+
+                // Send Email
+                $mail->send();
+                echo "<script>alert('OTP has been sent to your email.');</script>";
+
+                // Redirect to OTP verification page
+                echo "<script>window.location.href = 'signup_otp.php';</script>";
+                exit();
+            } catch (Exception $e) {
+                echo "<script>alert('Registration Successful but failed to send OTP.');</script>";
+            }
+
         } else {
             die("Database error: Unable to execute query.");
         }
+    } else {
+        foreach ($errors as $error) {
+            echo "<div class='alert alert-danger'>$error</div>";
+        }
     }
 }
-
 ?>
-
 
 
 
@@ -127,7 +160,7 @@ if (isset($_POST["submit"])) {
           </div>
           <div class="input-box">
             <span class="details">Email</span>
-            <input type="email" name="email" placeholder="example@gmail.com" required>
+            <input type="email" name="email" placeholder="juandelacruz@gmail.com" required>
           </div>
           <div class="input-box">
             <span class="details">Phone Number</span>
