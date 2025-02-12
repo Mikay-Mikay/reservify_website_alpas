@@ -171,7 +171,6 @@ if ($reservation_id) {
     mysqli_close($conn);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -248,32 +247,21 @@ if ($reservation_id) {
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 20px;   /* centers the container horizontally */
-            padding: 10px;
-            max-width: 500px;    /* optional: limit the width for better responsiveness */
-        }
-
-        /* Center the file input (choose file button) */
-        .upload-container .form-group input[type="file"] {
-            display: block;
-            margin: 15px auto;   /* centers the input element */
+            margin-top: 20px;
         }
 
         .form-group {
             margin-top: 10px;
-            margin-left: 90px;
         }
 
         .form-group input[type="file"] {
             margin: 0 auto;
         }
 
-        /* Make the submit button responsive */
+        /* Submit Button Container */
         .parent-container {
-            width: 100%;  /* Ensure the container takes full width */
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
+            margin-top: 20px;
+            text-align: center;
         }
         /*for payment*/
         .payment-link {
@@ -289,7 +277,6 @@ if ($reservation_id) {
     background-color: red !important;
     color: white !important;
 }
-
 /* Container to hold the inputs in two columns */
 .input-container {
     display: flex; /* Flexbox layout */
@@ -299,23 +286,7 @@ if ($reservation_id) {
     justify-content: center; /* Horizontally center the container */
     width: 100%; /* Ensure full width for the container */
     max-width: 800px; /* Optional: Set a max-width to prevent it from stretching too wide */
-    margin-top: 30px;
-    margin-left: 10px;
-}
-
-.input-container .input-item input {
-    height: 45px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    outline: none;
-    font-size: 16px;
-    border-radius: 5px;
-    padding: 0 15px;
-    border: 1px solid #ccc;
-    border-bottom-width: 2px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 auto; /* Center the container on the page */
 }
 
 /* Common styles for both start and end time inputs */
@@ -335,7 +306,6 @@ input[type="text"] {
 /* Ensure both inputs fit in the container */
 .input-container input[type="text"] {
     margin-bottom: 0; /* Remove bottom margin on the inputs in the same row */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Adjust input to take up full width on small screens */
@@ -356,7 +326,7 @@ label {
     font-weight: 600;
     margin-bottom: 5px;
     display: block;
-    color: black;
+    color: #333;
 }
 
 .preview-container {
@@ -391,7 +361,7 @@ label {
             <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
             <li><a href="reservation.php">Reserve Now</a></li> <!-- ginawa kong About Us.php -->
             <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- nag lagay ako ng my bookings sa navbar -->
-            <li><a href="customer_feedback.php">Add Review</a></li>
+            <li><a href="contact_us1.php">Contact Us</a></li>
             <li class="user-logo">
                 <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
@@ -414,15 +384,20 @@ label {
         <div class="content">
         <form action="reservation.php" method="POST" enctype="multipart/form-data">
     <div class="user-details">
-        <div class="input-box">
+    <div class="input-box">
             <label for="eventType">Event Type:</label>
             <select id="eventType" name="event_type" required>
                 <option value="" disabled selected>Select Event Type</option>
-                <option value="wedding">Wedding</option>
-                <option value="reunion">Reunion</option>
-                <option value="baptism">Baptism</option>
-                <option value="birthday">Birthday</option>
-                <option value="company_event">Company Event</option>
+                <option value="Wedding Photobooth service for 3 Hours">Wedding Photobooth service for 3 Hours</option>
+                <option value="Wedding Photobooth service for 5 Hours">Wedding Photobooth service for 5 Hours</option>
+                <option value="Reunion Photobooth service for 3 Hours">Reunion Photobooth service for 3 Hours</option>
+                <option value="Reunion Photobooth service for 4 Hours">Reunion Photobooth service for 4 Hours</option>
+                <option value="baptism Photobooth service for 3 Hours">Baptism Photobooth service for 3 Hours</option>
+                <option value="baptism Photobooth service for 4 Hours">Baptism Photobooth service for 4 Hours</option>
+                <option value="birthday Photobooth service for 3 Hours">Birthday Photobooth service for 3 Hours</option>
+                <option value="birthday Photobooth service for 4 Hours">Birthday Photobooth service for 4 Hours</option>
+                <option value="company_event Photobooth service for 3 Hours">Company Event Photobooth service for 3 Hours</option>
+                <option value="company_event Photobooth service for 5 Hours">Company Event Photobooth service for 5 Hours</option>
                 <option value="others">Others</option>
             </select>
         </div>
@@ -452,8 +427,8 @@ label {
 
      <!-- Left Column: Images Container -->
   <div class="images-container">
-      <img src="images/4r.png.png" alt="4R Example">
-      <img src="images/strips.png.png" alt="Strips Example">
+      <img src="images/4r.png" alt="4R Example">
+      <img src="images/strips.png" alt="Strips Example">
   </div>
   
   <!-- Right Column: Time Inputs & Upload Section -->
@@ -469,17 +444,18 @@ label {
           </div>
       </div>
   
-      <div class="upload-container">
-          <h2>Upload Image</h2>
-          <p>Assist us in creating temporary custom background for your selected image.</p>
-          <div class="form-group">
-              <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
-          </div>
-          <!-- Image Preview -->
-          <div class="preview-container">
-              <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
-          </div>
-      </div>
+       <!-- Image Upload Section -->
+    <div class="upload-container">
+        <h2>Upload Image</h2>
+        <p>Assist us in creating temporary custom background for your selected image.</p>
+        <div class="form-group">
+            <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
+        </div>
+        <!-- Image Preview -->
+        <div class="preview-container">
+            <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+        </div>
+    </div>
   </div>
 
     <div class="parent-container">
@@ -583,7 +559,7 @@ label {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    $(document).ready(function () {
+ $(document).ready(function () {
         $.ajax({
             url: 'fetch_unavailable_dates.php',
             method: 'GET',
