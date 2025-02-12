@@ -5,60 +5,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and validate user inputs
     $first_name = htmlspecialchars(trim($_POST['first_name']));
     $last_name = htmlspecialchars(trim($_POST['last_name']));
+    $email = htmlspecialchars(trim($_POST['email']));
     $contact = htmlspecialchars(trim($_POST['contact']));
     $concern = htmlspecialchars(trim($_POST['concern']));
-
-    // If "other_concern" is empty, set it to an empty string to avoid NULL
     $other_concern = !empty($_POST['other_concern']) ? htmlspecialchars(trim($_POST['other_concern'])) : '';
+    $concern_details = htmlspecialchars(trim($_POST['concern_details']));
 
     // Generate ticket number
-    $date = date("Ymd"); // Current date in YYYYMMDD format
+    $date = date("Ymd");
     $prefix = "Ticket CS-$date-";
 
-    try {
-        // Get the current count of tickets for the day to avoid duplicate ticket numbers
-        $query = "SELECT COUNT(*) AS ticket_count FROM customer_service WHERE DATE(created_at) = CURDATE()";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Ensure the ticket count starts from 1 and generate ticket number
-        $count = $result['ticket_count'] + 1;
-        // Generate ticket number with proper padding (leading zeros)
-        $ticket_number = $prefix . str_pad($count, 4, '0', STR_PAD_LEFT);
+    // Insert data into the database
+    $insert_query = "INSERT INTO customer_service 
+                     (first_name, last_name, email, contact, concern, other_concern, concern_details, created_at) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";  
 
-        // Check if the ticket number already exists (optional step to ensure uniqueness)
-        $query = "SELECT COUNT(*) AS ticket_count FROM customer_service WHERE ticket_number = :ticket_number";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([':ticket_number' => $ticket_number]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = mysqli_prepare($conn, $insert_query);
+    mysqli_stmt_bind_param($stmt, "sssssss", $first_name, $last_name, $email, $contact, $concern, $other_concern, $concern_details);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        $last_id = mysqli_insert_id($conn); 
+        $ticket_number = $prefix . str_pad($last_id, 4, '0', STR_PAD_LEFT);
 
-        if ($result['ticket_count'] > 0) {
-            // Generate a new ticket number if there's a duplicate
-            $ticket_number = $prefix . str_pad($result['ticket_count'] + 1, 4, '0', STR_PAD_LEFT);
-        }
+        $update_query = "UPDATE customer_service SET ticket_number = ? WHERE id = ?";
+        $update_stmt = mysqli_prepare($conn, $update_query);
+        mysqli_stmt_bind_param($update_stmt, "si", $ticket_number, $last_id);
+        mysqli_stmt_execute($update_stmt);
+        mysqli_stmt_close($update_stmt);
 
-        // Insert data into the database
-        $query = "INSERT INTO customer_service
-                  (ticket_number, first_name, last_name, contact, concern, other_concern) 
-                  VALUES (:ticket_number, :first_name, :last_name, :contact, :concern, :other_concern)";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([
-            ':ticket_number' => $ticket_number,
-            ':first_name' => $first_name,
-            ':last_name' => $last_name,
-            ':contact' => $contact,
-            ':concern' => $concern,
-            ':other_concern' => $other_concern
-        ]);
-
-        // Display the ticket number to the user
-        echo "<p class='success-message'>Thank you for your submission! Your inquiry Ticket is <strong>$ticket_number</strong> has been sent. Our support team will get back to you shortly.</p>";
-    } catch (PDOException $e) {
-        // Error handling
-        echo "<p class='error-message'>An error occurred: " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<script>
+                alert('Thank you for your submission! Your inquiry Ticket \"$ticket_number\" has been sent.');
+                window.location.href = 'connect_with_us.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('An error occurred: " . mysqli_error($conn) . "');
+              </script>";
     }
+
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -106,21 +94,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2>PM&JI Customer Service Online</h2>
         <p>Hey! We see you might have some concerns, and we're here to help. Whether it's about services or something else, feel free to share your thoughts. Your feedback is important, and we will do our best to provide a solution or direct you to the right support!</p>
         <form method="POST" action="">
-        <div class="form-group">
-                <select name="concern" required>
-                    <option value="" disabled selected>Concern</option>
-                    <option value="Service Inquiry">Service Inquiry</option>
-                    <option value="Feedback">Feedback</option>
-                    <option value="Complaint">Complaint</option>
-                    <option value="Others">Others</option>
-                </select>
-                <input type="text" name="other_concern" placeholder="Others (if applicable)" id="otherConcernField" style="display: none;">
-            </div>
-            <input type="text" name="first_name" placeholder="First Name" required>
-            <input type="text" name="last_name" placeholder="Last Name" required>
-            <input type="text" name="contact" placeholder="Contact Number" required>
-            <button type="submit">Submit</button>
-        </form>
+    <div class="form-group">
+        <select name="concern" required>
+            <option value="" disabled selected>Concern</option>
+            <option value="Service Inquiry">Service Inquiry</option>
+            <option value="Feedback">Feedback</option>
+            <option value="Complaint">Complaint</option>
+            <option value="Others">Others</option>
+        </select>
+        <input type="text" name="other_concern" placeholder="Others (if applicable)" id="otherConcernField" style="display: none;">
+    </div>
+
+    <input type="text" name="concern_details" placeholder="Concern Details" required> 
+    <input type="text" name="first_name" placeholder="First Name" required>
+    <input type="text" name="last_name" placeholder="Last Name" required>
+    <input type="text" name="email" placeholder="Email" required> <!-- FIXED -->
+    <input type="text" name="contact" placeholder="Contact Number" required>
+    
+    <button type="submit">Submit</button>
+</form>
+
         <p class="disclaimer">PM&JI Photography is governed by R.A. 10172, otherwise known as the Data Privacy Act of 2021. By clicking 'SUBMIT,' you signify your consent to PM&JI Photography to collect and process the personal information that you entered.</p>
     </div>
 
@@ -137,3 +130,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
+
