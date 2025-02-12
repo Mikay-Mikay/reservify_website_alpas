@@ -2,9 +2,6 @@
 session_start();
 include 'database.php';
 
-// Variable to hold whether the review submission was successful
-$feedbackSubmitted = false;
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['id'] ?? null;
     $message = trim($_POST['opinion']);
@@ -23,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("isi", $user_id, $message, $rating);
 
     if ($stmt->execute()) {
-        // Set the session variable to show the pop-up
+        // Set session variable to trigger pop-up
         $_SESSION['feedbackSubmitted'] = true;
         header("Location: add_reviews1.php");
         exit();
@@ -35,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,6 +74,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 10px;
             border-radius: 5px;
         }
+        .review {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.review .clickable-text {
+    text-decoration: none;
+    color: blue; /* Adjust color as needed */
+    font-size: 15px; /* Adjust the font size */
+}
     </style>
 </head>
 <body>
@@ -83,18 +92,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="wrapper">
     <h3>Thank you for taking the time to share your experience.</h3>
     <form action="" method="POST">
-        <div class="rating">
-            <input type="number" name="rating" hidden>
-            <i class='bx bx-star star' style="--i:  0;"></i>
-            <i class='bx bx-star star' style="--i: 1;"></i>
-            <i class='bx bx-star star' style="--i: 2;"></i> 
-            <i class='bx bx-star star' style="--i: 3;"></i>
-            <i class='bx bx-star star' style="--i: 4;"></i> 
-        </div>
+    <div class="rating">
+    <input type="number" name="rating" id="rating" hidden>
+    <i class='bx bx-star star' data-value="1"></i>
+    <i class='bx bx-star star' data-value="2"></i>
+    <i class='bx bx-star star' data-value="3"></i> 
+    <i class='bx bx-star star' data-value="4"></i>
+    <i class='bx bx-star star' data-value="5"></i> 
+</div>
+
         <textarea class="textarea" name="opinion" cols="30" rows="5" placeholder="Your Review...."></textarea>
         <div class="btn-group">
             <button type="submit" class="btn submit">Submit</button>
-            <button class="btn cancel">Cancel</button>
+            <button type="button" class="btn cancel" onclick="window.location.href='reservation.php';">Cancel</button>
         </div>
     </form>
 </div>
@@ -103,9 +113,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div id="feedbackPopup" class="popup">
     <div class="popup-content">
         <p>Thank you for your honest feedback!</p>
+        <button class="close-btn">OK</button>
+    </div>
+</div>
+
+<div class="review">
+        <a href="customer_feedback.php" class="clickable-text">View Feedback</a>
+    </div>
+
+<!-- Pop-up Message -->
+<div id="feedbackPopup" class="popup">
+    <div class="popup-content">
+        <p>Thank you for your honest feedback!</p>
         <button class="close-btn" onclick="closePopup()">OK</button>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if feedback was submitted
+        <?php if (isset($_SESSION['feedbackSubmitted']) && $_SESSION['feedbackSubmitted']): ?>
+            document.getElementById("feedbackPopup").style.display = "flex";
+            <?php unset($_SESSION['feedbackSubmitted']); ?>  // Clear session variable after displaying pop-up
+        <?php endif; ?>
+
+        // Get the close button
+        const closeBtn = document.querySelector(".close-btn");
+
+        // Function to close pop-up and redirect
+        function closePopup() {
+            document.getElementById("feedbackPopup").style.display = "none";
+            window.location.href = "customer_feedback.php"; // Redirect to feedback page
+        }
+
+        // Ensure close button exists before adding event listener
+        if (closeBtn) {
+            closeBtn.addEventListener("click", closePopup);
+        } else {
+            console.error("Close button not found!");
+        }
+    });
+</script>
 
 <script src="add reviews1.js"></script>
 <script>
