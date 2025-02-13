@@ -1,8 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+.admin-dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 20%;
+    background-color: #fac08d;
+    color: black;
+    height: 155%;
+    padding: 10px 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+/* Hide sidebar by default on smaller screens */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100%;
+        width: 250px;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        cursor: pointer;
+        background-color: #fac08d;
+        padding: 10px;
+        border-radius: 5px;
+    }
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+
+    .activity-card {
+        padding: 8px;
+    }
+
+    .header-right {
+        flex-direction: column;
+    }
+}
+
+/* Tablet screens */
+@media screen and (max-width: 1024px) {
+    .sidebar {
+        width: 30%;
+    }
+
+    .content {
+        width: 70%;
+    }
+}
+
 .content {
     padding: 20px;
     flex: 1;
     background-color: #f9f9f9;
-    color: #000000;
+    color: black;
 }
 
 header {
