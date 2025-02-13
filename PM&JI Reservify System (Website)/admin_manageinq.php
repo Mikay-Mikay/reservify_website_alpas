@@ -1,8 +1,14 @@
 <?php
 session_start();
+require_once "database.php"; // Ensure that your database connection is correctly configured here
 
 // Assuming the admin's ID is stored in the session after login
 $admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
+
+// Query to fetch customer service inquiries
+$query = "SELECT ticket_number, first_name, last_name, email, contact, concern, other_concern, concern_details, created_at FROM customer_service";
+
+$result = mysqli_query($conn, $query);
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -19,7 +25,7 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
     <link rel="stylesheet" href="admin_calendar.css">
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.2">
     <link rel="stylesheet" href="admin_bookinghistory.css">
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
     <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
@@ -38,8 +44,8 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                            <img src="images/home.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
                 </ul>
@@ -146,34 +152,32 @@ if (isset($_GET['logout'])) {
                             <th>Inquiry ID</th>
                             <th>Customer Name</th>
                             <th>Email</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Contact</th>
+                            <th>Concern</th>
+                            <th>Other Concern</th>
+                            <th>Concern Details</th>
+                            <th>Created at</th>
+
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>CS-20241129-0001</td>
-                            <td>John A. Doe</td>
-                            <td>john.doe@example.com</td>
-                            <td>Nov 29, 2024</td>
-                            <td><span class="status open">Open</span></td>
-                            <td>
-                                <button class="view-btn">View</button>
-                                <button class="resolve-btn">Resolve</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS-20241129-0002</td>
-                            <td>Anne C. Cruz</td>
-                            <td>anne.cruz@example.com</td>
-                            <td>Nov 29, 2024</td>
-                            <td><span class="status resolved">Resolved</span></td>
-                            <td>
-                                <button class="view-btn">View</button>
-                                <button class="resolve-btn">Resolve</button>
-                            </td>
-                        </tr>
+                    <?php
+while ($row = mysqli_fetch_assoc($result)) {
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($row['ticket_number']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['contact']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['concern']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['other_concern']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['concern_details']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
+    // The mailto link to open Gmail directly
+    echo "<td><a href='https://mail.google.com/mail/?view=cm&fs=1&to=" . htmlspecialchars($row['email']) . "' target='_blank'><button>Send Email</button></a></td>";
+    echo "</tr>";
+}
+?>
                     </tbody>
                 </table>
             </section>
@@ -181,35 +185,21 @@ if (isset($_GET['logout'])) {
     </div>
     <script>
         // Toggle Profile Dropdown
-function toggleDropdown() {
-    const dropdown = document.getElementById('profile-dropdown');
-    dropdown.classList.toggle('show');
-}
-
-// Toggle Notification Dropdown
-function toggleNotification() {
-    const notifDropdown = document.getElementById('notification-dropdown');
-    notifDropdown.classList.toggle('show');
-}
-
-// Close dropdowns when clicking outside
-window.onclick = function(event) {
-    // Close profile dropdown if clicked outside
-    if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
-        const dropdown = document.getElementById('profile-dropdown');
-        if (dropdown && dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
+        function toggleDropdown() {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('show');
         }
-    }
 
-    // Close notification dropdown if clicked outside
-    if (!event.target.matches('#notif-bell') && !event.target.closest('.notification-container')) {
-        const notifDropdown = document.getElementById('notification-dropdown');
-        if (notifDropdown && notifDropdown.classList.contains('show')) {
-            notifDropdown.classList.remove('show');
-        }
-    }
-};
+        // Close dropdowns when clicking outside
+        window.onclick = function(event) {
+            // Close profile dropdown if clicked outside
+            if (!event.target.matches('.profile-icon') && !event.target.closest('.profile-container')) {
+                const dropdown = document.getElementById('profile-dropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        };
     </script>
 </body>
 </html>
