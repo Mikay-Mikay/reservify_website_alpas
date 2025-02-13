@@ -42,7 +42,7 @@
                 These Terms and Conditions are governed by and construed in accordance with the laws of the jurisdiction in which PM&JI operates, without regard to its conflict of law principles.
             </p>
             <p><strong>9. Contact Information</strong><br>
-                If you have any questions about these Terms and Conditions, please contact us at pmji_198@gmail.com.
+                If you have any questions about these Terms and Conditions, please contact us at pmjireservify@gmail.com.
             </p>
             <p class="contact-info">By registering, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
         </div>
