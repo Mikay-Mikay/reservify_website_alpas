@@ -87,6 +87,13 @@ nav a:hover {
     font-size: 16px;
 }
 
+.back-button img {
+    width: 20px;
+    height: 20px;
+    margin-left: 20px; /* Adjust left margin for alignment */
+    cursor: pointer;
+}
+
 .toggle {
     font-size: 30px;
     display: none;
@@ -120,13 +127,14 @@ nav a:hover {
     max-width: 700px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: white;
   }
   
   h2 {
     text-align: center;
     font-size: 28px;
-    color: #333;
+    color: black;
     margin-bottom: 20px;
   }
   
@@ -136,6 +144,8 @@ nav a:hover {
   
   .summary-item label {
     font-size: 16px;
+    color: black;
+    font-weight: 500;
     margin-bottom: 5px;
     display: block;
   }
@@ -147,7 +157,7 @@ nav a:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #f9f9f9;
-    color: #333;
+    color: black;
     font-size: 14px;
   }
   
@@ -166,12 +176,7 @@ button {
     font-size: 16px;
     cursor: pointer;
     flex: 1; /* Ensure buttons take equal width on smaller screens */
-    max-width: 48%; /* Prevent buttons from stretching too much */
-}
-
-.cancel-btn {
-    background-color: #f44336;
-    color: white;
+    max-width: 100%; /* Prevent buttons from stretching too much */
 }
 
 .confirm-btn {
