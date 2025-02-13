@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
 /* Background */
 body {
     background-color: #fac08d;
@@ -16,7 +18,7 @@ body {
     border-radius: 20px;
     width: 500px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     position: relative; 
 }
 
@@ -36,6 +38,7 @@ h1 {
     color: #000000;
     margin: 0;
     margin-left: 60px;
+    font-family: 'Poppins', sans-serif;
 }
 
 p {
@@ -44,6 +47,7 @@ p {
     color: #000000;
     margin-bottom: 20px;
     margin-left: 50px;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Input Fields */
@@ -55,6 +59,7 @@ input[type="text"], input[type="password"] {
     width: 100%;
     border-radius: 20px;
     font-size: 14px;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Password Container */
@@ -74,20 +79,22 @@ input[type="text"], input[type="password"] {
 
 /* Login Button */
 .login-button {
-    background-color: #fac08d;
-    color:#000000;
+    background-color: #f4a36c;
+    color:black;
     border: none;
     padding: 10px;
     margin: 10px 0;
     width: 104%;
     border-radius: 5px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
 }
 
 .login-button:hover {
-    background-color: #f4a36c;
+    background-color: #e3caab;
 }
 
 /* Forgot Password Link */
@@ -96,6 +103,7 @@ input[type="text"], input[type="password"] {
     margin-left: 20px;
     font-size: 12px;
     text-decoration: none;
+    font-family: 'Poppins', sans-serif;
 }
 
 .forgot-password:hover {
