@@ -42,7 +42,7 @@
 
 
     <div class="review">
-        <a href="#" class="clickable-text">View Reviews</a>
+        <a href="customer_feedback.php" class="clickable-text">View Reviews</a>
     </div>
 
     <div class="container1">
