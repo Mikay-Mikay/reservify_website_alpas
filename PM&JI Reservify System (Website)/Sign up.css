@@ -17,14 +17,13 @@ body {
   background-color: #fac08d !important;
 }
 
-
 .container {
   max-width: 800px;
   width: 100%;
   background-color: #fff;
   padding: 20px 25px;
   border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .container .title {
@@ -163,6 +162,7 @@ form .button input {
 form .button input:hover {
   background: #f19054;
 }
+
 .checkbox-container {
   display: flex; /* Enables flexbox */
   justify-content: center; /* Centers content horizontally */
@@ -170,6 +170,7 @@ form .button input:hover {
   text-align: center; /* Centers the text inside the container */
   margin: 0 auto; /* Removes margin and centers the container */
 }
+
 .input-box {
   position: relative;
   width: 300px; /* Adjust based on your design */
@@ -275,6 +276,7 @@ form .button input:hover {
 .checkbox-container a:hover {
   text-decoration: underline;
 }
+
 /* Laptop screen styling (from 1024px to 1366px) */
 @media (min-width: 1024px) and (max-width: 1366px) {
   /* Adjust container size */
