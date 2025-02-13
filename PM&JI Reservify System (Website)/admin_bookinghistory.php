@@ -14,7 +14,7 @@ if (isset($_GET['logout'])) {
 $sql = "
     SELECT r.reservation_id, r.status, 
            bs.first_name, bs.middle_name, bs.last_name, bs.email, 
-           bs.event_type, bs.event_place, bs.number_of_participants, 
+           bs.event_type, bs.event_place, bs.photo_size_layout, 
            bs.start_time, bs.end_time,
             bs.payment_method
     FROM reservation r
@@ -37,7 +37,7 @@ while ($row = $result->fetch_assoc()) {
         'email' => $row['email'],
         'event_type' => $row['event_type'],
         'event_place' => $row['event_place'],
-        'number_of_participants' => $row['number_of_participants'],
+        'photo_size_layout' => $row['photo_size_layout'],
         'start_time' => $row['start_time'],
         'end_time' => $row['end_time'],
         'payment_method' => $row['payment_method'],
@@ -59,6 +59,8 @@ $conn->close();
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
     <link rel="stylesheet" href="admin_bookings.css?v=1.1">
     <link rel="stylesheet" href="admin_payments.css?v=1.1">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
 <div class="admin-dashboard">
@@ -71,7 +73,7 @@ $conn->close();
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
@@ -138,25 +140,9 @@ $conn->close();
                 <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                 <div id="notification-dropdown" class="notification-dropdown">
                     <h2>Notifications</h2>
-                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
-                        <span>3:30 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
-                        <span>11:30 AM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
-                        <span>2:45 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
-                        <span>4:15 PM, Nov 29, 2024</span>
-                    </div>
                 </div>
             </div>
+                   
                         <!-- Profile Icon -->
                         <div class="profile-container">
                             <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
@@ -172,6 +158,31 @@ $conn->close();
                             </div>
                         </div>
         </div>
+
+        <!-- Bootstrap Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bookingModalLabel">Booking Details</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                <p><strong>Event Type:</strong> <span id="modalEventType"></span></p>
+                <p><strong>Event Place:</strong> <span id="modalEventPlace"></span></p>
+                <p><strong>Participants:</strong> <span id="modalParticipants"></span></p>
+                <p><strong>Start Time:</strong> <span id="modalStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="modalEndTime"></span></p>
+                <p><strong>Payment Method:</strong> <span id="modalPaymentMethod"></span></p>
+                <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
     </header>
         <!-- Booking List -->
 <!-- Displaying Booking List -->
@@ -193,22 +204,22 @@ $conn->close();
 // Assuming you have fetched the `$row` data from your database
 const bookingData = <?php echo json_encode($bookingData); ?>;
 
-// Show booking details in an alert box
 function showDetails(reservationNumber) {
     const bookingDetails = bookingData[reservationNumber];
     if (bookingDetails) {
-        // Display details in an alert box
-        alert(
-            "Reservation ID: " + reservationNumber + "\n" +
-            "Email: " + bookingDetails.email + "\n" +
-            "Event Type: " + bookingDetails.event_type + "\n" +
-            "Event Place: " + bookingDetails.event_place + "\n" +
-            "Participants: " + bookingDetails.number_of_participants + "\n" +
-            "start_time: " + bookingDetails.start_time + "\n" +
-            "end_time: " +bookingDetails.end_time + "\n" +
-            "Payment Method: " + bookingDetails.payment_method + "\n" +
-            "Status: " + bookingDetails.status
-        );
+        // Populate modal fields with booking details
+        document.getElementById("modalEmail").textContent = bookingDetails.email;
+        document.getElementById("modalEventType").textContent = bookingDetails.event_type;
+        document.getElementById("modalEventPlace").textContent = bookingDetails.event_place;
+        document.getElementById("modalParticipants").textContent = bookingDetails.number_of_participants || "N/A"; 
+        document.getElementById("modalStartTime").textContent = bookingDetails.start_time;
+        document.getElementById("modalEndTime").textContent = bookingDetails.end_time;
+        document.getElementById("modalPaymentMethod").textContent = bookingDetails.payment_method;
+        document.getElementById("modalStatus").textContent = bookingDetails.status;
+
+        // Show the Bootstrap modal
+        let bookingModal = new bootstrap.Modal(document.getElementById("bookingModal"));
+        bookingModal.show();
     } else {
         alert("No details found for this reservation.");
     }
@@ -256,5 +267,47 @@ function showDetails(reservationNumber) {
             }
         }
 </script>
+
+<style>
+/* Modal Styling */
+.modal-content {
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    background: #f9f9f9;
+}
+
+.modal-header {
+    color: white;
+    font-weight: bold;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    text-align: center;
+}
+.modal-title {
+    text-align: center;
+    width: 100%;
+    color: black !important;
+}
+.modal-body {
+    padding: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.modal-footer .btn {
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
+.modal-footer .btn:hover {
+    background-color: #0056b3;
+}
+</style>
 </body>
 </html>
