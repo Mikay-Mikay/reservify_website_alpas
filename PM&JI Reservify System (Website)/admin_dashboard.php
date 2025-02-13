@@ -1,15 +1,90 @@
 <?php
 session_start();
-// Assuming the admin's id is stored in the session after login
+// Database connection (update with your own credentials)
+require_once "database.php";
+// Assuming the admin's name is stored in the session after login
 $admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
 
+// Ensure admin_id is in the session (set during login)
+$admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
+
+if (!$admin_id) {
+    // If admin_id is not found in the session, redirect to login
+    header('Location: admin_login.php');
+    exit();
+}
+
+// Fetch total count of booking statuses from the reservation table
+$total_booking_status = 0;
+$status_query = "SELECT COUNT(*) AS total FROM reservation WHERE status IS NOT NULL";
+$status_result = $conn->query($status_query);
+
+if ($status_result) {
+    $status_row = $status_result->fetch_assoc();
+    $total_booking_status = $status_row['total'];
+} else {
+    echo "Error: " . $conn->error;
+}
+
+// Fetch total number of registered accounts
+$total_registered_accounts = 0;
+$sql = "SELECT COUNT(id) AS total FROM test_registration";
+$result = $conn->query($sql);
+
+if ($result) {
+    $row = $result->fetch_assoc();
+    $total_registered_accounts = $row['total'];
+}
+// Fetch total number of Booking history
+$total_bookings_history = 0;
+$sql = "SELECT COUNT(reservation_id) AS total FROM reservation";
+$result = $conn->query($sql);
+
+if ($result) {
+    $row = $result->fetch_assoc();
+    $total_registered_accounts = $row['total'];
+}
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: admin_login.php');
     exit();
 }
+
+// Fetch total number of payments in payment table
+$total_payment = 0;
+$sql = "SELECT COUNT(payment_id) AS total FROM payment";
+$result = $conn->query($sql);
+
+if ($result) {
+    $row = $result->fetch_assoc();
+    $total_payment = $row['total'];
+} else {
+    echo "Error fetching payment count: " . $conn->error;
+}
+
+// Fetch notifications from the database for the admin
+$notifications = [];
+$sql = "SELECT * FROM admin_notifications WHERE admin_id = ? ORDER BY created_at DESC";
+$stmt = $conn->prepare($sql);
+
+if ($stmt) {
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $notifications[] = $row;
+    }
+
+    $stmt->close();
+} else {
+    echo "Error: " . $conn->error;
+}
+
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,8 +105,8 @@ if (isset($_GET['logout'])) {
             <nav>
                 <ul>
                 <li class="dashboard-item">
-                       <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px; text-decoration: none;">
-                    <img src="images/home.png.png" alt="Home Icon">
+                <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px; text-decoration: none;">
+                    <img src="images/home.png   " alt="Home Icon">
                     <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
@@ -86,29 +161,29 @@ if (isset($_GET['logout'])) {
         <h1 style="color: black;">Dashboard</h1>
         <div class="header-right">
         <!-- Notification Bell -->
-        <div class="notification-container">
-                <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
-                <div id="notification-dropdown" class="notification-dropdown">
-                    <h2>Notifications</h2>
-                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
-                        <span>3:30 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
-                        <span>11:30 AM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
-                        <span>2:45 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
-                        <span>4:15 PM, Nov 29, 2024</span>
+         <!-- Notification Bell -->
+         <div class="notification-container">
+                    <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
+                    <div id="notification-dropdown" class="notification-dropdown">
+                        <h2>Notifications</h2>
+                        <?php if (!empty($notifications)): ?>
+                            <?php foreach ($notifications as $notification): ?>
+                                <div class="notification">
+                                    <!-- Notification link -->
+                                    <a href="admin_view_notification.php?id=<?php echo urlencode($notification['id']); ?>" class="notification-link">
+                                        <p><strong>Notification ID: </strong><?php echo htmlspecialchars($notification['id']); ?></p>
+                                        <p><?php echo htmlspecialchars($notification['message']); ?></p>
+                                    </a>
+                                    
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No notifications found.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
-            </div>
+
+
             <!-- Profile Icon -->
             <div class="profile-container">
                 <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
@@ -125,35 +200,31 @@ if (isset($_GET['logout'])) {
             </div>
         </div>
     </header>
-            <section class="dashboard-cards">
+    <section class="dashboard-cards">
                 <div class="card">
-                    <img src="images/booking.png.png" alt="Booking Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Customer's Booking:</p>
-                    <h2>20</h2>
+                        <img src="images/booking.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
+                        <p>Total of Payments:</p>
+                        <h2><?php echo $total_payment; ?></h2>
+                    </div>
+                    <div class="card">
+                        <img src="images/progress.png.png" alt="Progress Icon" style="float: left; margin-right: 10px;">
+                        <p>Total of Approve Bookings:</p>
+                        <h2><?php echo $total_bookings_history; ?></h2>
+                    </div>
+                    <div class="card">
+                        <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
+                        <p>Total of Booking Status:</p>
+                        <h2><?php echo $total_booking_status; ?></h2>
+                    </div>
+                    <div class="card">
+                    <img src="images/visitors.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
+                    <p>Registered Accounts:</p>
+                    <h2><?php echo $total_registered_accounts; ?></h2>
                 </div>
-                <div class="card">
-                    <img src="images/progress.png.png" alt="Progress Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Progress:</p>
-                    <h2>12</h2>
-                </div>
-                <div class="card">
-                    <img src="images/booking_status.png.png" alt="Booking Status Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Booking Status:</p>
-                    <h2>9</h2>
-                </div>
-                <div class="card">
-                    <img src="images/visitors.png.png" alt="Visitors Icon" style="float: left; margin-right: 10px;">
-                    <p>Total of Visitors:</p>
-                    <h2>45</h2>
-                </div>
-            </section>
-        </main>
-    </div>
+                </section>
+            </main>
+        </div>
 
-    <!-- Bar Graph Section -->
-    <section class="chart-container">
-                <canvas id="bookingChart"></canvas>
-            </section>
         </main>
     </div>
 
@@ -189,49 +260,6 @@ window.onclick = function(event) {
     }
 };
 
-// Bar Graph Data and Configuration
-const ctx = document.getElementById('bookingChart').getContext('2d');
-    const bookingChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [{
-                label: 'Customer Bookings',
-                data: [10, 15, 8, 12, 20, 25, 18, 10, 5, 8, 12, 30], // Replace with dynamic PHP data
-                backgroundColor: 'rgba(86, 174, 255, 0.7)',
-                borderColor: 'rgba(86, 174, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    enabled: true
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Months'
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Bookings'
-                    }
-                }
-            }
-        }
-    });
     </script>
 </body>
 </html>
