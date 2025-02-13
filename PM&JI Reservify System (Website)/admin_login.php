@@ -59,7 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button type="submit" class="login-button">Login</button>
         </form>
-        <a href="admin_forgotpass.html" class="forgot-password">Forgot Password?</a>
     </div>
 
     <!-- JavaScript for password toggle -->
