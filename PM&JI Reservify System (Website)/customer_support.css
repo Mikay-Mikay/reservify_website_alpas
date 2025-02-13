@@ -128,7 +128,6 @@ nav .toggle {
 
 /* Connect with Us Section */
 .connect-container {
-    display: flex;
     align-items: center;
     margin: 20px 0;
     text-align: center;
@@ -136,9 +135,11 @@ nav .toggle {
 }
 
 .connect-container h1 {
+    display: inline-block;
     font-size: 35px;
     font-weight: 600;
     margin-left: 625px;
+    text-align: center;
     margin-top: 15px;
 }
 
@@ -151,6 +152,12 @@ nav .toggle {
     height: 70px;
 }
 
+.toggle {
+    font-size: 30px;
+    display: none;
+    cursor: pointer;
+}
+
 /* Chat Form Styling */
 .chat-container {
     background-color: #fac08d;
@@ -158,6 +165,7 @@ nav .toggle {
     max-width: 800px;
     margin: 20px auto;
     text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
 
@@ -187,6 +195,7 @@ nav .toggle {
     margin-bottom: 15px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     font-size: 16px;
 }
 
@@ -205,6 +214,7 @@ nav .toggle {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;  /* Ensure padding/border don't exceed 100% width */
 }
 
@@ -212,13 +222,14 @@ nav .toggle {
     padding: 10px 30px;
     background-color: #f4a36c;
     color: black;
+    margin-top: 15px;
     font-weight: bold;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     font-family: "Poppins", sans-serif;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s;
 }
 
@@ -228,8 +239,176 @@ nav .toggle {
 
 .chat-container .disclaimer {
     margin-top: 30px;
-    font-size: 14px;
+    font-size: 16px;
     color: black;
     line-height: 1.5;
+    font-family: "Poppins", sans-serif;
     text-align: justify;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container1 {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;
+    }
+
+    .about-image {
+        margin: 20px 0; /* Adjust margin for better spacing */
+    }
+
+    .about-content p {
+        font-size: 16px; /* Smaller font for readability */
+        margin-top: 10px;
+    }
+
+    #logo-pic {
+        width: 200px; /* Adjust logo size for smaller screens */
+    }
+
+    .menu li {
+        padding: 10px; /* Smaller padding for nav items */
+    }
+}
+
+@media (max-width: 480px) {
+    .about-content p {
+        font-size: 14px; /* Even smaller font for very small screens */
+        line-height: 1.4;
+    }
+
+    .logo img {
+        width: 80px; /* Smaller logo on extra small screens */
+    }
+
+    .menu li {
+        font-size: 14px; /* Smaller font in menu */
+        padding: 8px; /* Adjust padding in menu */
+    }
+}
+
+/* Adjustments for screens smaller than 768px */
+@media (max-width: 768px) {
+    .message-icon {
+        bottom: 15px;
+        right: 15px;
+        font-size: 20px;
+        padding: 8px 12px;
+    }
+
+    .message-icon span {
+        font-size: 14px; /* Slightly smaller text on mobile */
+    }
+}
+
+/* Adjustments for screens smaller than 480px */
+@media (max-width: 480px) {
+    .message-icon {
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+
+    .message-icon span {
+        font-size: 12px;
+    }
+}
+/* Responsive Design */
+
+/* For tablets */
+@media (max-width: 768px) {
+    #logo-pic {
+        width: 200px;
+    }
+    .welcome-text,
+    .reservify-text {
+        font-size: 24px;
+    }
+    .menu li {
+        padding: 10px 15px;
+    }
+    .book-now {
+        font-size: 18px;
+        padding: 8px 16px;
+    }
+    .img-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* For mobile */
+@media (max-width: 600px) {
+    .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(250, 192, 141, 0.9);
+        width: 100%;
+    }
+    
+    .menu.active {
+        display: flex;
+    }
+    
+    .toggle {
+        display: block;
+    }
+    
+    #logo-pic {
+        width: 150px;
+    }
+    
+    .welcome-text,
+    .reservify-text {
+        font-size: 20px;
+    }
+
+    .book-now {
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+
+    .img-container {
+        grid-template-columns: 1fr; /* Single column layout for small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .message-icon {
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+
+    .message-icon span {
+        font-size: 12px;
+    }
+}
+
+/* Style the header */
+.connect-container h1 {
+    font-size: 35px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+/* Responsive adjustments for tablets */
+@media (max-width: 768px) {
+    .connect-container h1 {
+        font-size: 28px;
+    }
+}
+
+/* Responsive adjustments for phones */
+@media (max-width: 480px) {
+    .connect-container h1 {
+        font-size: 24px;
+    }
+    .connect-container .back-button {
+        width: 50px;  /* Smaller back button for phones */
+    }
 }
