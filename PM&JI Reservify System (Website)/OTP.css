@@ -15,7 +15,7 @@ body {
     align-items: center; /* Centers vertically */
     min-height: 100vh; /* Ensures the body takes full viewport height */
     margin: 0; /* Removes default margin */
-    background-color: #f4a36c !important;/* Keeps your warm orange background */
+    background-color: #fac08d !important;/* Keeps your warm orange background */
 }
 
 form {
@@ -24,6 +24,7 @@ form {
     background-color: white; /* Form background */
     border-radius: 10px; /* Rounded corners */
     color: black; /* Adjusted text color to be visible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     font-family: 'Poppins', sans-serif; /* Apply Poppins font to form */
 }
 
@@ -66,10 +67,12 @@ form h1 {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #f4a36c;
-    color: white;
+    background-color: #fac08d;
+    color: black;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     font-family: 'Poppins', sans-serif; /* Apply font to button */
 }
 
