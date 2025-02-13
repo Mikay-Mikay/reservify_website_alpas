@@ -134,15 +134,16 @@ if (isset($_POST['submit'])) {
         <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
     </div>
     <ul class="menu">
-        <li><a href="Home.php">Home</a></li>
-        <li><a href="About Us.php">About Us</a></li>
-        <li><a href="portfolio.php">Portfolio</a></li>
-        <li><a href="Contact us.php">Contact Us</a></li>
-        <li><a href="login.php">Log In</a></li>
-        <li class="user-logo">
-            <img src="images/user_logo.png" alt="User Logo">
-        </li> 
-    </ul>
+            <li><a href="Home.php">Home</a></li>
+            <li><a href="About Us.php">About Us</a></li>
+            <li><a href="Contact us.php">Contact Us</a></li>
+            <li><a href="customer_mybookings.php">My Bookings</a></li>
+            <li class="user-logo">
+                <a href="login.php">
+                    <img src="images/user_logo.png" alt="User Logo">
+                </a>
+            </li> 
+        </ul>
 </nav>
 
 <main>
@@ -195,8 +196,7 @@ if (isset($_POST['submit'])) {
                 <input type="text" value="<?php echo htmlspecialchars($payment_method); ?>" disabled />
             </div>
             <div class="buttons">
-                <button type="submit" class="confirm-btn" name="submit">Confirm and Submit</button>
-                <button type="button" class="cancel-btn">Cancel</button>  
+                <button type="submit" class="confirm-btn" name="submit">Confirm</button>
             </div>
         </form>
     </div>
