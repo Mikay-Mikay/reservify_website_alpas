@@ -96,6 +96,8 @@ session_start();
                     <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                     <span class="notification-count"></span>
                 </div>
+                <!-- Added notification dropdown -->
+                <div class="notification-dropdown"></div>
             </li>
         </ul>
     </nav>
@@ -182,7 +184,7 @@ session_start();
                 }
             });
         });
-         // Notification functionality
+           // Notification functionality
 const fetchNotifications = async () => {
     try {
         const response = await fetch('fetch_notification.php');
@@ -277,6 +279,23 @@ document.getElementById("bookingStatusBtn").addEventListener("click", function()
             document.getElementById("bookingStatusModal").style.display = "none";
         }
     };
+
+    //<!-- JavaScript for Image Preview -->
+    function previewImage(event) {
+    var image = document.getElementById('imagePreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = "block"; // Show the image preview
+        };
+        reader.readAsDataURL(file);
+    } else {
+        image.style.display = "none"; // Hide preview if no image selected
+    }
+}
 
     </script>
 </body>
