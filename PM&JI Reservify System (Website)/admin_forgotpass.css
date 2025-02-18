@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #fac08d; /* Background color as specified */
+    background-color: #56aeff; /* Background color as specified */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,13 +62,13 @@ body {
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 16px;
-    background-color: #d9dfdb; /* Textbox color as specified */
+    background-color: #94e1ff; /* Textbox color as specified */
 }
 
 /* Next button styling */
 .next-btn {
-    background-color: #fac08d; /* Button color as specified */
-    color: black; /* White font for the button */
+    background-color: #56aeff; /* Button color as specified */
+    color: white; /* White font for the button */
     font-weight: bold;
     padding: 12px 20px;
     font-size: 16px;
@@ -79,5 +79,5 @@ body {
 }
 
 .next-btn:hover {
-    background-color: #f4a36c;
+    background-color: #4694cf;
 }
