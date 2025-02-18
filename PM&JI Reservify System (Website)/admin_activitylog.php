@@ -37,10 +37,10 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin PM&JI Reservify</title>
-    <link rel="stylesheet" href="admin_profile.css?v=1.0">
-    <link rel="stylesheet" href="admin_dashboard.css">
-    <link rel="stylesheet" href="admin_activitylog.css">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_profile.css?v=1.1">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_activitylog.css?v=1.2">
+    <link rel="stylesheet" href="admin_bookings.css?v=1.1">
 </head>
 <body>
 <div class="admin-dashboard">
@@ -53,7 +53,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png" alt="Home Icon">
                            <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
