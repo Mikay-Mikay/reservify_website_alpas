@@ -1,81 +1,55 @@
 <?php
 session_start();
 require_once "database.php";
-// Assuming the admin's ID is stored in the session after login
+// Ipinapalagay na ang admin's ID ay naka-store sa session pagkatapos mag-login
 $admin_ID = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'AD-0001';
 
-// Handle logout
+// Pag-handle ng logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: admin_login.php');
     exit();
 }
 
-// Handle event submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addEvent'])) {
-    // CSRF Token Validation
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("CSRF token mismatch!");
-    }
-    
-    $customer_name = htmlspecialchars($_POST['customer_name'],ENT_QUOTES);
-    $event_type = htmlspecialchars($_POST['event_type'], ENT_QUOTES);
-    $event_place = htmlspecialchars($_POST['event_place'], ENT_QUOTES);
-    $number_of_participants = (int)$_POST['number_of_participants'];
-    $contact_number = htmlspecialchars($_POST['contact_number'], ENT_QUOTES);
-    $event_start = $_POST['event_start'];
-    $event_end = $_POST['event_end'];
-
-    // Prepare SQL statement
-    $stmt = $conn->prepare("INSERT INTO admin_eventcalendar (customer_name, event_type, event_place, number_of_participants, contact_number, event_start, event_end) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssisss", $customer_name, $event_type, $event_place, $number_of_participants, $contact_number, $event_start, $event_end);
-
-    if ($stmt->execute()) {
-        echo "<script>alert('Reservation request saved successfully!');</script>";
-    } else {
-        echo "<script>alert('Error: Could not save the reservation request. Please try again.');</script>";
-    }
-    $stmt->close();
-}
-
-// Fetch events based on selected date
+// Pagkuha ng events mula sa reservation at test_registration tables
 $events = [];
-if (isset($_GET['filter_date'])) {
-    $filter_date = $_GET['filter_date'];
-    $sql = "SELECT customer_name, event_type, event_place, number_of_participants, contact_number, event_start, event_end 
-            FROM admin_eventcalendar 
-            WHERE DATE(event_start) = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $filter_date);
-} else {
-    // Fetch all events
-    $sql = "SELECT customer_name, event_type, event_place, number_of_participants, contact_number, event_start, event_end 
-            FROM admin_eventcalendar";
-    $stmt = $conn->prepare($sql);
-}
+$sql = "SELECT 
+            tr.first_name, tr.middle_name, tr.last_name, tr.email, 
+            r.event_type, r.event_place, r.photo_size_layout, 
+            r.contact_number, r.start_time AS event_start, r.end_time AS event_end,
+            r.image, r.message, r.status
+        FROM test_registration tr
+        JOIN reservation r ON tr.id = r.user_id
+        WHERE r.status = 'approved'"; // Dapat may single quotes
 
+
+$stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $events[] = [
-            'title' => 'Event for ' . $row['customer_name'],  // You can set a descriptive title like "Event for [Customer Name]"
+            'title' => 'Event for ' . $row['first_name'] . ' ' . $row['last_name'],  // Deskriptibong pamagat tulad ng "Event for [First Name] [Last Name]"
             'start' => $row['event_start'],
             'end' => $row['event_end'],
             'extendedProps' => [
-                'customer_name' => $row['customer_name'],
+                'first_name' => $row['first_name'],
+                'middle_name' => $row['middle_name'],
+                'last_name' => $row['last_name'],
+                'email' => $row['email'],
                 'event_type' => $row['event_type'],
                 'event_place' => $row['event_place'],
-                'number_of_participants' => $row['number_of_participants'],
-                'contact_number' => $row['contact_number']
+                'photo_size_layout' => $row['photo_size_layout'],
+                'contact_number' => $row['contact_number'],
+                'image' => $row['image'],
+                'message' => $row['message']
             ]
         ];
-        
     }
 }
 
-// Close the database connection
+// Pagsasara ng database connection
 $stmt->close();
 ?>
 <!DOCTYPE html>
@@ -87,27 +61,27 @@ $stmt->close();
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="admin_calendar.css">
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_calendar.css?v=1.2">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.2">
     <link rel="stylesheet" href="admin_bookinghistory.css">
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookings.css?v=1.1">
     <link rel="stylesheet" href="admin_payments.css?v=1.1">
     <link rel="stylesheet" href="admin_managefeedback.css">
 </head>
 <body>
 <div class="admin-dashboard">
-    <aside class="sidebar">
-        <div class="logo">
-            <img src="images/reservify_logo.png" alt="Reservify Logo">
-            <p>Hello, Admin!</p>
-        </div>
-        <nav>
-            <ul>
-                <li class="dashboard-item">
-                    <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                        <img src="images/home.png (1).png" alt="Home Icon">
-                        <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+<aside class="sidebar">
+            <div class="logo">
+                <img src="images/reservify_logo.png" alt="Reservify Logo">
+                <p>Hello, Admin!</p>
+            </div>
+            <nav>
+                <ul>
+                    <li class="dashboard-item">
+                        <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
+                            <img src="images/home.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px; color: black">Dashboard</span>
                     </a>
                 </li>
             </ul>
@@ -165,18 +139,7 @@ $stmt->close();
                     <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                     <div id="notification-dropdown" class="notification-dropdown">
                         <h2>Notifications</h2>
-                        <?php if (!empty($notifications)): ?>
-                            <?php foreach ($notifications as $notification): ?>
-                                <div class="notification">
-                                    <a href="admin_view_notification.php?id=<?php echo urlencode($notification['id']); ?>" class="notification-link">
-                                        <p><strong>Notification ID: </strong><?php echo htmlspecialchars($notification['id']); ?></p>
-                                        <p><?php echo htmlspecialchars($notification['message']); ?></p>
-                                    </a>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p>No notifications found.</p>
-                        <?php endif; ?>
+                        <!-- Your notification code -->
                     </div>
                 </div>
 
@@ -196,60 +159,60 @@ $stmt->close();
                 </div>
             </div>
         </header>
+            
+                <style>
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-content button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .popup-content button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Change background color and text color for days with events */
+.fc-day.fc-day-has-event {
+    background-color: #f4a36c !important; /* Background color */
+    color: black !important; /* Text color */
+}
+    </style>
+</head>
+<body>
+<div class="admin-dashboard">
+    <!-- Sidebar and content here -->
+    <main class="content">
+        <header class="header">
+            <h1 style="color: black;">Calendar</h1>
+        </header>
 
         <div id="calendar"></div>
     </main>
-</div>
-
-
-<!-- Modal for Adding Event -->
-<div id="eventModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2>Add Event</h2>
-
-        <form action="admin_calendar.php" method="POST">
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-
-            <label for="customer_name">Customer Name:</label>
-            <input type="text" id="customer_name" name="customer_name" required>
-
-            <label for="event_type">Event Type:</label>
-            <input type="text" id="event_type" name="event_type" required>
-
-            <label for="event_place">Event Place:</label>
-            <input type="text" id="event_place" name="event_place" required>
-
-            <label for="number_of_participants">Number of Participants:</label>
-            <input type="number" id="number_of_participants" name="number_of_participants" required>
-
-            <label for="contact_number">Contact Number:</label>
-            <input type="number" id="contact_number" name="contact_number" required>
-
-            <label for="event_start">Start Time:</label>
-            <input type="datetime-local" id="event_start" name="event_start" required>
-
-            <label for="event_end">End Time:</label>
-            <input type="datetime-local" id="event_end" name="event_end" required>
-
-            <button type="submit" name="addEvent">Add Event</button>
-            <button type="button" onclick="closeModal()">Cancel</button>
-        </form>
-    </div>
-    <!-- Modal for Event Details -->
-<div id="eventDetailsModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeEventDetailsModal()">&times;</span>
-        <h2>Reservation Details</h2>
-        <div id="eventDetailsContent"></div>
-    </div>
-</div>
-
-</div>
-
-
-
-   
 </div>
 
 <!-- FullCalendar JS -->
@@ -257,9 +220,34 @@ $stmt->close();
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var events = <?php echo json_encode($events); ?>;
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'timeGridDay,timeGridWeek,dayGridMonth'
+            },
+            events: events,
+            editable: true,
+            selectable: true,
+            selectHelper: true,
+            eventClick: function(info) {
+                openEventDetailsModal(info.event);
+            }
+        });
+
+        calendar.render();
+    });
+
+    // Open Event Details Modal
+   // Open Event Details Modal
+   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var events = <?php echo json_encode($events); ?>;
-    
+
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         headerToolbar: {
@@ -271,193 +259,63 @@ $stmt->close();
         editable: true,
         selectable: true,
         selectHelper: true,
-        select: function(info) {
-            openAddEventModal(info.startStr, info.endStr);
-        },
         eventClick: function(info) {
             openEventDetailsModal(info.event);
+        },
+        datesSet: function(info) {
+            var dates = info.view.calendar.getEvents();
+            dates.forEach(function(event) {
+                var eventDate = event.startStr.split('T')[0]; // Get the date part (YYYY-MM-DD)
+                var dayCell = document.querySelector('.fc-day[data-date="' + eventDate + '"]');
+                if (dayCell) {
+                    dayCell.classList.add('fc-day-has-event');
+                }
+            });
         }
     });
 
     calendar.render();
+
+    // Open Event Details Modal
+    function openEventDetailsModal(event) {
+        const eventDetails = `
+            <strong>Customer Name:</strong> ${event.extendedProps.first_name} ${event.extendedProps.last_name}<br>
+            <strong>Email:</strong> ${event.extendedProps.email}<br>
+            <strong>Event Type:</strong> ${event.extendedProps.event_type}<br>
+            <strong>Event Place:</strong> ${event.extendedProps.event_place}<br>
+            <strong>Photo Size/Layout:</strong> ${event.extendedProps.photo_size_layout}<br>
+            <strong>Contact Number:</strong> ${event.extendedProps.contact_number}<br>
+            <strong>Start Time:</strong> ${event.start.toLocaleString()}<br>
+            <strong>End Time:</strong> ${event.end.toLocaleString()}<br>
+        `;
+        
+        // Create popup overlay
+        var popupOverlay = document.createElement('div');
+        popupOverlay.classList.add('popup-overlay');
+        
+        var popupContent = document.createElement('div');
+        popupContent.classList.add('popup-content');
+        popupContent.innerHTML = eventDetails;
+        
+        var closeButton = document.createElement('button');
+        closeButton.innerText = 'Close';
+        closeButton.onclick = function() {
+            document.body.removeChild(popupOverlay);
+        };
+
+        popupContent.appendChild(closeButton);
+        popupOverlay.appendChild(popupContent);
+        document.body.appendChild(popupOverlay);
+
+        // Show popup overlay
+        popupOverlay.style.display = 'flex';
+    }
 });
 
-// Open Add Event Modal
-function openAddEventModal(start, end) {
-    document.getElementById('event_start').value = start;
-    document.getElementById('event_end').value = end;
-    document.getElementById('eventModal').style.display = 'flex';
-}
-
-// Open Event Details Modal
-function openEventDetailsModal(event) {
-    const eventDetails = `
-       <strong>Customer Name:</strong> ${event.extendedProps.customer_name}<br>
-        <strong>Event Type:</strong> ${event.extendedProps.event_type}<br>
-        <strong>Event Place:</strong> ${event.extendedProps.event_place}<br>
-        <strong>Number of Participants:</strong> ${event.extendedProps.number_of_participants}<br>
-        <strong>Contact Number:</strong> ${event.extendedProps.contact_number}<br>
-        <strong>Start Time:</strong> ${event.start.toLocaleString()}<br>
-        <strong>End Time:</strong> ${event.end.toLocaleString()}<br>
-        
-    `;
-    
-    // Create a popup with the event details
-    var popupOverlay = document.createElement('div');
-    popupOverlay.classList.add('popup-overlay');
-    
-    var popupContent = document.createElement('div');
-    popupContent.classList.add('popup-content');
-    popupContent.innerHTML = eventDetails;
-    
-    var closeButton = document.createElement('button');
-    closeButton.innerText = 'Close';
-    closeButton.onclick = function() {
-        document.body.removeChild(popupOverlay);
-    };
-
-    popupContent.appendChild(closeButton);
-    popupOverlay.appendChild(popupContent);
-    document.body.appendChild(popupOverlay);
-
-    // Display the popup overlay
-    popupOverlay.style.display = 'flex';
-}
-
-// Close Add Event Modal
-function closeModal() {
-    document.getElementById('eventModal').style.display = 'none';
-}
-
-// Close the modal when clicking outside of the modal content
-window.onclick = function(event) {
-    if (event.target == document.getElementById('eventModal')) {
-        closeModal();
-    }
-}
-
 </script>
-<style>
-/* Modal Structure */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-}
-
-/* Close Button */
-.close-btn {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Submit Button - Green */
-.modal form button[type="submit"] {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 16px;
-    width: 100%;
-    border-radius: 5px;
-}
-
-/* Cancel Button - Red */
-.modal form button[type="button"] {
-    background-color: #f44336; /* Red */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 16px;
-    width: 100%;
-    border-radius: 5px;
-}
-
-/* Button Hover Effects */
-.modal form button[type="submit"]:hover {
-    background-color: #45a049; /* Darker green */
-}
-
-.modal form button[type="button"]:hover {
-    background-color: #da190b; /* Darker red */
-}
-
-/* Popup Content (Event Details) */
-.popup-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Ensure it's on top */
-}
-
-.popup-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 500px;
-    text-align: left;
-    z-index: 10000; /* Make sure content is above overlay */
-    color: black;
-}
-
-/* General Button Style */
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px; /* Adjust this value to move the button further down */
-    width: 100%;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-
-</style>
-
 
 </body>
 </html>
+        
+
+       
