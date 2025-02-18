@@ -18,7 +18,6 @@ nav {
     background: #fac08d;
     padding: 5px 20px;
     display: flex;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     align-items: center;
     position: relative;
 }
@@ -120,7 +119,7 @@ nav a:hover {
 
 .container1 {
     display: flex;
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
     padding: 10px 20px;
     margin-top: 40px;
@@ -144,7 +143,6 @@ nav a:hover {
     max-width: 95%;
     height: auto;
     display: block;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: 0.5s ease;
 }
 
