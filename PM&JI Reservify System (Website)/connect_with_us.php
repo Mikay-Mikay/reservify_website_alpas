@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </ul>
     </nav>
 
-   <!-- Connect with Us Section -->
+    <!-- Connect with Us Section -->
     <div class="connect-container">
         <a href="javascript:history.back()">
             <img src="images/back button.png" alt="Back Button" class="back-button">
