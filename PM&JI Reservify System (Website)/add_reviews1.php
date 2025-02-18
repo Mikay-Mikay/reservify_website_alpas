@@ -33,7 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Add Review</title>
     <link rel="stylesheet" href="add_reviews1.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
+    
     <style>
         /* Pop-up Styles */
         .popup {
@@ -75,16 +74,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 5px;
         }
         .review {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.review .clickable-text {
-    text-decoration: none;
-    color: blue; /* Adjust color as needed */
-    font-size: 15px; /* Adjust the font size */
-}
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .review .clickable-text {
+            text-decoration: none;
+            color: blue; 
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -92,16 +90,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="wrapper">
     <h3>Thank you for taking the time to share your experience.</h3>
     <form action="" method="POST">
-    <div class="rating">
-    <input type="number" name="rating" id="rating" hidden>
-    <i class='bx bx-star star' data-value="1"></i>
-    <i class='bx bx-star star' data-value="2"></i>
-    <i class='bx bx-star star' data-value="3"></i> 
-    <i class='bx bx-star star' data-value="4"></i>
-    <i class='bx bx-star star' data-value="5"></i> 
-</div>
-
+        <div class="rating">
+            <input type="number" name="rating" id="rating" hidden>
+            <i class='bx bx-star star' data-value="1"></i>
+            <i class='bx bx-star star' data-value="2"></i>
+            <i class='bx bx-star star' data-value="3"></i>
+            <i class='bx bx-star star' data-value="4"></i>
+            <i class='bx bx-star star' data-value="5"></i>
+        </div>
+        
         <textarea class="textarea" name="opinion" cols="30" rows="5" placeholder="Your Review...."></textarea>
+        
         <div class="btn-group">
             <button type="submit" class="btn submit">Submit</button>
             <button type="button" class="btn cancel" onclick="window.location.href='reservation.php';">Cancel</button>
@@ -113,59 +112,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div id="feedbackPopup" class="popup">
     <div class="popup-content">
         <p>Thank you for your honest feedback!</p>
-        <button class="close-btn">OK</button>
-    </div>
-</div>
-
-<div class="review">
-        <a href="customer_feedback.php" class="clickable-text">View Feedback</a>
-    </div>
-
-<!-- Pop-up Message -->
-<div id="feedbackPopup" class="popup">
-    <div class="popup-content">
-        <p>Thank you for your honest feedback!</p>
         <button class="close-btn" onclick="closePopup()">OK</button>
     </div>
 </div>
 
+<div class="review">
+    <a href="customer_feedback.php" class="clickable-text">View Feedback</a>
+</div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Check if feedback was submitted
-        <?php if (isset($_SESSION['feedbackSubmitted']) && $_SESSION['feedbackSubmitted']): ?>
-            document.getElementById("feedbackPopup").style.display = "flex";
-            <?php unset($_SESSION['feedbackSubmitted']); ?>  // Clear session variable after displaying pop-up
-        <?php endif; ?>
+   document.addEventListener("DOMContentLoaded", function () {
+    // Rating functionality
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            ratingInput.value = value;
 
-        // Get the close button
-        const closeBtn = document.querySelector(".close-btn");
-
-        // Function to close pop-up and redirect
-        function closePopup() {
-            document.getElementById("feedbackPopup").style.display = "none";
-            window.location.href = "customer_feedback.php"; // Redirect to feedback page
-        }
-
-        // Ensure close button exists before adding event listener
-        if (closeBtn) {
-            closeBtn.addEventListener("click", closePopup);
-        } else {
-            console.error("Close button not found!");
-        }
+            // Highlight stars based on the rating and change icon to bxs-star
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= value) {
+                    star.classList.remove('bx-star');
+                    star.classList.add('bxs-star'); // Filled star
+                } else {
+                    star.classList.remove('bxs-star');
+                    star.classList.add('bx-star'); // Empty star
+                }
+            });
+        });
     });
-</script>
 
-<script src="add reviews1.js"></script>
-<script>
-    // Show pop-up if feedback was submitted
+    // Check if feedback was submitted
     <?php if (isset($_SESSION['feedbackSubmitted']) && $_SESSION['feedbackSubmitted']): ?>
         document.getElementById("feedbackPopup").style.display = "flex";
-        <?php unset($_SESSION['feedbackSubmitted']); ?>  // Clear session after showing pop-up
+        <?php unset($_SESSION['feedbackSubmitted']); ?>  // Clear session variable after displaying pop-up
     <?php endif; ?>
 
+    // Function to close pop-up and redirect
     function closePopup() {
         document.getElementById("feedbackPopup").style.display = "none";
+        window.location.href = "customer_feedback.php"; // Redirect to feedback page
     }
+
+    // Ensure close button exists before adding event listener
+    const closeBtn = document.querySelector(".close-btn");
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closePopup);
+    } else {
+        console.error("Close button not found!");
+    }
+});
 </script>
 
 </body>
