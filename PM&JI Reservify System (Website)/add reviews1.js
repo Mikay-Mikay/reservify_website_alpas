@@ -1,7 +1,5 @@
 const stars = document.querySelectorAll(".star");
 const ratingInput = document.getElementById("rating");
-const feedbackPopup = document.getElementById("feedbackPopup");
-const closeBtn = document.querySelector(".close-btn");
 const reviewForm = document.querySelector("form");
 
 stars.forEach((star, index) => {
@@ -23,13 +21,22 @@ stars.forEach((star, index) => {
 
 // Handle form submission
 reviewForm.addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent default form submission
+    // Prevent the default form submission behavior
+    event.preventDefault();
 
+    // Check if a rating has been selected
     if (!ratingInput.value) {
         alert("Please select a star rating before submitting!");
         return;
     }
 
+    // Check if the opinion textarea is empty
+    const opinionInput = document.querySelector("textarea[name='opinion']");
+    if (!opinionInput.value.trim()) {
+        alert("Please enter your review message!");
+        return;
+    }
 
+    // If everything is valid, submit the form
+    reviewForm.submit(); // Proceed with form submission
 });
-
