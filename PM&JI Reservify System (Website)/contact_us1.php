@@ -71,6 +71,8 @@ session_start();
             cursor: pointer;
             display: inline-block;
         }
+
+    
     </style>
     <nav>
         <div class="logo">
@@ -96,6 +98,9 @@ session_start();
                     <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                     <span class="notification-count"></span>
                 </div>
+                <div class="notification-dropdown">
+                    <p>Loading notifications...</p>
+                </div>
             </li>
         </ul>
     </nav>
@@ -108,7 +113,7 @@ session_start();
 
 
     <div class="review">
-        <a href="#" class="clickable-text">View Reviews</a>
+        <a href="customer_feedback.php" class="clickable-text">View Reviews</a>
     </div>
 
     <div class="container1">
@@ -158,6 +163,119 @@ session_start();
                   }
               });
           });
+
+                     // Notification functionality
+const fetchNotifications = async () => {
+    try {
+        const response = await fetch('fetch_notification.php');
+        const notifications = await response.json();
+        
+        // Check if there are any notifications
+        if (notifications.length > 0) {
+            document.querySelector('.notification-count').textContent = notifications.length;
+
+            // Build the dropdown content
+            const dropdownContent = notifications.map(notification => {
+                let message = notification.message;
+
+                // Validate and format the time and date when the notification was received
+                let notificationTime = new Date(notification.time);
+                
+                // Check if the date is valid
+                if (isNaN(notificationTime)) {
+                    console.error("Invalid date:", notification.time); // Log the invalid date to the console
+                    notificationTime = new Date(); // Set to current date/time if invalid
+                }
+
+                let formattedTime = notificationTime.toLocaleString('en-US', { 
+                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+                });
+
+                // Return the notification item with formatted date and time
+                return `
+                    <div class="notification-item">
+                        ${message} <span class="time">${formattedTime}</span>
+                    </div>
+                `;
+            }).join("");
+
+            // Set the content to the dropdown using innerHTML to parse any HTML tags in the message
+            document.querySelector(".notification-dropdown").innerHTML = dropdownContent;
+        } else {
+            // No notifications
+            document.querySelector(".notification-dropdown").innerHTML = "<p>No new notifications</p>";
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        document.querySelector(".notification-dropdown").innerHTML = "<p>Failed to load notifications</p>";
+    }
+};
+
+const toggleNotification = () => {
+    document.querySelector(".notification-dropdown").classList.toggle("show");
+};
+
+// Close the dropdown when clicked outside
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".notification-bell")) {
+        document.querySelector(".notification-dropdown").classList.remove("show");
+    }
+});
+
+// Initialize notifications on page load
+document.addEventListener("DOMContentLoaded", fetchNotifications);
+
+document.getElementById("bookingStatusBtn").addEventListener("click", function() {
+        fetch("fetch_reservation.php")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("bookingDetails").innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    document.getElementById("bookingDetails").innerHTML = `
+                        <p><strong>Event Type:</strong> ${data.event_type}</p>
+                        <p><strong>Location:</strong> ${data.event_place}</p>
+                        <p><strong>Participants:</strong> ${data.number_of_participants}</p>
+                        <p><strong>Contact:</strong> ${data.contact_number}</p>
+                        <p><strong>Start Time:</strong> ${data.start_time}</p>
+                        <p><strong>End Time:</strong> ${data.end_time}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <img src="Images/${data.image}" alt="Event Image" width="100%">
+                    `;
+                }
+                document.getElementById("bookingStatusModal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching reservation:", error));
+    });
+
+    document.querySelector(".close").addEventListener("click", function() {
+        document.getElementById("bookingStatusModal").style.display = "none";
+    });
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("bookingStatusModal")) {
+            document.getElementById("bookingStatusModal").style.display = "none";
+        }
+    };
+
+    //<!-- JavaScript for Image Preview -->
+    function previewImage(event) {
+    var image = document.getElementById('imagePreview');
+    var file = event.target.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+            image.style.display = "block"; // Show the image preview
+        };
+        reader.readAsDataURL(file);
+    } else {
+        image.style.display = "none"; // Hide preview if no image selected
+    }
+}
       </script>
 
 </body>
