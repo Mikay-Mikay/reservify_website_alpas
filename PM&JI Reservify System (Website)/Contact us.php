@@ -24,14 +24,13 @@
         </div>
         <ul class="menu">
         <li><a href="Home.php">Home</a></li> <!-- ginawa kong Home.php -->
-            <li><a href="About Us.php">About Us</a></li> <!-- ginawa kong About Us.php -->
             <li><a href="Contact us.php">Contact Us</a></li> <!-- ginawa kong Contact Us.php -->
-            <li><a href="customer_mybookings.php">My Bookings</a></li> <!-- dinagdag ko -->
-            <li class="user-logo">
-            <a href="login.php">
-             <img src="images/user_logo.png" alt="User Logo">
-            </a>
             </li> 
+        <li class="user-logo">
+                <a href="login.php">
+                    <img src="images/user_logo.png" alt="User Logo">
+                </a>
+    </ul>
         </ul>
     </nav>
 
@@ -42,7 +41,7 @@
 
 
     <div class="review">
-        <a href="customer_feedback.php" class="clickable-text">View Reviews</a>
+        <a href="#" class="clickable-text">View Reviews</a>
     </div>
 
     <div class="container1">
