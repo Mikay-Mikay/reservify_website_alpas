@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once "database.php";
 
 // Initialize the admin name from the session
 $admin_name = $_SESSION['fullname'] ?? 'Admin'; // Default to 'Admin' if session variable is not set
@@ -8,68 +9,93 @@ $errors = array();
 // Handle form submission
 if (isset($_POST["submit"])) {
     // Retrieve form inputs
-    $ref_no = $_POST["ref_no"] ?? '';
-    $date = $_POST["date"] ?? '';
-    $client_name = $_POST["client_name"] ?? '';
-    $amount = $_POST["amount"] ?? '';
-    $payment_method = $_POST["payment_method"] ?? '';
+    $ref_no = trim($_POST["ref_no"] ?? '');
+    $date = trim($_POST["date"] ?? '');
+    $amount = trim($_POST["amount"] ?? '');
+    $payment_method = trim($_POST["payment_method"] ?? '');
+    $reservation_id = trim($_POST["reservation_id"] ?? '');  // Now using reservation_id
 
     // Validate the inputs
-    if (empty($ref_no) || empty($date) || empty($client_name) || empty($amount) || empty($payment_method)) {
+    if (empty($ref_no) || empty($date) || empty($amount) || empty($payment_method) || empty($reservation_id)) {
         array_push($errors, "All fields are required.");
     }
 
-    // If errors exist, display them
-    if (count($errors) > 0) {
-        foreach ($errors as $error) {
-            echo "<div class='alert alert-danger'>$error</div>";
-        }
-    } else {
-        // Database connection
-        require_once "database.php";
+    if (!is_numeric($amount) || $amount <= 0) {
+        array_push($errors, "Invalid amount.");
+    }
 
-        // SQL query to insert payment details
-        $sql = "INSERT INTO admin_payments (ref_no, date, client_name, amount, payment_method) VALUES (?, ?, ?, ?, ?)";
+    // If no errors, insert the payment
+    if (count($errors) === 0) {
+        $sql = "INSERT INTO payment (reservation_id, ref_no, amount, payment_method, created_at) 
+                VALUES (?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
 
-        // Check if statement preparation was successful
-        if ($stmt === false) {
-            die("MySQL prepare failed: " . mysqli_error($conn));
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "isdss", $reservation_id, $ref_no, $amount, $payment_method, $date);
+            if (mysqli_stmt_execute($stmt)) {
+                echo "<script>
+                    alert('Payment details successfully added.');
+                    window.location.href = 'admin_payments.php';
+                </script>";
+            } else {
+                array_push($errors, "Error executing query: " . mysqli_error($conn));
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            array_push($errors, "MySQL prepare failed: " . mysqli_error($conn));
         }
-
-        // Bind parameters to the SQL query
-        mysqli_stmt_bind_param($stmt, "sssss", $ref_no, $date, $client_name, $amount, $payment_method);
-
-        // Execute the query and handle any errors
-        if (!mysqli_stmt_execute($stmt)) {
-            die("Error executing query: " . mysqli_error($conn));
-        }
-
-        // Success message and redirect
-        echo "<script>
-            alert('Payment details successfully added.');
-            window.location.href = 'admin_payments.php';
-        </script>";
     }
 }
 
-// Fetch the payment details from the database
-require_once "database.php";
-$sql = "SELECT * FROM admin_payments";  // Query to fetch all payment records
+// Handle filtering by month
+$filter_month = $_POST['month'] ?? ''; // Get selected month
+$where_clause = "";
+if ($filter_month) {
+    $where_clause = "WHERE MONTH(created_at) = '$filter_month'";
+}
+
+// Fetch the payment details from the database with month filtering
+$sql = "SELECT 
+            p.amount, 
+            p.ref_no, 
+            p.payment_method, 
+            p.payment_type, 
+            p.created_at, 
+            p.status, 
+            r.user_id
+        FROM payment p
+        JOIN reservation r ON p.reservation_id = r.reservation_id $where_clause";
+
 $result = mysqli_query($conn, $sql);
 
+// Export to Excel functionality
+if (isset($_POST['export_excel'])) {
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="payments_data.xls"');
+
+    $output = fopen('php://output', 'w');
+    fputcsv($output, ['Amount', 'Ref No.', 'Payment Method', 'Payment Type', 'Status', 'Date']); // Header row
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        fputcsv($output, $row);
+    }
+
+    fclose($output);
+    exit;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments - Admin Panel</title>
-    <link rel="stylesheet" href="admin_payments.css?v=1.1">
-    <link rel="stylesheet" href="admin_dashboard.css?v=1.1">
+    <link rel="stylesheet" href="admin_payments.css?v=1.2">
+    <link rel="stylesheet" href="admin_dashboard.css?v=1.2">
     <link rel="stylesheet" href="admin_profile.css?v=1.1">
     <link rel="stylesheet" href="admin_activitylog.css?v=1.1">
-    <link rel="stylesheet" href="admin_bookingstatus.css?v=1.1">
+    <link rel="stylesheet" href="admin_bookings.css?v=1.1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
@@ -84,8 +110,8 @@ $result = mysqli_query($conn, $sql);
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png (1).png" alt="Home Icon">
-                            <span style="margin-left: 1px; margin-top: 4px;">Dashboard</span>
+                            <img src="images/home.png" alt="Home Icon">
+                            <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
                 </ul>
@@ -134,166 +160,285 @@ $result = mysqli_query($conn, $sql);
             </nav>
         </aside>
 
-    <!-- Content -->
-    <div class="content">
-        <header>
-            <h1 style="color: black;">Payments</h1>
-            <div class="header-right">
-                <input type="text" id="searchBar" placeholder="Search payments..." onkeyup="searchTable()">
-                <div>
-                    <button class="btn create" onclick="openCreateModal()">Create</button>
-                    <button class="btn delete" onclick="openDeleteModal()">Delete</button>
-                </div>
-                </div>
+<!-- Content -->
+<div class="content">
+    <header>
+    <header>
+    <h1>Payments</h1>
+    <div class="header-right">
+        <div class="filter-container">
+            <!-- PDF Button -->
+            <form method="POST" action="pdf.php" target="_blank">
+                <input type="hidden" id="selectedMonth" name="month" value="">
+                <input type="submit" name="pdf_create" value="PDF" class="pdf-button">
+            </form>
 
-            <!-- Notification Bell -->
-        <div class="notification-container">
-                <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
-                <div id="notification-dropdown" class="notification-dropdown">
-                    <h2>Notifications</h2>
-                    <!-- Static Notifications (pansamantala lang, gawan mo php to hehe) -->
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST001</strong> John A. Doe successfully paid PHP 3,500 for Booking ID #56789 via GCash.</p>
-                        <span>3:30 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>Ticket-CS-20241129-0003</strong> John A. Doe: "Service Inquiry" — Can I reschedule my booking for December 8, 2024? Contact details logged.</p>
-                        <span>11:30 AM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST002</strong> Anne C. Cruz attempted payment for booking #56789 but it failed. Please follow up.</p>
-                        <span>2:45 PM, Nov 29, 2024</span>
-                    </div>
-                    <div class="notification">
-                        <p><strong>PMJI-20241130-CUST003</strong> Jane D. Smith requested a booking for December 20, 2024. Please review and approve or decline.</p>
-                        <span>4:15 PM, Nov 29, 2024</span>
-                    </div>
-                </div>
-            </div>
-                        <!-- Profile Icon -->
-                        <div class="profile-container">
-                            <img class="profile-icon" src="images/user_logo.png" alt="Profile Icon" onclick="toggleDropdown()">
-                            <div id="profile-dropdown" class="dropdown">
-                                <p class="dropdown-header"><?php echo htmlspecialchars($admin_name); ?></p>
-                                <hr>
-                                <ul>
-                                    <li><a href="admin_profile.php">Profile</a></li>
-                                    <li><a href="admin_activitylog.php">Activity Log</a></li>
-                                </ul>
-                                <hr>
-                                <a class="logout" href="?logout">Logout</a>
-                            </div>
-                        </div>
-        </header>
+
+
+            <!-- Dropdown for Months -->
+            <select id="monthFilter" onchange="filterPayments()">
+                <option value="">Select Month</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+    </div>
+</header>
+    
+<!-- CSS for alignment -->
+<style>
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pdf-button {
+        padding: 8px 12px;
+        background-color: #fac08d;
+        color: black;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+    .pdf-button:hover {
+        background-color: #f4a36c;
+    }
+
+    #monthFilter {
+        font-size: 16px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    #monthFilter:hover {
+        background-color: #e9ecef;
+    }
+
+    #monthFilter:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+</style>
+
+
+        </form>
+    </header>
 
         <!-- Table to Display Payments -->
         <table class="payments-table">
             <thead>
                 <tr>
-                    <th>Ref No.</th>
-                    <th>Date</th>
-                    <th>Name of Client</th>
                     <th>Amount</th>
+                    <th>Ref No.</th>
                     <th>Payment Method</th>
+                    <th>Payment Type</th>
+                    <th>status</th>
+                    <th>Date</th>
+
                 </tr>
             </thead>
+
+
             <tbody>
-                <?php
-                if ($result) {
-                    // Loop through the fetched data and display each row
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['ref_no']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['date']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['client_name']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['amount']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['payment_method']) . "</td>";
-                        echo "</tr>";
-                    }
+    <?php if ($result): ?>
+        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <tr>
+                <td><?= htmlspecialchars($row['amount']) ?></td>
+                <td>
+                    <button class="open-modal-btn" 
+                        data-ref="<?= htmlspecialchars($row['ref_no']) ?>" 
+                        data-userid="<?= htmlspecialchars($row['user_id']) ?>">
+                        <?= htmlspecialchars($row['ref_no']) ?>
+                    </button>
+                </td>
+                <td><?= htmlspecialchars($row['payment_method']) ?></td>
+                <td><?= htmlspecialchars($row['payment_type']) ?></td>
+                <td><?= htmlspecialchars($row['status']) ?></td>
+                <td><?= htmlspecialchars($row['created_at']) ?></td>
+            </tr>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <tr><td colspan="7">No data available</td></tr>
+    <?php endif; ?>
+</tbody>
+    <!--PARA SA FETCH MODAL-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $(".open-modal-btn").click(function () {
+        let refNo = $(this).data("ref");
+        let userId = $(this).data("userid");
+
+        $.ajax({
+            url: "fetch_reservation_details.php",
+            type: "POST",
+            data: { ref_no: refNo, user_id: userId },
+            dataType: "json",
+            success: function (data) {
+                if (data.success) {
+                    $("#eventType").text(data.event_type);
+                    $("#others").text(data.others);
+                    $("#eventPlace").text(data.event_place);
+                    $("#photoSize").text(data.photo_size_layout);
+                    $("#Email").text(data.Email); // ✅ FIXED
+                    $("#contactNumber").text(data.contact_number);
+                    $("#startTime").text(data.start_time);
+                    $("#endTime").text(data.end_time);
+                    $("#status").text(data.status);
+
+                    $("#customerName").text(data.first_name + " " + data.middle_name + " " + data.last_name);
+
+                    $("#modal").fadeIn();
                 } else {
-                    echo "<tr><td colspan='5'>No data available</td></tr>";
+                    alert("Details not found!");
                 }
-                ?>
-            </tbody>
+            },
+            error: function () {
+                alert("Error fetching details.");
+            }
+        });
+    });
+
+    $(".close-modal").click(function () {
+        $("#modal").fadeOut();
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("printPdfBtn").addEventListener("click", function () {
+        // Kunin ang reservation details mula sa modal
+        const customerName = document.getElementById("customerName").textContent || "None";
+        const eventType = document.getElementById("eventType").textContent || "None";
+        const others = document.getElementById("others").textContent || "None";
+        const eventPlace = document.getElementById("eventPlace").textContent || "None";
+        const photoSize = document.getElementById("photoSize").textContent || "None";
+        const Email = document.getElementById("Email").textContent || "None";
+        const contactNumber = document.getElementById("contactNumber").textContent || "None";
+        const startTime = document.getElementById("startTime").textContent || "None";
+        const endTime = document.getElementById("endTime").textContent || "None";
+        const status = document.getElementById("status").textContent || "None";
+
+        // Gawa ng URL para i-pass ang data sa PHP script
+const pdfUrl = `generate_reservation_pdf.php?customerName=${encodeURIComponent(customerName)}&eventType=${encodeURIComponent(eventType)}&others=${encodeURIComponent(others)}&eventPlace=${encodeURIComponent(eventPlace)}&photoSize=${encodeURIComponent(photoSize)}&Email=${encodeURIComponent(Email)}&contactNumber=${encodeURIComponent(contactNumber)}&startTime=${encodeURIComponent(startTime)}&endTime=${encodeURIComponent(endTime)}&status=${encodeURIComponent(status)}`;
+
+        // Open PDF sa bagong tab
+        window.open(pdfUrl, '_blank');
+    });
+});
+</script>
+
         </table>
     </div>
 </div>
 
-<!-- Modal for creating a payment -->
-<div id="createPaymentModal" class="modal">
-    <div class="modal-content">
-        <h2>Payment Details</h2>
-        <form method="POST">
-            <label for="ref_no">ID/Ref No.</label>
-            <input type="text" name="ref_no" required>
 
-            <label for="date">Date</label>
-            <input type="date" id="datePicker" name="date" required>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 
-            <label for="client_name">Name of Client</label>
-            <input type="text" name="client_name" required>
 
-            <label for="amount">Amount</label>
-            <input type="number" name="amount" required>
-
-            <label for="payment_method">Payment Method</label>
-            <select name="payment_method" required>
-                <option value="Gcash">Gcash</option>
-                <option value="Maya">Maya</option>
-            </select>
-
-            <div class="form-actions">
-                <button type="submit" name="submit" class="btn save">Save</button>
-                <button type="button" class="btn cancel" onclick="closeCreateModal()">Cancel</button>
-            </div>
-        </form>
-    </div>
-
-    
-</div>
 
 <!-- JavaScript -->
 <script>
-    // Functions to open and close Create Modal
-    function openCreateModal() {
-        document.getElementById("createPaymentModal").style.display = "flex";
-    }
+// Function to filter payments by selected month
+function filterPayments() {
+    const selectedMonth = document.getElementById("monthFilter").value;
+    const table = document.querySelector("table tbody");
+    const rows = table.getElementsByTagName("tr");
 
-    function closeCreateModal() {
-        document.getElementById("createPaymentModal").style.display = "none";
-    }
+    for (let i = 0; i < rows.length; i++) {
+        const dateCell = rows[i].getElementsByTagName("td")[5]; // Assuming 'Date' is the 6th column (index 5)
+        if (dateCell) {
+            const dateText = dateCell.textContent.trim() || dateCell.innerText.trim(); // Remove extra spaces
 
-    // Functions to open and close Delete Modal
-    function openDeleteModal() {
-        document.getElementById("deletePaymentModal").style.display = "flex";
-    }
+            // Extract the month from the date assuming format is YYYY-MM-DD
+            const dateParts = dateText.split("-");
+            if (dateParts.length >= 2) {
+                const paymentMonth = dateParts[1].padStart(2, '0'); // Ensure two-digit format
 
-    function closeDeleteModal() {
-        document.getElementById("deletePaymentModal").style.display = "none";
-    }
-
-    // Initialize flatpickr
-    document.addEventListener('DOMContentLoaded', function () {
-        flatpickr("#datePicker", {
-            dateFormat: "Y-m-d", // Set the desired date format
-        });
-    });
-
-    // Search Function
-    function searchTable() {
-        const input = document.getElementById("searchBar").value.toUpperCase();
-        const table = document.querySelector("table tbody");
-        const rows = table.getElementsByTagName("tr");
-
-        for (let i = 0; i < rows.length; i++) {
-            const cell = rows[i].getElementsByTagName("td")[0];
-            if (cell) {
-                const textValue = cell.textContent || cell.innerText;
-                rows[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+                // Show only rows that match the selected month or show all if no month is selected
+                rows[i].style.display = (selectedMonth === "" || paymentMonth === selectedMonth) ? "" : "none";
             }
         }
     }
+
+    // Update hidden input for PDF export
+    document.getElementById("selectedMonth").value = selectedMonth;
+}
+
 </script>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Reservation Details</h2>
+        <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
+        <p><strong>Event Type:</strong> <span id="eventType"></span></p>
+        <p><strong>Others:</strong> <span id="others"></span></p>
+        <p><strong>Event Place:</strong> <span id="eventPlace"></span></p>
+        <p><strong>Photo Size/Layout:</strong> <span id="photoSize"></span></p>
+        <p><strong>Email:</strong> <span id="Email"></span></p>
+        <p><strong>Contact Number:</strong> <span id="contactNumber"></span></p>
+        <p><strong>Start Time:</strong> <span id="startTime"></span></p>
+        <p><strong>End Time:</strong> <span id="endTime"></span></p>
+        <p><strong>Status:</strong> <span id="status"></span></p>
+
+         <!-- 🖨️ Print PDF Button -->
+         <button id="printPdfBtn" style="background-color: red; color: white;">Print PDF</button>
+
+
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 50%;
+    margin: 10% auto;
+    border-radius: 5px;
+    position: relative;
+}
+
+.modal-content p {
+    text-align: left;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 20px;
+}
+</style>
 
 </body>
 </html>
