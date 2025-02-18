@@ -35,15 +35,16 @@ if ($result) {
     $row = $result->fetch_assoc();
     $total_registered_accounts = $row['total'];
 }
-// Fetch total number of Booking history
+// Fetch total number of Booking summary
 $total_bookings_history = 0;
-$sql = "SELECT COUNT(reservation_id) AS total FROM reservation";
+$sql = "SELECT COUNT(reservation_id) AS total FROM booking_summary";
 $result = $conn->query($sql);
 
 if ($result) {
     $row = $result->fetch_assoc();
-    $total_registered_accounts = $row['total'];
+    $total_bookings_history = $row['total']; // ✅ Dapat naka-assign sa tamang variable
 }
+
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
