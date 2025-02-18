@@ -1,3 +1,8 @@
+<?php
+session_start();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,28 +14,26 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
 <body>
-    <nav>
-        <div class="logo">
-            <a href="Home.php">
-                <img src="images/reservify_logo.png" alt="PM&JI logo">
-                <span class="logo-text">PM&JI<br>Reservify</span>
-            </a>
-        </div>
-        <div class="toggle">
-            <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
-        </div>
-        <ul class="menu">
-            <li><a href="Home.php">Home</a></li>
-            <li><a href="About Us.php">About Us</a></li>
-            <li><a href="Contact us.php">Contact Us</a></li>
-            <li><a href="customer_mybookings.php">My Bookings</a></li>
-            <li class="user-logo">
+<nav>
+    <div class="logo">
+        <a href="Home.php">
+            <img src="images/reservify_logo.png" alt="PM&JI logo">
+            <span class="logo-text">PM&JI<br>Reservify</span>
+        </a>
+    </div>
+    <div class="toggle">
+        <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
+    </div>
+    <ul class="menu">
+        <li><a href="Home.php">Home</a></li>
+        <li><a href="Contact us.php">Contact Us</a></li>
+
+        <li class="user-logo">
                 <a href="login.php">
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
-            </li> 
-        </ul>
-    </nav>
+    </ul>
+</nav>
 
     <div class="container">
         <h1 class="welcome-text">Welcome </h1>
