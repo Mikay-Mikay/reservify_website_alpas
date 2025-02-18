@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['id'] = $user['id']; // Adjust 'id' based on your table's column
 
                 // Redirect to reservation page
-                header("Location: reservation.php");
+                header("Location: About Us.php");
                 exit();
             } else {
                 $error_message = "Invalid email or password.";
