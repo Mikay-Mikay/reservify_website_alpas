@@ -156,16 +156,16 @@ if (isset($_POST["submit"])) {
             <a href="#"><ion-icon name="menu-outline"></ion-icon></a>
         </div>
         <ul class="menu">
-            <li><a href="Home.php">Home</a></li>
+
             <li><a href="About Us.php">About Us</a></li>
-            <li><a href="Contact us.php">Contact Us</a></li>
+            <li><a href="reservation.php">Reserve Now</a></li>
             <li><a href="customer_mybookings.php">My Bookings</a></li>
+            <li><a href="contact_us1.php">Contact Us</a></li>
             <li class="user-logo">
-                <a href="login.php">
+                <a href="profile_user.php">
                     <img src="images/user_logo.png" alt="User Logo">
                 </a>
-            </li> 
-            <li>
+                <li>
                 <div class="notification-bell">
                     <img src="images/notif_bell.png.png" alt="Notification Bell" id="notif-bell" onclick="toggleNotification()">
                     <span class="notification-count"></span>
@@ -174,7 +174,7 @@ if (isset($_POST["submit"])) {
                     <p>Loading notifications...</p>
                 </div>
             </li>
-
+            </li>
         </ul>
     </nav>
 
@@ -192,7 +192,6 @@ if (isset($_POST["submit"])) {
               <label for="paymentType" class="form-label">Payment Method:</label>
               <select id="paymentType" name="paymentType" class="form-input" required>
                 <option value="" disabled selected>Select Payment Method:</option>
-                <option value="Cash">Cash</option>
               </select>
             </div>
 
@@ -223,7 +222,7 @@ if (isset($_POST["submit"])) {
           <div class="tutorial-options">
             <a href="gcash.html" class="button">
               How to Send Using Gcash
-              <img src="images/gcash_logo.png.png" alt="Gcash Logo" class="button-icon">
+              <img src="images/gcash_logo.png" alt="Gcash Logo" class="button-icon">
             </a>
             <a href="maya.html" class="button">
               How to Send Using Maya
@@ -493,5 +492,6 @@ document.getElementById("bookingStatusBtn").addEventListener("click", function()
             <span>Connect with Us</span>
         </div>
     </a>  
+    
 </body>
 </html>
