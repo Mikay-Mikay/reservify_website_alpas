@@ -1,3 +1,21 @@
+<?php
+// Start the session to track user information
+session_start();
+
+require_once "database.php";
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// SQL query to fetch feedback details along with user information
+$sql = "SELECT f.message, f.rating, tr.First_name, tr.Middle_name, tr.Last_name, tr.Email 
+        FROM feedback f
+        JOIN test_registration tr ON f.user_id = tr.id";
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,126 +43,71 @@
         <!-- Testimonial Box Container -->
         <div class="testimonial-box-container">
 
-            <!-- Testimonial Box -->
-            <div class="testimonial-box">
-                <div class="box-top">
-                    <div class="profile">
-                        <!-- Profile Image -->
-                        <div class="profile-img">
-                            <img src="images/cat tuxedo.jpg" alt="Profile Image" />
-                        </div>
-                        <!-- Name and Username -->
-                        <div class="name-user">
-                            <strong>Elon Musk</strong>
-                            <span>@elonmusk@gmail.com</span>
-                        </div>
-                    </div>
-                    <!-- Reviews (Stars) -->
-                    <div class="reviews">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i> <!-- Empty star -->
-                    </div>
-                </div>
-                <!-- Comments -->
-                <div class="client-comment">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla velit earum repellendus quo voluptatum aliquid rem, praesentium quam sed recusandae quos cumque eaque. Dolore quasi quas, adipisci delectus iure facere?</p>
-                </div>
-            </div>
+            <?php
+            // Check if there are feedback results
+            if ($result->num_rows > 0) {
+                // Output feedback data
+                while($row = $result->fetch_assoc()) {
+                    // Get user details and feedback message
+                    $name = $row['First_name'] . ' ' . $row['Middle_name'] . ' ' . $row['Last_name'];
+                    $email = $row['Email'];
+                    $message = $row['message'];
+                    $rating = $row['rating'];
 
-            <!-- Testimonial Box (Duplicated) -->
-            <div class="testimonial-box">
-                <div class="box-top">
-                    <div class="profile">
-                        <!-- Profile Image -->
-                        <div class="profile-img">
-                            <img src="images/cat tuxedo.jpg" alt="Profile Image" />
-                        </div>
-                        <!-- Name and Username -->
-                        <div class="name-user">
-                            <strong>Elon Musk</strong>
-                            <span>@elonmusk@gmail.com</span>
-                        </div>
-                    </div>
-                    <!-- Reviews (Stars) -->
-                    <div class="reviews">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i> <!-- Empty star -->
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i> 
-                    </div>
-                </div>
-                <!-- Comments -->
-                <div class="client-comment">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla velit earum repellendus quo voluptatum aliquid rem, praesentium quam sed recusandae quos cumque eaque. Dolore quasi quas, adipisci delectus iure facere?</p>
-                </div>
-            </div>
+                    // Mask email: keep the first 4 characters and the domain part
+                    $localPart = substr($email, 0, 4); // First 4 characters
+                    $domain = substr(strrchr($email, "@"), 0); // Domain part (e.g., @gmail.com)
+                    $maskedEmail = $localPart . str_repeat('*', strlen(substr($email, 4, strpos($email, '@') - 4))) . $domain;
 
+                    // Display testimonial box
+                    echo "
+                    <div class='testimonial-box'>
+                        <div class='box-top'>
+                            <div class='profile'>
+                                <!-- Profile Image -->
+                                <div class='profile-img'>
+                                    <img src='images/profile_user_icon.png' alt='Profile Image' />
+                                </div>
+                                <!-- Name and Username -->
+                                <div class='name-user'>
+                                    <strong>$name</strong>
+                                    <span>@$maskedEmail</span> <!-- Display masked email -->
+                                </div>
+                            </div>
+                            <!-- Reviews (Stars) -->
+                            <div class='reviews'>";
 
-               <!-- Testimonial Box (Duplicated) -->
-               <div class="testimonial-box">
-                <div class="box-top">
-                    <div class="profile">
-                        <!-- Profile Image -->
-                        <div class="profile-img">
-                            <img src="images/cat tuxedo.jpg" alt="Profile Image" />
-                        </div>
-                        <!-- Name and Username -->
-                        <div class="name-user">
-                            <strong>Elon Musk</strong>
-                            <span>@elonmusk@gmail.com</span>
-                        </div>
-                    </div>
-                    <!-- Reviews (Stars) -->
-                    <div class="reviews">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i> <!-- Empty star -->
-                        <i class="far fa-star"></i> <!-- Empty star -->
-                    </div>
-                </div>
-                <!-- Comments -->
-                <div class="client-comment">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla velit earum repellendus quo voluptatum aliquid rem, praesentium quam sed recusandae quos cumque eaque. Dolore quasi quas, adipisci delectus iure facere?</p>
-                </div>
-            </div>
+                    // Display stars based on rating
+                    for ($i = 0; $i < 5; $i++) {
+                        if ($i < $rating) {
+                            echo "<i class='fas fa-star'></i>";
+                        } else {
+                            echo "<i class='far fa-star'></i>";
+                        }
+                    }
 
-               <!-- Testimonial Box (Duplicated) -->
-               <div class="testimonial-box">
-                <div class="box-top">
-                    <div class="profile">
-                        <!-- Profile Image -->
-                        <div class="profile-img">
-                            <img src="images/cat tuxedo.jpg" alt="Profile Image" />
+                    echo "</div>
                         </div>
-                        <!-- Name and Username -->
-                        <div class="name-user">
-                            <strong>Elon Musk</strong>
-                            <span>@elonmusk@gmail.com</span>
+                        <!-- Comments -->
+                        <div class='client-comment'>
+                            <p>$message</p>
                         </div>
-                    </div>
-                    <!-- Reviews (Stars) -->
-                    <div class="reviews">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i> 
-                    </div>
-                </div>
-                <!-- Comments -->
-                <div class="client-comment">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla velit earum repellendus quo voluptatum aliquid rem, praesentium quam sed recusandae quos cumque eaque. Dolore quasi quas, adipisci delectus iure facere?</p>
-                </div>
-            </div>
+                    </div>";
+                }
+            } else {
+                echo "<p>No feedback available.</p>";
+            }
+
+            // Close the database connection
+            $conn->close();
+            ?>
+
+        </div>
+
     </section>
     <div class="centered-link">
-    <a href="add_reviews1.php">Add feedback</a>
-</div>
+        <a href="add_reviews1.php">Add feedback</a>
+    </div>
 </body>
 
 </html>
