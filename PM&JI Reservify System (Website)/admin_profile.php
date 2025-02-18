@@ -1,24 +1,11 @@
 <?php
 session_start();
+require_once "database.php";
+
+//HOY! YUNG ADMIN ID NEED O AYUSIN HA!! WAG MO NAMAN KALIMUTAN!//
 
 // Determine the admin role from the session or default to 'Admin'
-$roles = isset($_SESSION['roles']) ? $_SESSION['roles'] : 'Admin';
-
-// Assign unique IDs based on the role
-switch ($roles) {
-    case 'Owner':
-        $admin_ID = 'AD-0001';
-        break;
-    case 'Co-Owner':
-        $admin_ID = 'AD-0002';
-        break;
-    case 'Customer Support':
-        $admin_ID = 'CS-0001';
-        break;
-    default:
-        $admin_ID = 'Unknown Role';
-        break;
-}
+$roles = isset($_SESSION['admin_ID']) ? $_SESSION['admin_ID'] : 'admin_ID';
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -49,7 +36,7 @@ if (isset($_GET['logout'])) {
                 <ul>
                     <li class="dashboard-item">
                         <a href="admin_dashboard.php" style="display: flex; align-items: center; gap: 7px;">
-                            <img src="images/home.png.png" alt="Home Icon">
+                            <img src="images/home.png" alt="Home Icon">
                             <span style="margin-left: 1px; margin-top: 4px; color: black;">Dashboard</span>
                         </a>
                     </li>
@@ -146,7 +133,7 @@ if (isset($_GET['logout'])) {
                     <img src="images/back button.png" alt="Back Button">
                 </a>
                 <div class="profile-card">
-                    <p><strong>ID:</strong> <?php echo htmlspecialchars($admin_ID); ?></p>
+                    <p><strong>ID:</strong> Admin</p>
                 </div>
             </section>
         </main>
