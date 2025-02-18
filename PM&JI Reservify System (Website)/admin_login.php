@@ -1,37 +1,48 @@
 <?php
-require 'databasee.php'; // Ensure this file has the correct database credentials
+require 'database.php'; // Include the database connection file
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $admin_ID = $_POST['admin_ID']; // Ensure it matches the form's input field name
+    $admin_id = $_POST['admin_id'];
     $password = $_POST['password'];
 
     try {
-        // Query to fetch admin details (Ensure 'roles' column is correct)
-        $query = "SELECT admin_ID, password, roles FROM admin_login WHERE admin_ID = :admin_ID";
+        // Query to validate admin credentials
+        $query = "SELECT admin_ID, roles FROM admin_login WHERE admin_ID = ? AND password = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':admin_ID', $admin_ID);
+        
+        // Bind parameters to the prepared statement
+        $stmt->bind_param("ss", $admin_id, $password); // "ss" indicates both are strings
+
         $stmt->execute();
 
-        // Fetch result
-        if ($stmt->rowCount() > 0) {
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Store result to allow use of num_rows
+        $stmt->store_result();
 
-            // Compare passwords (if stored as plaintext, use simple comparison)
-            if ($password === $user['password']) { // Use password_verify($password, $user['password']) if stored as hashed
-                session_start();
-                $_SESSION['roles'] = $user['roles']; // Store role in session
-                $_SESSION['admin_ID'] = $user['admin_ID']; // Store admin_ID in session
+        if ($stmt->num_rows > 0) {
+            // Fetch user details
+            $stmt->bind_result($admin_id, $roles); // Bind the result columns to variables
+            $stmt->fetch();
 
-                // Redirect to admin dashboard
+            // Start session and store user details
+            session_start();
+            $_SESSION['admin_id'] = $admin_id; // Store admin_id in the session
+            $_SESSION['role'] = $roles;
+
+            // Redirect based on role
+            if ($roles === 'Owner') {
                 header("Location: admin_dashboard.php");
-                exit();
+            } elseif ($roles === 'Co-Owner') {
+                header("Location: admin_dashboard.php");
+            } elseif ($roles === 'Customer Support') {
+                header("Location: admin_dashboard.php");
             } else {
-                echo "<script>alert('Invalid ID or Password!'); window.location.href='admin_login.php';</script>";
+                echo "<script>alert('Unauthorized access!');</script>";
             }
+            exit();
         } else {
-            echo "<script>alert('Invalid ID or Password!'); window.location.href='admin_login.php';</script>";
+            echo "<script>alert('Invalid ID or Password!');</script>";
         }
-    } catch (PDOException $e) {
+    } catch (mysqli_sql_exception $e) {
         echo "Error: " . $e->getMessage();
     }
 }
@@ -43,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PM&JI Admin Login</title>
-    <link rel="stylesheet" href="admin_login.css">
+    <link rel="stylesheet" href="admin_login.css?v=1.1">
 </head>
 <body>
     <div class="login-container">
@@ -52,7 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>PM&JI Admin</h1>
         <p>Login</p>
         <form action="admin_login.php" method="POST">
-            <input type="text" name="admin_ID" placeholder="ID:" required>
+
+            <input type="text" name="admin_id" placeholder="ID:" required>
             <div class="password-container">
                 <input type="password" name="password" id="password" placeholder="Password:" required>
                 <img src="images/password_hide.png.png" alt="Toggle Password" id="toggle-password" onclick="togglePassword()">
