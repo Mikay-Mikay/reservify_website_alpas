@@ -10,49 +10,51 @@ if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
     exit;
 }
 
-$user_id = $_SESSION['id']; // Siguraduhin na may laman ang user_id
+$user_id = $_SESSION['id']; // Ensure user_id exists
 
 // Check if the submit button was clicked
 if (isset($_POST["submit"])) {
     // Get the inputs from the form
-    $payment_method = $_POST["paymentType"] ?? ''; // The selected payment method by the user
-    $Amount = $_POST["amount"] ?? ''; // The selected payment amount by the user
+    $payment_method = $_POST["paymentType"] ?? ''; // Selected payment method
+    $Amount = $_POST["amount"] ?? ''; // Payment amount
     $ref_no = $_POST["reference"] ?? ''; // Reference number
     $Payment_type = $_POST["paymentclass"] ?? ''; // Payment type
-    $reservation_id = $_SESSION["reservation_id"] ?? null; // Get the reservation_id from the session
+    $reservation_id = $_SESSION["reservation_id"] ?? null; // Get reservation ID from session
 
-    // Validate the form inputs
+    // Validate required fields
     if (empty($payment_method)) {
         $errors[] = "Please select a payment method.";
     }
     if (empty($Amount)) {
         $errors[] = "Please enter the payment amount.";
     }
-    if (empty($ref_no)) {
-        $errors[] = "Reference number is required.";
+    if ($payment_method !== "Cash" && empty($ref_no)) {
+        $errors[] = "Reference number is required for Gcash and Maya.";
     }
     if (empty($reservation_id)) {
         $errors[] = "No reservation ID found. Please log in again or contact support.";
     }
 
-    // Handle file upload
+    // Handle file upload only if the payment method is NOT cash
     $file_name = '';
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $file_name = $_FILES['image']['name'];
-        $file_tmp = $_FILES['image']['tmp_name'];
-        $folder = 'images/' . $file_name; // Ensure the folder name matches your setup
+    if ($payment_method !== "Cash") {
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+            $file_name = $_FILES['image']['name'];
+            $file_tmp = $_FILES['image']['tmp_name'];
+            $folder = 'images/' . $file_name; // Ensure the folder name matches your setup
 
-        // Check if the uploaded file is an image
-        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+            // Validate file type
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
 
-        if (!in_array(strtolower($file_extension), $allowed_extensions)) {
-            $errors[] = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
-        } elseif (!move_uploaded_file($file_tmp, $folder)) {
-            $errors[] = "File upload failed.";
+            if (!in_array(strtolower($file_extension), $allowed_extensions)) {
+                $errors[] = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
+            } elseif (!move_uploaded_file($file_tmp, $folder)) {
+                $errors[] = "File upload failed.";
+            }
+        } else {
+            $errors[] = "Please upload an image.";
         }
-    } else {
-        $errors[] = "Please upload an image. Error code: " . $_FILES['image']['error'];
     }
 
     // Display errors or process the form
@@ -91,7 +93,7 @@ if (isset($_POST["submit"])) {
                 echo "<script>alert('Payment details saved successfully.');</script>";
 
                 // Create a notification for the admin
-                $notification_message = "A new payment has been made. Payment ID: $payment_id,  Amount: $Amount, Reference No: $ref_no, Payment Method: $payment_method, Payment Type: $Payment_type.";
+                $notification_message = "A new payment has been made. Payment ID: $payment_id, Amount: $Amount, Reference No: $ref_no, Payment Method: $payment_method, Payment Type: $Payment_type.";
 
                 $notification_sql = "
                     INSERT INTO admin_notifications 
@@ -132,6 +134,7 @@ if (isset($_POST["submit"])) {
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,7 +145,8 @@ if (isset($_POST["submit"])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <link rel="stylesheet" href="jquery.datetimepicker.min.css">
-    <script src="payment.js"></script>
+    <script src="payment.js?v=<?php echo time(); ?>"></script>
+
 </head>
 <body>
     <nav>
@@ -492,6 +496,41 @@ document.getElementById("bookingStatusBtn").addEventListener("click", function()
             <span>Connect with Us</span>
         </div>
     </a>  
-    
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const paymentType = document.getElementById("paymentType");
+    const referenceNumber = document.getElementById("reference");
+    const uploadImage = document.getElementById("imageUpload");
+
+    // Load the saved payment method from localStorage
+    if (localStorage.getItem("savedPaymentType")) {
+        paymentType.value = localStorage.getItem("savedPaymentType");
+    }
+
+    function toggleFields() {
+        if (paymentType.value === "Cash") {
+            referenceNumber.value = "";
+            referenceNumber.disabled = true;
+            uploadImage.value = "";
+            uploadImage.disabled = true;
+        } else {
+            referenceNumber.disabled = false;
+            uploadImage.disabled = false;
+        }
+
+        // Save the selected payment method in localStorage
+        localStorage.setItem("savedPaymentType", paymentType.value);
+    }
+
+    // Run function on page load
+    toggleFields();
+
+    // Add event listener to detect changes
+    paymentType.addEventListener("change", toggleFields);
+});
+
+</script>
+
+
 </body>
 </html>
