@@ -22,6 +22,7 @@ if (isset($_POST["submit"])) {
     $contact_number = $_POST["contact_number"] ?? '';
     $start_time = $_POST["timedatePickerStart"] ?? '';
     $end_time = $_POST["timedatePickerEnd"] ?? '';
+    $file_name = NULL; // Default value kapag walang image
 
     // Validate form data
     if (empty($event_type) || empty($event_place) || empty($photo_size_layout) || empty($contact_number) || empty($start_time) || empty($end_time)) {
@@ -34,22 +35,37 @@ if (isset($_POST["submit"])) {
     }
 
     // Check if the file is uploaded
-    if (!isset($_FILES['image']) || $_FILES['image']['error'] !== 0) {
-        $errors[] = "Please upload an image.";
-    } else {
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $file_name = $_FILES['image']['name'];
         $file_tmp = $_FILES['image']['tmp_name'];
-        $folder = 'Images/' . $file_name;
+        $file_size = $_FILES['image']['size'];
 
-        // Check if the uploaded file is an image
+        // Set the upload folder path
+        $folder = 'uploads/' . $file_name; 
+
+        // Allowed file extensions
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-        if (!in_array(strtolower($file_extension), $allowed_extensions)) {
+        // Check file extension
+        if (!in_array($file_extension, $allowed_extensions)) {
             $errors[] = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
-        } elseif (!move_uploaded_file($file_tmp, $folder)) {
-            $errors[] = "File upload failed.";
         }
+
+        // Check file size (limit to 5MB)
+        if ($file_size > 5 * 1024 * 1024) { // 5MB in bytes
+            $errors[] = "File size exceeds 5MB limit.";
+        }
+
+        // Move uploaded file if no errors
+        if (empty($errors)) {
+            if (!move_uploaded_file($file_tmp, $folder)) {
+                $errors[] = "File upload failed.";
+            }
+        }
+    } else {
+        // Walang inupload na image, itatago natin ito bilang NULL
+        $file_name = ""; // Avoid "Column 'image' cannot be null" error
     }
 
     // Display errors or process the form
@@ -111,7 +127,7 @@ if (isset($_POST["submit"])) {
         . "Photo Layout: $photo_size_layout, \n"
         . "Start Time: $start_time, \n"
         . "End Time: $end_time, \n"
-        . "Image: $file_name.";
+        . "Image: " . ($file_name ?? "No image uploaded") . ".";
 
         if ($event_type == 'others' && !empty($others)) {
             $notification_message .= "\nOther Event Details: $others";
@@ -139,10 +155,16 @@ if (isset($_POST["submit"])) {
         mysqli_stmt_close($notification_stmt);
 
         // Redirect user with a success message
-        echo "<script>
-            alert('Reservation submitted successfully! Please wait 1-2 days for your approval.');
-            window.location.href = 'reservation.php';
+        if (mysqli_stmt_execute($stmt)) {
+            $reservation_id = mysqli_insert_id($conn);
+            $_SESSION['reservation_id'] = $reservation_id;
+        
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('customModal').style.display = 'block';
+                });
             </script>";
+        }
     } else {
         die("Database error: Unable to execute query.");
     }
@@ -150,27 +172,9 @@ if (isset($_POST["submit"])) {
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
-
-// Fetch reservation details if available
-$reservation_id = $_SESSION['reservation_id'] ?? null;
-$reservation = null;
-
-if ($reservation_id) {
-    require_once "database.php";
-    $query = "SELECT * FROM reservation WHERE reservation_id = ? AND user_id = ?";
-    $stmt = mysqli_stmt_init($conn);
-    
-    if (mysqli_stmt_prepare($stmt, $query)) {
-        mysqli_stmt_bind_param($stmt, "ii", $reservation_id, $user_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $reservation = mysqli_fetch_assoc($result);
-        mysqli_stmt_close($stmt);
-    }
-
-    mysqli_close($conn);
-}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -465,6 +469,74 @@ label {
         </div>
     </div>
 
+    <!-- Custom Modal -->
+<div id="customModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Success</h2>
+        <p>Reservation submitted successfully! Please wait for 1 hour for your approval.</p>
+        <button onclick="redirect()">OK</button>
+    </div>
+</div>
+
+<!-- CSS for Modal -->
+<style>
+    .modal {
+        display: none; /* Default: hidden */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 20% auto;
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .close {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+</style>
+
+<!-- JavaScript for Modal -->
+<script>
+    function closeModal() {
+        document.getElementById('customModal').style.display = 'none';
+    }
+
+    function redirect() {
+        window.location.href = 'reservation.php';
+    }
+</script>
+
+
     <div class="title">
         <h2>Our Work</h2>
     </div>
@@ -559,79 +631,64 @@ label {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
- $(document).ready(function () {
-        $.ajax({
-            url: 'fetch_unavailable_dates.php',
-            method: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // Initialize start time picker
-                flatpickr("#timedatePickerStart", {
-                    enableTime: true,
-                    dateFormat: "Y-m-d h:i K",
-                    time_24hr: false,
-                    disable: data,  // Disable unavailable dates
-                    onDayCreate: function (dObj, dStr, instance) {
-                        console.log("onDayCreate triggered for start time");
-                        // Logic to mark unavailable dates for start time
-                        var dateString = dStr.split(' ')[0]; // 'YYYY-MM-DD'
-                        if (data.includes(dateString)) {
-                            $(dObj).addClass('unavailable');
-                        }
-                    }
-                });
+$(document).ready(function () {
+    $.ajax({
+        url: 'fetch_unavailable_dates.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            console.log("Unavailable Dates:", data); // Debugging
 
-                // Initialize end time picker
-                flatpickr("#timedatePickerEnd", {
+            function initializeFlatpickr(selector) {
+                return flatpickr(selector, {
                     enableTime: true,
                     dateFormat: "Y-m-d h:i K",
                     time_24hr: false,
-                    disable: data,  // Disable unavailable dates for end time
-                    onDayCreate: function (dObj, dStr, instance) {
-                        console.log("onDayCreate triggered for end time");
-                        // Logic to mark unavailable dates for end time
-                        var dateString = dStr.split(' ')[0]; // 'YYYY-MM-DD'
-                        if (data.includes(dateString)) {
-                            $(dObj).addClass('unavailable');
-                        }
+                    disable: data,
+                    onReady: function (selectedDates, dateStr, instance) {
+                        markUnavailableDates(instance, data);
+                    },
+                    onMonthChange: function (selectedDates, dateStr, instance) {
+                        markUnavailableDates(instance, data);
                     }
                 });
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching unavailable dates: ", error);
+            }
+            
+            initializeFlatpickr("#timedatePickerStart");
+            initializeFlatpickr("#timedatePickerEnd");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching unavailable dates: ", error);
+        }
+    });
+});
+
+function markUnavailableDates(instance, unavailableDates) {
+    setTimeout(function () {
+        instance.calendarContainer.querySelectorAll(".flatpickr-day").forEach(function (dayElem) {
+            let dateStr = instance.formatDate(dayElem.dateObj, "Y-m-d");
+            if (unavailableDates.includes(dateStr)) {
+                dayElem.style.backgroundColor = "red";
+                dayElem.style.color = "white";
+                dayElem.style.pointerEvents = "none";
             }
         });
-    });
-            // Event Type Handling
-            const eventTypeSelect = document.getElementById("eventType");
-            const otherEventBox = document.getElementById("otherEventBox");
-            eventTypeSelect.addEventListener("change", function() {
-                otherEventBox.style.display = eventTypeSelect.value === "others" ? "block" : "none";
-            });
+    }, 10);
+}
 
+let currentIndex = 1;
 
-        // Slideshow functionality
-        let currentIndex = 1;  // Initialize currentIndex
-
-// Slideshow functionality
 function showSlides() {
     const slides = document.querySelectorAll(".slide");
     const dots = document.querySelectorAll(".dot");
-
-    // Hide all slides and remove active class from dots
     slides.forEach(slide => slide.style.display = "none");
     dots.forEach(dot => dot.classList.remove("active"));
-
-    // Show current slide and highlight corresponding dot
     if (currentIndex > slides.length) currentIndex = 1;
     if (currentIndex < 1) currentIndex = slides.length;
     slides[currentIndex - 1].style.display = "block";
     dots[currentIndex - 1].classList.add("active");
-
-    // Increment currentIndex for the next slide
     currentIndex++;
-
-    setTimeout(showSlides, 3000); // Change slide every 3 seconds
+    setTimeout(showSlides, 3000);
 }
 
 function currentSlide(index) {
@@ -640,129 +697,123 @@ function currentSlide(index) {
 }
 
 function changeSlide(n) {
+    const slides = document.querySelectorAll(".slide");
     currentIndex += n;
     if (currentIndex < 1) currentIndex = slides.length;
     if (currentIndex > slides.length) currentIndex = 1;
     showSlides();
 }
 
-// Start the slideshow when the document is ready
 document.addEventListener("DOMContentLoaded", () => {
-    showSlides();  // Ensure slideshow starts when the page loads
+    showSlides();
+    fetchNotifications();
 });
-     
-    // Notification functionality
-const fetchNotifications = async () => {
+
+async function fetchNotifications() {
     try {
         const response = await fetch('fetch_notification.php');
         const notifications = await response.json();
-        
-        // Check if there are any notifications
+        const dropdown = document.querySelector(".notification-dropdown");
         if (notifications.length > 0) {
             document.querySelector('.notification-count').textContent = notifications.length;
-
-            // Build the dropdown content
-            const dropdownContent = notifications.map(notification => {
-                let message = notification.message;
-
-                // Validate and format the time and date when the notification was received
+            dropdown.innerHTML = notifications.map(notification => {
                 let notificationTime = new Date(notification.time);
-                
-                // Check if the date is valid
                 if (isNaN(notificationTime)) {
-                    console.error("Invalid date:", notification.time); // Log the invalid date to the console
-                    notificationTime = new Date(); // Set to current date/time if invalid
+                    console.error("Invalid date:", notification.time);
+                    notificationTime = new Date();
                 }
-
-                let formattedTime = notificationTime.toLocaleString('en-US', { 
-                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+                let formattedTime = notificationTime.toLocaleString('en-US', {
+                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
                 });
-
-                // Return the notification item with formatted date and time
-                return `
-                    <div class="notification-item">
-                        ${message} <span class="time">${formattedTime}</span>
-                    </div>
-                `;
+                return `<div class="notification-item">${notification.message} <span class="time">${formattedTime}</span></div>`;
             }).join("");
-
-            // Set the content to the dropdown using innerHTML to parse any HTML tags in the message
-            document.querySelector(".notification-dropdown").innerHTML = dropdownContent;
         } else {
-            // No notifications
-            document.querySelector(".notification-dropdown").innerHTML = "<p>No new notifications</p>";
+            dropdown.innerHTML = "<p>No new notifications</p>";
         }
     } catch (error) {
         console.error('Error fetching notifications:', error);
         document.querySelector(".notification-dropdown").innerHTML = "<p>Failed to load notifications</p>";
     }
-};
+}
 
-const toggleNotification = () => {
-    document.querySelector(".notification-dropdown").classList.toggle("show");
-};
+document.querySelector(".notification-bell").addEventListener("click", function (event) {
+    event.stopPropagation();
+    const dropdown = document.querySelector(".notification-dropdown");
+    dropdown.classList.toggle("show");
+});
 
-// Close the dropdown when clicked outside
-document.addEventListener("click", (e) => {
-    if (!e.target.closest(".notification-bell")) {
-        document.querySelector(".notification-dropdown").classList.remove("show");
+document.addEventListener("click", function (event) {
+    const dropdown = document.querySelector(".notification-dropdown");
+    if (!event.target.closest(".notification-bell")) {
+        dropdown.classList.remove("show");
     }
 });
 
-// Initialize notifications on page load
-document.addEventListener("DOMContentLoaded", fetchNotifications);
+document.getElementById("bookingStatusBtn").addEventListener("click", function () {
+    fetch("fetch_reservation.php")
+        .then(response => response.json())
+        .then(data => {
+            const bookingDetails = document.getElementById("bookingDetails");
+            if (data.error) {
+                bookingDetails.innerHTML = `<p>${data.error}</p>`;
+            } else {
+                bookingDetails.innerHTML = `
+                    <p><strong>Event Type:</strong> ${data.event_type}</p>
+                    <p><strong>Location:</strong> ${data.event_place}</p>
+                    <p><strong>Participants:</strong> ${data.number_of_participants}</p>
+                    <p><strong>Contact:</strong> ${data.contact_number}</p>
+                    <p><strong>Start Time:</strong> ${data.start_time}</p>
+                    <p><strong>End Time:</strong> ${data.end_time}</p>
+                    <p><strong>Message:</strong> ${data.message}</p>
+                    <p><strong>Status:</strong> ${data.status}</p>
+                    <img src="Images/${data.image}" alt="Event Image" width="100%">
+                `;
+            }
+            document.getElementById("bookingStatusModal").style.display = "block";
+        })
+        .catch(error => console.error("Error fetching reservation:", error));
+});
 
-document.getElementById("bookingStatusBtn").addEventListener("click", function() {
-        fetch("fetch_reservation.php")
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById("bookingDetails").innerHTML = `<p>${data.error}</p>`;
-                } else {
-                    document.getElementById("bookingDetails").innerHTML = `
-                        <p><strong>Event Type:</strong> ${data.event_type}</p>
-                        <p><strong>Location:</strong> ${data.event_place}</p>
-                        <p><strong>Participants:</strong> ${data.number_of_participants}</p>
-                        <p><strong>Contact:</strong> ${data.contact_number}</p>
-                        <p><strong>Start Time:</strong> ${data.start_time}</p>
-                        <p><strong>End Time:</strong> ${data.end_time}</p>
-                        <p><strong>Message:</strong> ${data.message}</p>
-                        <p><strong>Status:</strong> ${data.status}</p>
-                        <img src="Images/${data.image}" alt="Event Image" width="100%">
-                    `;
-                }
-                document.getElementById("bookingStatusModal").style.display = "block";
-            })
-            .catch(error => console.error("Error fetching reservation:", error));
-    });
+document.querySelector(".close").addEventListener("click", function () {
+    document.getElementById("bookingStatusModal").style.display = "none";
+});
 
-    document.querySelector(".close").addEventListener("click", function() {
+window.onclick = function (event) {
+    if (event.target == document.getElementById("bookingStatusModal")) {
         document.getElementById("bookingStatusModal").style.display = "none";
-    });
+    }
+};
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById("bookingStatusModal")) {
-            document.getElementById("bookingStatusModal").style.display = "none";
-        }
-    };
-
-    //<!-- JavaScript for Image Preview -->
-    function previewImage(event) {
+function previewImage(event) {
     var image = document.getElementById('imagePreview');
     var file = event.target.files[0];
-
     if (file) {
         var reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             image.src = e.target.result;
-            image.style.display = "block"; // Show the image preview
+            image.style.display = "block";
         };
         reader.readAsDataURL(file);
     } else {
-        image.style.display = "none"; // Hide preview if no image selected
+        image.style.display = "none";
     }
 }
+  // Get the event type dropdown and the 'Others' input box
+  const eventTypeSelect = document.getElementById('eventType');
+  const otherEventBox = document.getElementById('otherEventBox');
+
+  // Function to toggle visibility of the 'Others' input box based on dropdown selection
+  document.getElementById('eventType').addEventListener('change', function() {
+    var otherEventBox = document.getElementById('otherEventBox');
+    if (this.value === 'others') {
+        otherEventBox.style.display = 'block'; // Show the input field
+    } else {
+        otherEventBox.style.display = 'none'; // Hide the input field
+    }
+});
+
+
     </script>
 </body>
 </html>
