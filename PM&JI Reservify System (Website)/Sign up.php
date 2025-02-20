@@ -25,16 +25,6 @@ if (isset($_POST["submit"])) {
     $Password = $_POST["password"] ?? '';
     $Confirm_Password = $_POST["confirm_password"] ?? '';
     $Gender = $_POST["gender"] ?? '';
-    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-
-    // reCAPTCHA validation
-    $recaptchaSecret = '6Le6rr0qAAAAALs9WJj78sqgHxZ2IvQCOFp825iL';  // Replace with your secret key
-    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptchaSecret&response=$recaptchaResponse");
-    $responseKeys = json_decode($response, true);
-
-    if (!$responseKeys["success"]) {
-        array_push($errors, "Please verify that you are not a bot.");
-    }
 
     // Password Hashing
     $passwordHash = password_hash($Password, PASSWORD_DEFAULT);
@@ -79,8 +69,12 @@ if (isset($_POST["submit"])) {
             // Generate OTP
             $otp_code = rand(100000, 999999);
 
+            // Set OTP expiration (1 minute and 50 seconds from now)
+            $otp_expiration = time() + (1 * 60) + 50; // 1 minute (60 sec) + 50 sec
+            
             // Store OTP in session (or DB)
             $_SESSION['otp'] = $otp_code;
+            $_SESSION['otp_expiration'] = $otp_expiration;
             $_SESSION['email'] = $Email;
 
             // Send Email with OTP using PHPMailer
@@ -133,7 +127,6 @@ if (isset($_POST["submit"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <link rel="stylesheet" type="text/css" href="Sign up.css?v=1.0">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
