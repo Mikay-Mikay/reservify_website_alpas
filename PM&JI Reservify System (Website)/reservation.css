@@ -14,14 +14,20 @@ a, a:hover {
     text-decoration: none;
 }
 
+/* Navbar - Fixed & Full Width */
 nav {
     background: #fac08d;
     padding: 10px 20px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: space-between; /* Ensure even spacing between logo and menu */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: "Poppins", sans-serif;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure it's above other elements */
 }
 
 nav a {
@@ -61,7 +67,7 @@ nav a:hover {
     align-items: center;
     list-style: none;
     gap: 20px; /* Add uniform spacing between menu items */
-    margin: 0;
+    margin-left: 600px;
     padding: 0;
 }
 
@@ -179,18 +185,18 @@ nav a:hover {
     text-decoration: none;  /* Ensure no underline on hover */
 }
 
+/* Reservation Form - Full Width */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 50px;
     background-color: #fac08d;
-    width: 100%;
-    margin: 20px auto;
+    width: auto;
+    min-height: 120vh; /* Ensure it covers the full screen height */
     border-radius: 8px;
-    height: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-top: 120px; /* To prevent overlap with fixed navbar */
 }
 
 .container .title {
@@ -242,7 +248,7 @@ form .user-details .input-box span.details {
     padding-left: 15px;
     border: 1px solid #ccc;
     border-bottom-width: 2px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
 }
 
@@ -312,20 +318,13 @@ form .user-details .input-box span.details {
     color: #333;
     font-weight: bold;
 }
-/* Make the parent container a flexbox to center its content */
-.parent-container {
-  display: flex;
-  justify-content: center; /* Centers the button horizontally */
-  align-items: center;     /* Centers the button vertically */
-  margin: 0;               /* Remove default body margin */
-}
 
+/* Center Button Properly */
 .btn {
-    width: 200px; /* Set a fixed width instead of percentage */
-    padding: 12px 20px; /* More padding for better spacing */
-    margin-top: 20px;
+    width: 200px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 8px; /* Softer edges */
+    border-radius: 8px;
     background-color: #f4a36c;
     color: black;
     font-weight: bold;
@@ -337,8 +336,8 @@ form .user-details .input-box span.details {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
-    margin-left: 550px;
     align-items: center;
+    margin: 20px auto; /* Center horizontally */
 }
 
 
