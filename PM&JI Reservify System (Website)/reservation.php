@@ -263,7 +263,8 @@ if (!empty($_FILES['image']['name'])) {
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
+            padding-left: 580px;
         }
 
         .form-group {
@@ -276,8 +277,12 @@ if (!empty($_FILES['image']['name'])) {
 
         /* Submit Button Container */
         .parent-container {
+            display: flex;
+            justify-content: flex-end; /* Aligns button to the right */
+            align-items: flex-end; /* Moves button to the bottom */
             margin-top: 20px;
-            text-align: right;
+            padding: 10px;
+            min-height: 100px; /* Adjust as needed */
         }
 
                 /*CSS design for payment sa notif ito pag nag approve yung admin 
@@ -314,8 +319,8 @@ if (!empty($_FILES['image']['name'])) {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 5px;
-            margin-right: 200px;
-            display: block;
+            margin-right: 400px;
+            display: flex;
             color: black;
         }
 
@@ -328,20 +333,20 @@ if (!empty($_FILES['image']['name'])) {
         #label-1 {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 10px;
-            margin-left: 340px;
+            margin-bottom: 5px;
+            margin-left: 260px;
             display: block;
             float: left;
             color: black;
         }
 
         #label-2 {
-            font-size: 16px;
+            font-size: 25px;
             font-weight: 600;
             margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 135px;
-            display: block
+            margin-bottom: 10px;   
+            margin-left: 175px;
+            display: flex;
             color: black;
         }
 
@@ -360,8 +365,8 @@ if (!empty($_FILES['image']['name'])) {
         .selected-datetime-wrapper {
             justify-content: center; /* Center horizontally */
             align-items: center;
-            margin-right: 655px;
-            margin-top: 10px;
+            margin-right: 755px;
+            margin-bottom: 5px;
             font-size: 16px;
             padding: 10px 12px;
             border: 1px solid #ccc;
@@ -422,26 +427,27 @@ if (!empty($_FILES['image']['name'])) {
             font-weight: bold;
         }
 
+
+
         #time-slots {
             display: grid;
-            grid-template-columns: repeat(1, 1fr); /* 2 columns */
+            grid-template-columns: repeat(1, 1fr); /* 1 column */
             gap: 15px;
-            max-width: 550px;
-            margin: 20px 0 20px 20px;
-            margin-left: 150px;
-            float: left;
+            max-width: 500px;
+            margin: 10px 0 20px 100px; /* Adjusted margin-left */
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             font-family: "Poppins", sans-serif;
-            background-color: #f4a36c; /* Light orange background */
+            background-color: #f4a36c;
             border-radius: 10px;
         }
 
         .time-slot {
-            display: block;
-            justify-content: flex-start;
+            display: flex;
             align-items: center;
-            padding: 15px;
+            justify-content: space-between;
+            padding: 10px;
+            max-width: 500px;
             border: 1px solid #ddd;
             border-radius: 10px;
             background: white;
@@ -449,7 +455,12 @@ if (!empty($_FILES['image']['name'])) {
             font-family: "Poppins", sans-serif;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             font-weight: 600;
+            white-space: nowrap; /* Para hindi mag-wrap sa new line */
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+
+
 
         .time-slot input[type="radio"] {
             margin-right: 10px;
@@ -461,10 +472,10 @@ if (!empty($_FILES['image']['name'])) {
         }
 
         h3 {
-            margin-top: 20px;
+            margin-top: 5px;
             display: block;
-            margin-right: 600px;
-            margin-bottom: 20px;
+            margin-right: 765px;
+            margin-bottom: 5px;
         }
 
         .fc-day.past {
@@ -477,9 +488,11 @@ if (!empty($_FILES['image']['name'])) {
         .main-container {
             display: flex;         /* Enable flexbox */
             align-items: flex-start; /* Align items to the top */
-            gap: 40px;           /* Space between left and right columns */
-            max-width: 1100px;   /* Adjust as needed */
+            gap: 5px;           /* Space between left and right columns */
+            max-width: 2000px;   /* Adjust as needed */
             margin: 20px auto;
+            text-align: center;
+            padding-left: 85px;
         }
 
         /* Left column (calendar) */
@@ -510,13 +523,13 @@ if (!empty($_FILES['image']['name'])) {
             flex: 1;               /* Takes up available space */
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 5px;
         }
 
         /* Images inside the container */
         .images-container img {
-            width: 300px;          /* Adjust width */
+            width: 380px;          /* Adjust width */
             height: 420px;
             border: 2px solid white;
             box-shadow: 0 5px 9px rgba(0, 0, 0, 0.3);
@@ -619,6 +632,19 @@ if (!empty($_FILES['image']['name'])) {
         </div>
     </div>
 
+    <!--div para sa pag upload ng image-->
+    <div class="upload-container">
+            <h2>Upload Image</h2>
+            <p>Assist us in creating temporary custom background for your selected image.</p>
+            <div class="form-group">
+                <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)"/>
+            </div>
+            <!--div para sa image prreview -->
+            <div class="preview-container">
+                <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
+            </div>
+        </div>
+
 
         <!--pag clinick yung calendar ito yung lalabas-->
         <h3>Time Slots</h3>
@@ -647,19 +673,6 @@ if (!empty($_FILES['image']['name'])) {
         </div>
 
 
-
-        <!--div para sa pag upload ng image-->
-        <div class="upload-container">
-            <h2>Upload Image</h2>
-            <p>Assist us in creating temporary custom background for your selected image.</p>
-            <div class="form-group">
-                <input type="file" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
-            </div>
-            <!--div para sa image prreview -->
-            <div class="preview-container">
-                <img id="imagePreview" src="" alt="Image Preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
-            </div>
-        </div>
         <!--Div para sa button-->
         <div class="parent-container">
             <input type="submit" name="submit" class="btn" value="Submit">
