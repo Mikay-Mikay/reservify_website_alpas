@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Initialize variables
 $errors = [];
@@ -569,8 +571,11 @@ if (!empty($_FILES['image']['name'])) {
             </li>
         </ul>
     </nav>
+
     <div class="container">
+    <div class="form-container">
         <div class="title">Reservation Form</div>
+        
         <!-- tinaggal ko na yung sa reservation history -->
         <div class="content">
         <form action="reservation.php" method="POST" enctype="multipart/form-data">
@@ -687,8 +692,14 @@ if (!empty($_FILES['image']['name'])) {
             <h2>Success</h2>
             <p>Reservation submitted successfully! Please wait for 1 hour for your approval.</p>
             <button onclick="redirect()">OK</button>
+
+            <div class="event-rates">
+        <?php include 'event-rates.php'; ?>
+            
+            </div>
         </div>
     </div>
+</div>
 
 <!-- CSS for Modal success -->
 <style>
