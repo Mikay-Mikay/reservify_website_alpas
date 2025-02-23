@@ -225,6 +225,7 @@ nav a:hover {
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 20px 0 12px 0;
+    flex-grow: 1; /* Para lumawak at i-push ang submit button pababa */
 }
 
 form .user-details .input-box {
@@ -319,7 +320,7 @@ form .user-details .input-box span.details {
     font-weight: bold;
 }
 
-/* Center Button Properly */
+/* Submit Button */
 .btn {
     width: 200px;
     padding: 12px 20px;
@@ -333,13 +334,8 @@ form .user-details .input-box span.details {
     text-align: center;
     transition: all 0.3s ease;
     font-family: "Poppins", sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px auto; /* Center horizontally */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 
 .title h2 {
     font-size: 35px;
