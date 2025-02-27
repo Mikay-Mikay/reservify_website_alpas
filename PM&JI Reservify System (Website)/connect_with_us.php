@@ -54,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connect with Us - PM&JI Reservify</title>
-    <link rel="stylesheet" href="customer_support.css">
+    <title>PM&JI Reservify - Connect with Us!</title>
+    <link rel="stylesheet" href="customer_support.css?v=1.1">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
 <body>
@@ -72,9 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <ul class="menu">
             <li><a href="Home.php">Home</a></li>
-            <li><a href="About Us.php">About Us</a></li>
             <li><a href="Contact us.php">Contact Us</a></li>
-            <li><a href="customer_mybookings.php">My Bookings</a></li>
             <li class="user-logo">
                 <img src="images/user_logo.png" alt="User Logo">
             </li>
@@ -116,6 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <p class="disclaimer">PM&JI Photography is governed by R.A. 10172, otherwise known as the Data Privacy Act of 2021. By clicking 'SUBMIT,' you signify your consent to PM&JI Photography to collect and process the personal information that you entered.</p>
     </div>
+
+    <footer>
+        <p>&copy; 2025 PM&JI Reservify. All Rights Reserved.</p>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
