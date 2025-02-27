@@ -18,13 +18,16 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 700px;               /* slightly narrower than 800px */
   width: 100%;
   background-color: #fff;
-  padding: 20px 25px;
+  padding: 15px 20px;             /* reduced padding */
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-height: 95vh;               /* limit container height to 80% of the viewport */
+  overflow-y: auto;               /* enable scrolling if content exceeds max-height */
 }
+
 
 .container .title {
   font-size: 25px;
@@ -38,7 +41,7 @@ body {
   left: 0;
   bottom: 0;
   height: 3px;
-  width: 30px;
+  width: 150px;
   border-radius: 5px;
   background: #fac08d;
 }
@@ -140,8 +143,8 @@ form input[type="radio"] {
 }
 
 form .button {
-  height: 45px;
-  margin: 35px 0;
+  height: 35px;
+  margin: 10px 0;
 }
 
 form .button input {
@@ -156,12 +159,35 @@ form .button input {
   cursor: pointer;
   transition: all 0.3s ease;
   background: #f4a36c;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-family: "Poppins", sans-serif;
 }
 
 form .button input:hover {
-  background: #f19054;
+  background: #e3caab;
 }
+
+/* Center and style the login message */
+.login-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-container p {
+  font-size: 16px;
+  color: black;
+}
+
+.login-container a {
+  color: #007bff;
+  font-weight: 450;
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
 
 .checkbox-container {
   display: flex; /* Enables flexbox */
@@ -169,6 +195,7 @@ form .button input:hover {
   align-items: center; /* Centers content vertically (if needed) */
   text-align: center; /* Centers the text inside the container */
   margin: 0 auto; /* Removes margin and centers the container */
+  margin-top: 10px;
 }
 
 .input-box {
@@ -294,6 +321,7 @@ form .button input:hover {
     height: 40px; /* Shorter input fields */
     font-size: 16px; /* Adjust font size */
     margin-bottom: 12px; /* Space between fields */
+
   }
 
   /* Adjust button height */
