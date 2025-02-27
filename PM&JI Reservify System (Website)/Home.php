@@ -8,7 +8,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PM&JI Reservify</title>
+    <title>PM&JI Reservify - Home</title>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -43,13 +43,15 @@ session_start();
 
     <div class="tag-line">
         <p>At PM&JI Reservify, we don’t just capture moments; we craft timeless memories that you’ll cherish forever. With every click of the camera, we transform fleeting moments into cherished memories that last a lifetime. Let us preserve the essence of your special occasions through the art of photography, capturing not only the images but the emotions, the stories, and the unique moments that define your journey. From the laughter and joy to the quiet, intimate moments, we create lasting impressions that tell your unique story, allowing you to relive those precious memories for years to come.</p>
-        <style>
-            .tag-line {
+    
+<style>
+
+.tag-line {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: justify;
-    padding: 20px;
+    padding-top: 30px;
 }
 
 .tag-line p {
@@ -59,7 +61,8 @@ session_start();
     font-style: italic;
 }
 
-            </style>
+</style>
+
         </div>
     <div>
     <button class="book-now" onclick="redirectToSignup()">Book Now!</button>
@@ -111,8 +114,11 @@ session_start();
 
     </div>
 </a>
-    
-   
+
+<footer>
+    <p>&copy; 2025 PM&JI Reservify. All Rights Reserved.</p>
+</footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(function() {
